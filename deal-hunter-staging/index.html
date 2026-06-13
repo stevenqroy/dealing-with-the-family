@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter Staging</title>
+  <meta name="description" content="Password-gated Deal Hunter staging app for family review.">
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      --bg: #f2f2f0;
+      --surface: #fffefa;
+      --tile: #ffffff;
+      --ink: #23231f;
+      --muted: #77736a;
+      --faint: #a6a198;
+      --line: #ddd8cb;
+      --line-soft: #ebe7dc;
+      --chip: #efede6;
+      --pink: #993556;
+      --pink-bg: #fbeaf0;
+      --green: #2f6f12;
+      --red: #b42318;
+      --red-bg: #fff0ed;
+      --shadow: 0 18px 44px rgba(35, 35, 31, .12);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+    button, input, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .app {
+      width: min(430px, 100%);
+      min-height: 720px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 18px 14px 22px;
+      overflow: hidden;
+    }
+    .top-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .tab, .chip, .sort button, .toggle, .back, .btn {
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+    }
+    .tab {
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1;
+      padding: 7px 11px;
+    }
+    .tab.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--surface);
+    }
+    .status {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      gap: 5px;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .icon, .back svg, .toggle svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .back, .toggle {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+    .back svg, .toggle svg { width: 18px; height: 18px; }
+    .toggle.active {
+      background: var(--chip);
+      color: var(--ink);
+    }
+    .mono {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--chip);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+    .mono.dt { color: var(--pink); background: var(--pink-bg); }
+    .mono.hd { color: #f96302; background: #fff1e9; }
+    .title-block { flex: 1; min-width: 0; }
+    h1 {
+      font-size: 17px;
+      line-height: 1.1;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .event-line {
+      color: var(--pink);
+      font-size: 12px;
+      margin: 2px 0 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .notice {
+      margin: 0 0 12px;
+      border: 1px solid #d8e8ce;
+      background: #f2faed;
+      color: #315f22;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 8px;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip, .fresh-chip, .camera-pill, .price-pill {
+      border-radius: 999px;
+      color: var(--ink);
+      padding: 5px 10px;
+      white-space: nowrap;
+      font-size: 12px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+    }
+    .chip.active {
+      background: var(--ink);
+      color: var(--surface);
+      border-color: var(--ink);
+      font-weight: 700;
+    }
+    .search {
+      width: 100%;
+      margin: 0 0 10px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--tile);
+      color: var(--ink);
+      outline: none;
+      font-size: 13px;
+    }
+    .search:focus { border-color: var(--pink); }
+    .sort {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .sort button {
+      border: 0;
+      color: inherit;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+    .sort .active {
+      background: var(--chip);
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px 11px;
+    }
+    .tile-card { min-width: 0; }
+    .image-well {
+      position: relative;
+      height: 174px;
+      background: var(--tile);
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .image-well img, .list-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .placeholder {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--faint);
+      background: linear-gradient(135deg, #f7f6f2, #ebe7dc);
+    }
+    .camera-pill {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      background: rgba(255, 254, 250, .94);
+      border: 1px solid var(--line-soft);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+    }
+    .icon { width: 13px; height: 13px; flex: 0 0 auto; }
+    .item-name {
+      margin: 6px 0 0;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta-line, .sku-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .price-block {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-top: 6px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .sale-price { color: var(--green); font-size: 15px; font-weight: 850; }
+    .was-price { color: var(--muted); font-size: 11px; text-decoration: line-through; }
+    .price-pill {
+      padding: 3px 6px;
+      border: 1px solid #cfe2c5;
+      color: var(--green);
+      background: #f2faed;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .fresh-chip {
+      border: 1px solid var(--line);
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .fresh-green { color: var(--green); background: #f2faed; border-color: #cfe2c5; }
+    .fresh-neutral { color: var(--muted); background: var(--chip); border-color: var(--line-soft); }
+    .fresh-watch { color: var(--pink); background: var(--pink-bg); border-color: #eed1dc; }
+    .fresh-red { color: var(--red); background: #fff7f5; border-color: #efd0ca; }
+    .list {
+      display: none;
+      border-top: 1px solid var(--line-soft);
+    }
+    .list-row {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .list-thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      border: 1px solid var(--line-soft);
+      background: var(--tile);
+      padding: 5px;
+      overflow: hidden;
+    }
+    .list-main { min-width: 0; }
+    .list-main .item-name { margin-top: 0; }
+    .signals {
+      min-width: 118px;
+      display: grid;
+      grid-template-columns: 34px 34px 40px;
+      align-items: center;
+      column-gap: 4px;
+      justify-items: end;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+    }
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      min-height: 16px;
+      white-space: nowrap;
+    }
+    .delta { color: var(--green); font-weight: 800; }
+    .view-list .grid { display: none; }
+    .view-list .list { display: block; }
+    .store-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px -14px -22px;
+      padding: 10px 14px;
+      background: rgba(255, 254, 250, .94);
+      border-top: 1px solid var(--line-soft);
+      backdrop-filter: blur(10px);
+    }
+    .progress {
+      flex: 1;
+      min-width: 0;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .check-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .check-toggle input { accent-color: var(--green); }
+    .found { opacity: .48; }
+    .empty-state {
+      padding: 52px 20px;
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+    .empty-state h2 { margin: 0 0 6px; color: var(--ink); font-size: 17px; }
+    .empty-state p { margin: 0; font-size: 13px; }
+    .console { display: grid; gap: 8px; }
+    .console-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: var(--tile);
+      padding: 10px;
+    }
+    .console-title { margin: 0 0 5px; font-size: 13px; font-weight: 800; }
+    .console-meta { color: var(--muted); font-size: 12px; }
+    .console-text {
+      margin-top: 7px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.35;
+      max-height: 82px;
+      overflow: auto;
+    }
+    .image-modal, .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, .86);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .image-modal { display: none; }
+    .image-modal.active { display: flex; }
+    .image-modal img {
+      max-width: 96vw;
+      max-height: 96vh;
+      object-fit: contain;
+      border-radius: 12px;
+      background: white;
+    }
+    .gate {
+      z-index: 80;
+      display: flex;
+      background: linear-gradient(135deg, rgba(35,35,31,.96), rgba(70,48,58,.96));
+    }
+    .gate.hidden { display: none; }
+    .gate-card {
+      width: min(360px, 100%);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.45);
+    }
+    .gate-kicker {
+      color: var(--pink);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .gate-title {
+      margin: 8px 0 4px;
+      font-size: 24px;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+    .gate-text {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .gate-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      outline: none;
+      font-size: 16px;
+      background: white;
+    }
+    .gate-input:focus { border-color: var(--pink); }
+    .gate-button {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: var(--ink);
+      color: var(--surface);
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    .gate-error {
+      min-height: 18px;
+      margin-top: 8px;
+      color: var(--red);
+      font-size: 12px;
+    }
+    @media (max-width: 420px) {
+      body { padding: 0; background: var(--surface); }
+      .app {
+        width: 100%;
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .image-well { height: 168px; }
+      .signals { min-width: 108px; grid-template-columns: 30px 34px 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <div class="gate-kicker">Family staging</div>
+      <div class="gate-title">Deal Hunter</div>
+      <p class="gate-text">Enter the family password to open the staging app.</p>
+      <input class="gate-input" id="gateInput" type="password" autocomplete="current-password" placeholder="Password">
+      <button class="gate-button" id="gateButton" type="button">Open Staging</button>
+      <div class="gate-error" id="gateError"></div>
+    </div>
+  </div>
+
+  <main class="app" id="app">
+    <nav class="top-tabs" role="tablist" aria-label="Deal Hunter views">
+      <button class="tab active" id="storeTab" type="button" onclick="setView('store')">Store</button>
+      <button class="tab" id="consoleTab" type="button" onclick="setView('console')">Console</button>
+      <span class="status"><span class="live-dot"></span><span id="feedCount">Staging</span></span>
+    </nav>
+
+    <section id="storeView">
+      <header class="header">
+        <button class="back" type="button" onclick="selectRetailer('')" aria-label="Back to all retailers">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <span class="mono dt" id="retailerMono">DT</span>
+        <div class="title-block">
+          <h1 id="retailerTitle">All Deals</h1>
+          <p class="event-line" id="eventLine">Worth-ranked · staging snapshot</p>
+        </div>
+        <button class="toggle active" type="button" data-view-mode="grid" onclick="setStoreMode('grid')" aria-label="Grid view">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+        </button>
+        <button class="toggle" type="button" data-view-mode="list" onclick="setStoreMode('list')" aria-label="List view">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+        </button>
+      </header>
+      <p class="notice">Staging snapshot for family review. Check-off state is saved on this device.</p>
+      <nav class="chips" id="retailerChips" aria-label="Retailers"></nav>
+      <input class="search" id="storeSearch" type="search" placeholder="Search name or SKU">
+      <div class="sort" aria-label="Sort">
+        <span>Sort</span>
+        <button class="active" type="button" data-sort="newest" onclick="setSort('newest')">New</button>
+        <button type="button" data-sort="active" onclick="setSort('active')">Active</button>
+        <button type="button" data-sort="value" onclick="setSort('value')">Value</button>
+      </div>
+      <section class="grid" id="dealGrid" aria-label="Product grid"></section>
+      <section class="list" id="dealList" aria-label="Product list"></section>
+      <footer class="store-footer">
+        <div class="progress" id="storeProgress">0 found</div>
+        <label class="check-toggle"><input type="checkbox" id="photosOnlyToggle"> Photos only</label>
+        <label class="check-toggle"><input type="checkbox" id="hideFoundToggle"> Hide got</label>
+      </footer>
+    </section>
+
+    <section class="console" id="consoleView" hidden>
+      <div class="console-list" id="consoleList"></div>
+    </section>
+  </main>
+
+  <div class="image-modal" id="imageModal" onclick="this.classList.remove('active')">
+    <img id="modalImage" src="" alt="">
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const PAGE_PASSWORD = "hi";
+    const PAGE_GATE_KEY = "deal-hunter-staging-unlocked";
+    const CAMERA_ICON = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h3l1.5-2h5L16 7h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="3"/></svg>';
+    const COMMENT_ICON = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 9h8M8 13h5"/><path d="M8 19a7 7 0 1 1 8.9-2.8L21 20l-5.4-1.4A7.2 7.2 0 0 1 8 19Z"/></svg>';
+    const BAG_ICON = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z"/><path d="M7 7V4h10v3"/></svg>';
+    const fallbackDeals = [
+      { id: "390887", sku: "390887", title: "Elmo Black Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 18, velocity: 8, image: "images/390887.jpg", note: "Novelty sock reference card for quick in-store matching." },
+      { id: "393236", sku: "393236", title: "Mona Lisa Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 11, velocity: 5, image: "images/393236.jpg", note: "Artist-series sock item with strong visual identifier." },
+      { id: "397121", sku: "397121", title: "Mountain Dew Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 25, velocity: 10, image: "images/397121.jpg", note: "Licensed crew socks; use package art and SKU together." },
+      { id: "397124", sku: "397124", title: "Oscar Mayer Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "aging", comments: 9, velocity: 3, image: "images/397124.jpg", note: "Food-brand novelty sock reference." },
+      { id: "397599", sku: "397599", title: "Smurfs Grumpy Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 31, velocity: 14, image: "images/397599.jpg", note: "High-confidence visual match item." },
+      { id: "397740", sku: "397740", title: "Cheez-It Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "aging", comments: 16, velocity: 4, image: "images/397740.jpg", note: "Box-art sock pattern; scan shelf pegs carefully." },
+      { id: "398608", sku: "398608", title: "Oscar the Grouch Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "old", comments: 6, velocity: 1, image: "images/398608.jpg", note: "Older match; check if already picked over." },
+      { id: "401005", sku: "401005", title: "Spiderman Face Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 22, velocity: 9, image: "images/401005.jpg", note: "Marvel sock item; image match matters more than wording." },
+      { id: "402677", sku: "402677", title: "Elmo Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "aging", comments: 13, velocity: 3, image: "images/402677.jpg", note: "Similar to Elmo black socks; check SKU before marking found." },
+      { id: "402678", sku: "402678", title: "Jurassic Park Claws Green Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 19, velocity: 7, image: "images/402678.jpg", note: "Green claw pattern should be easy to identify on rack." },
+      { id: "402721", sku: "402721", title: "Sesame Street Stripe Faces Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "aging", comments: 12, velocity: 3, image: "images/402721.jpg", note: "Striped Sesame Street pattern." },
+      { id: "402724", sku: "402724", title: "Looney Tunes Character Crew Socks", retailer: "Dollar Tree", price: "$0.01", was: "$1.25", off: "99%", freshness: "fresh", comments: 27, velocity: 11, image: "images/402724.jpg", note: "Character-art sock item; good first-aisle target." }
+    ];
+    const deals = Array.isArray(window.STAGING_DEALS) && window.STAGING_DEALS.length ? window.STAGING_DEALS : fallbackDeals;
+    let selectedRetailer = "";
+    let currentView = "store";
+    let currentSort = "newest";
+    let storeMode = "grid";
+
+    function unlockHostedPage() {
+      document.getElementById("gate").classList.add("hidden");
+      try { localStorage.setItem(PAGE_GATE_KEY, "1"); } catch {}
+    }
+    function checkHostedPassword() {
+      const input = document.getElementById("gateInput");
+      const error = document.getElementById("gateError");
+      if (input.value === PAGE_PASSWORD) {
+        error.textContent = "";
+        unlockHostedPage();
+      } else {
+        error.textContent = "Wrong password. Try again.";
+        input.select();
+      }
+    }
+    function initGate() {
+      let unlocked = false;
+      try { unlocked = localStorage.getItem(PAGE_GATE_KEY) === "1"; } catch {}
+      if (unlocked) unlockHostedPage();
+      document.getElementById("gateButton").addEventListener("click", checkHostedPassword);
+      document.getElementById("gateInput").addEventListener("keydown", event => {
+        if (event.key === "Enter") checkHostedPassword();
+      });
+      setTimeout(() => document.getElementById("gateInput").focus(), 80);
+    }
+    function setView(view) {
+      currentView = view === "console" ? "console" : "store";
+      document.getElementById("storeView").hidden = currentView !== "store";
+      document.getElementById("consoleView").hidden = currentView !== "console";
+      document.getElementById("storeTab").classList.toggle("active", currentView === "store");
+      document.getElementById("consoleTab").classList.toggle("active", currentView === "console");
+    }
+    function setStoreMode(mode) {
+      storeMode = mode === "list" ? "list" : "grid";
+      document.getElementById("app").classList.toggle("view-list", storeMode === "list");
+      document.querySelectorAll("[data-view-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.viewMode === storeMode));
+    }
+    function setSort(sort) {
+      currentSort = sort;
+      document.querySelectorAll("[data-sort]").forEach(btn => btn.classList.toggle("active", btn.dataset.sort === sort));
+      renderStore();
+      renderConsole();
+    }
+    function renderStore() {
+      renderRetailerChips();
+      renderHeader();
+      const visible = filteredDeals();
+      document.getElementById("dealGrid").innerHTML = visible.length ? visible.map(renderGridTile).join("") : emptyStore();
+      document.getElementById("dealList").innerHTML = visible.length ? visible.map(renderListRow).join("") : emptyStore();
+      renderProgress(visible);
+      document.getElementById("feedCount").textContent = `${deals.length} staged`;
+    }
+    function renderRetailerChips() {
+      const counts = retailerCounts();
+      const chips = [`<button class="chip ${!selectedRetailer ? "active" : ""}" onclick="selectRetailer('')">All ${deals.length}</button>`]
+        .concat(counts.map(item => `<button class="chip ${selectedRetailer === item.name ? "active" : ""}" onclick="selectRetailer('${escAttr(item.name)}')">${esc(item.name)} ${item.count}</button>`));
+      document.getElementById("retailerChips").innerHTML = chips.join("");
+    }
+    function selectRetailer(retailer) {
+      selectedRetailer = retailer || "";
+      renderStore();
+    }
+    function renderHeader() {
+      const retailer = selectedRetailer || "All Deals";
+      const meta = retailerMeta(retailer);
+      document.getElementById("retailerMono").textContent = meta.mono;
+      document.getElementById("retailerMono").className = `mono ${meta.className}`;
+      document.getElementById("retailerTitle").textContent = retailer;
+      document.getElementById("eventLine").textContent = selectedRetailer ? "Penny day staging snapshot" : "Worth-ranked · staging snapshot";
+    }
+    function filteredDeals() {
+      const search = (document.getElementById("storeSearch")?.value || "").trim().toLowerCase();
+      const photosOnly = document.getElementById("photosOnlyToggle")?.checked;
+      const hideFound = document.getElementById("hideFoundToggle")?.checked;
+      return deals.filter(deal => {
+        if (selectedRetailer && deal.retailer !== selectedRetailer) return false;
+        if (search && !searchText(deal).includes(search)) return false;
+        if (photosOnly && !deal.image) return false;
+        if (hideFound && isFound(deal)) return false;
+        return true;
+      }).sort(clientSort);
+    }
+    function clientSort(a, b) {
+      if (currentSort === "active") return b.velocity - a.velocity || b.comments - a.comments;
+      if (currentSort === "value") return valueScore(b) - valueScore(a) || b.velocity - a.velocity;
+      return deals.indexOf(a) - deals.indexOf(b);
+    }
+    function renderGridTile(deal) {
+      const fresh = freshness(deal);
+      const foundClass = isFound(deal) ? " found" : "";
+      const imageHtml = deal.image
+        ? `<img src="${esc(deal.image)}" alt="${esc(deal.title)}" loading="eager" onerror="this.outerHTML=placeholderHtml()">`
+        : placeholderHtml();
+      const imageClick = deal.image ? `onclick="showImage('${escAttr(deal.image)}')"` : "";
+      return `<article class="tile-card${foundClass}" ondblclick="toggleFound('${escAttr(deal.id)}')">
+        <div class="image-well" ${imageClick}>
+          ${imageHtml}
+          ${deal.image ? `<span class="camera-pill">${CAMERA_ICON}<span>1</span></span>` : ""}
+        </div>
+        <p class="item-name">${esc(deal.title)}</p>
+        <p class="sku-line">SKU ${esc(deal.sku)}</p>
+        ${priceHtml(deal)}
+        <p class="meta-line">${COMMENT_ICON}<span>${deal.comments}</span><span aria-hidden="true">·</span><span class="${fresh.className}">${esc(fresh.label)}</span><span aria-hidden="true">·</span><span class="delta">▲${deal.velocity}</span></p>
+      </article>`;
+    }
+    function renderListRow(deal) {
+      const fresh = freshness(deal);
+      const foundClass = isFound(deal) ? " found" : "";
+      const imageHtml = deal.image
+        ? `<img src="${esc(deal.image)}" alt="${esc(deal.title)}" loading="eager" onclick="showImage('${escAttr(deal.image)}')" onerror="this.outerHTML=placeholderHtml()">`
+        : placeholderHtml();
+      return `<article class="list-row${foundClass}" ondblclick="toggleFound('${escAttr(deal.id)}')">
+        <div class="list-thumb">${imageHtml}</div>
+        <div class="list-main">
+          <p class="item-name">${esc(deal.title)}</p>
+          <p class="sku">SKU ${esc(deal.sku)}</p>
+        </div>
+        <div class="signals">
+          <span class="signal">${COMMENT_ICON}<span>${deal.comments}</span></span>
+          <span class="signal delta">▲${deal.velocity}</span>
+          <span class="signal ${fresh.className}">${esc(fresh.label)}</span>
+        </div>
+      </article>`;
+    }
+    function renderConsole() {
+      const rows = filteredDeals().map(deal => `<article class="console-card">
+        <p class="console-title">${esc(deal.title)}</p>
+        <div class="console-meta">${esc(deal.retailer)} · SKU ${esc(deal.sku)} · ${deal.comments} comments · ${freshness(deal).label}</div>
+        <div class="console-text">${esc(deal.note)}</div>
+      </article>`);
+      document.getElementById("consoleList").innerHTML = rows.length ? rows.join("") : emptyStore();
+    }
+    function emptyStore() {
+      return `<div class="empty-state"><h2>No deals found</h2><p>Try another search or filter.</p></div>`;
+    }
+    function renderProgress(visible) {
+      const found = visible.filter(isFound).length;
+      document.getElementById("storeProgress").textContent = `${found} found of ${visible.length}`;
+    }
+    function retailerCounts() {
+      const counts = new Map();
+      deals.forEach(deal => counts.set(deal.retailer, (counts.get(deal.retailer) || 0) + 1));
+      return Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    }
+    function retailerMeta(retailer) {
+      if (retailer === "Dollar Tree" || retailer === "All Deals") return { mono: retailer === "All Deals" ? "DH" : "DT", className: retailer === "All Deals" ? "" : "dt" };
+      if (retailer === "Home Depot") return { mono: "HD", className: "hd" };
+      return { mono: retailer.split(/\s+/).map(part => part[0]).join("").slice(0, 2).toUpperCase(), className: "" };
+    }
+    function freshness(deal) {
+      if (deal.freshness === "fresh") return { label: "fresh", className: "fresh-chip fresh-green" };
+      if (deal.freshness === "aging") return { label: "ok", className: "fresh-chip fresh-neutral" };
+      if (deal.freshness === "watchlist") return { label: "watch", className: "fresh-chip fresh-watch" };
+      return { label: "old", className: "fresh-chip fresh-red" };
+    }
+    function valueScore(deal) {
+      return Number(deal.off.replace("%", "")) || 0;
+    }
+    function priceHtml(deal) {
+      if (!deal.price) return `<div class="price-block"><span class="sale-price">Check tag</span>${deal.dealType ? `<span class="price-pill">${esc(deal.dealType)}</span>` : ""}</div>`;
+      return `<div class="price-block"><span class="sale-price">${esc(deal.price)}</span>${deal.was ? `<span class="was-price">was ${esc(deal.was)}</span>` : ""}${deal.off ? `<span class="price-pill">-${esc(deal.off)}</span>` : ""}</div>`;
+    }
+    function searchText(deal) {
+      return [deal.title, deal.retailer, deal.sku, deal.note].join(" ").toLowerCase();
+    }
+    function placeholderHtml() {
+      return `<div class="placeholder">${BAG_ICON}</div>`;
+    }
+    function showImage(src) {
+      document.getElementById("modalImage").src = src;
+      document.getElementById("imageModal").classList.add("active");
+    }
+    function isFound(deal) {
+      const id = typeof deal === "string" ? deal : deal.id;
+      return !!localStorage.getItem(foundKey(id));
+    }
+    function toggleFound(id) {
+      const key = foundKey(id);
+      if (localStorage.getItem(key)) localStorage.removeItem(key);
+      else localStorage.setItem(key, "1");
+      renderStore();
+      renderConsole();
+    }
+    function foundKey(id) {
+      return `deal-hunter-staging-found:${id}`;
+    }
+    function esc(text) {
+      const d = document.createElement("div");
+      d.textContent = text || "";
+      return d.innerHTML;
+    }
+    function escAttr(text) {
+      return String(text || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function debounce(fn, ms) {
+      let timer;
+      return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), ms);
+      };
+    }
+    document.getElementById("storeSearch").addEventListener("input", debounce(() => { renderStore(); renderConsole(); }, 120));
+    document.getElementById("photosOnlyToggle").addEventListener("change", renderStore);
+    document.getElementById("hideFoundToggle").addEventListener("change", renderStore);
+    initGate();
+    renderStore();
+    renderConsole();
+  </script>
+</body>
+</html>

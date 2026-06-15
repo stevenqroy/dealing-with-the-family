@@ -675,17 +675,13 @@
   </main>
 
   <div class="image-modal" id="imageModal" onclick="closeImageModal(event)">
-    <button class="modal-close" type="button" onclick="closeImageModal()" aria-label="Close image">&times;</button>
-    <button class="modal-nav modal-prev" id="modalPrev" type="button" onclick="moveModalImage(-1, event)" aria-label="Previous product">&#8249;</button>
-    <figure class="modal-frame" onclick="event.stopPropagation()">
+    <button class="modal-close" type="button" onclick="closeImageModal()" aria-label="Close image">&times;</button>    <figure class="modal-frame" onclick="event.stopPropagation()">
       <img id="modalImage" src="" alt="">
       <figcaption class="modal-caption">
         <p class="modal-title" id="modalTitle"></p>
         <p class="modal-price" id="modalPrice"></p>
       </figcaption>
-    </figure>
-    <button class="modal-nav modal-next" id="modalNext" type="button" onclick="moveModalImage(1, event)" aria-label="Next product">&#8250;</button>
-  </div>
+    </figure>  </div>
 
   <script src="data.js"></script>
   <script>
@@ -968,9 +964,6 @@
       image.alt = deal.title || "Deal image";
       document.getElementById("modalTitle").textContent = deal.title || "Deal";
       document.getElementById("modalPrice").textContent = modalPriceText(deal);
-      const single = modalDeals.length < 2;
-      document.getElementById("modalPrev").hidden = single;
-      document.getElementById("modalNext").hidden = single;
     }
     function modalPriceText(deal) {
       const parts = [deal.price || "Check tag"];
@@ -1034,8 +1027,6 @@
     }, { passive: true });
     document.addEventListener("keydown", event => {
       if (!document.getElementById("imageModal").classList.contains("active")) return;
-      if (event.key === "ArrowLeft") moveModalImage(-1, event);
-      if (event.key === "ArrowRight") moveModalImage(1, event);
       if (event.key === "Escape") closeImageModal();
     });
     initGate();

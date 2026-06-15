@@ -33,18 +33,18 @@
       color: var(--ink);
       display: flex;
       justify-content: center;
-      padding: 24px;
+      padding: clamp(12px, 3vw, 28px);
     }
     button, input, select { font: inherit; }
     button { -webkit-tap-highlight-color: transparent; }
     .app {
-      width: min(430px, 100%);
+      width: min(1180px, 100%);
       min-height: 720px;
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 28px;
       box-shadow: var(--shadow);
-      padding: 18px 14px 22px;
+      padding: clamp(14px, 2vw, 22px);
       overflow: hidden;
     }
     .top-tabs {
@@ -215,13 +215,13 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 13px 11px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+      gap: 16px 12px;
     }
     .tile-card { min-width: 0; }
     .image-well {
       position: relative;
-      height: 174px;
+      aspect-ratio: 1 / 1;
       background: var(--tile);
       border: 1px solid var(--line-soft);
       border-radius: 12px;
@@ -357,8 +357,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 16px -14px -22px;
-      padding: 10px 14px;
+      margin: 16px calc(clamp(14px, 2vw, 22px) * -1) calc(clamp(14px, 2vw, 22px) * -1);
+      padding: 10px clamp(14px, 2vw, 22px);
       background: rgba(255, 254, 250, .94);
       border-top: 1px solid var(--line-soft);
       backdrop-filter: blur(10px);
@@ -416,13 +416,68 @@
     }
     .image-modal { display: none; }
     .image-modal.active { display: flex; }
-    .image-modal img {
-      max-width: 96vw;
-      max-height: 96vh;
+    .modal-frame {
+      width: min(760px, 100%);
+      max-height: calc(100vh - 32px);
+      margin: 0;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+    .modal-frame img {
+      max-width: 100%;
+      max-height: calc(100vh - 132px);
       object-fit: contain;
       border-radius: 12px;
       background: white;
     }
+    .modal-caption {
+      width: 100%;
+      color: var(--surface);
+      text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,.45);
+    }
+    .modal-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 850;
+    }
+    .modal-price {
+      margin: 3px 0 0;
+      color: #f2faed;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .modal-nav, .modal-close {
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(255, 254, 250, .12);
+      color: white;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .modal-nav {
+      top: 50%;
+      width: 44px;
+      height: 58px;
+      border-radius: 14px;
+      transform: translateY(-50%);
+      font-size: 28px;
+      line-height: 1;
+    }
+    .modal-prev { left: max(12px, calc((100vw - 900px) / 2)); }
+    .modal-next { right: max(12px, calc((100vw - 900px) / 2)); }
+    .modal-close {
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .modal-nav[hidden] { display: none; }
     .gate {
       z-index: 80;
       display: flex;
@@ -493,8 +548,14 @@
         border-radius: 0;
         box-shadow: none;
       }
-      .image-well { height: 168px; }
+      .grid { grid-template-columns: 1fr; }
+      .image-well { aspect-ratio: 4 / 3; }
       .signals { min-width: 108px; grid-template-columns: 30px 34px 36px; }
+      .modal-nav {
+        width: 38px;
+        height: 50px;
+        font-size: 24px;
+      }
     }
   </style>
 </head>
@@ -513,13 +574,13 @@
   <main class="app" id="app">
     <nav class="top-tabs" role="tablist" aria-label="Deal Hunter views">
       <button class="tab active" id="storeTab" type="button" onclick="setView('store')">Store</button>
-      <button class="tab" id="consoleTab" type="button" onclick="setView('console')">Console</button>
-      <span class="status"><span class="live-dot"></span><span id="feedCount">Staging</span></span>
+      <button class="tab" id="consoleTab" type="button" onclick="setView('console')">Details</button>
+      <span class="status"><span class="live-dot"></span><span id="feedCount">Ready</span></span>
     </nav>
 
     <section id="storeView">
       <header class="header">
-        <button class="back" type="button" onclick="selectRetailer('')" aria-label="Back to all retailers">
+        <button class="back" type="button" onclick="resetStoreView()" aria-label="Back to all deals">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
         </button>
         <span class="mono dt" id="retailerMono">DT</span>
@@ -536,6 +597,7 @@
       </header>
       <p class="notice">Staging snapshot for family review. Check-off state is saved on this device.</p>
       <nav class="chips" id="retailerChips" aria-label="Retailers"></nav>
+      <nav class="chips" id="dealTypeChips" aria-label="Deal types"></nav>
       <input class="search" id="storeSearch" type="search" placeholder="Search name or SKU">
       <div class="sort" aria-label="Sort">
         <span>Sort</span>
@@ -557,8 +619,17 @@
     </section>
   </main>
 
-  <div class="image-modal" id="imageModal" onclick="this.classList.remove('active')">
-    <img id="modalImage" src="" alt="">
+  <div class="image-modal" id="imageModal" onclick="closeImageModal(event)">
+    <button class="modal-close" type="button" onclick="closeImageModal()" aria-label="Close image">&times;</button>
+    <button class="modal-nav modal-prev" id="modalPrev" type="button" onclick="moveModalImage(-1, event)" aria-label="Previous product">&#8249;</button>
+    <figure class="modal-frame" onclick="event.stopPropagation()">
+      <img id="modalImage" src="" alt="">
+      <figcaption class="modal-caption">
+        <p class="modal-title" id="modalTitle"></p>
+        <p class="modal-price" id="modalPrice"></p>
+      </figcaption>
+    </figure>
+    <button class="modal-nav modal-next" id="modalNext" type="button" onclick="moveModalImage(1, event)" aria-label="Next product">&#8250;</button>
   </div>
 
   <script src="data.js"></script>
@@ -584,9 +655,15 @@
     ];
     const deals = Array.isArray(window.STAGING_DEALS) && window.STAGING_DEALS.length ? window.STAGING_DEALS : fallbackDeals;
     let selectedRetailer = "";
+    let selectedDealType = "";
+    let selectedCategory = "";
     let currentView = "store";
     let currentSort = "newest";
     let storeMode = "grid";
+    let modalDeals = [];
+    let modalIndex = -1;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     function unlockHostedPage() {
       document.getElementById("gate").classList.add("hidden");
@@ -619,6 +696,7 @@
       document.getElementById("consoleView").hidden = currentView !== "console";
       document.getElementById("storeTab").classList.toggle("active", currentView === "store");
       document.getElementById("consoleTab").classList.toggle("active", currentView === "console");
+      if (currentView === "console") renderConsole();
     }
     function setStoreMode(mode) {
       storeMode = mode === "list" ? "list" : "grid";
@@ -633,22 +711,51 @@
     }
     function renderStore() {
       renderRetailerChips();
+      renderDealTypeChips();
       renderHeader();
       const visible = filteredDeals();
       document.getElementById("dealGrid").innerHTML = visible.length ? visible.map(renderGridTile).join("") : emptyStore();
       document.getElementById("dealList").innerHTML = visible.length ? visible.map(renderListRow).join("") : emptyStore();
       renderProgress(visible);
-      document.getElementById("feedCount").textContent = `${deals.length} staged`;
+      document.getElementById("feedCount").textContent = "Ready";
     }
     function renderRetailerChips() {
       const counts = retailerCounts();
-      const chips = [`<button class="chip ${!selectedRetailer ? "active" : ""}" onclick="selectRetailer('')">All ${deals.length}</button>`]
+      const chips = [`<button class="chip ${!selectedRetailer ? "active" : ""}" onclick="selectRetailer('')">All stores ${retailerCountBase().length}</button>`]
         .concat(counts.map(item => `<button class="chip ${selectedRetailer === item.name ? "active" : ""}" onclick="selectRetailer('${escAttr(item.name)}')">${esc(item.name)} ${item.count}</button>`));
       document.getElementById("retailerChips").innerHTML = chips.join("");
     }
     function selectRetailer(retailer) {
-      selectedRetailer = retailer || "";
+      selectedRetailer = selectedRetailer === retailer ? "" : (retailer || "");
       renderStore();
+      renderConsole();
+    }
+    function renderDealTypeChips() {
+      const counts = dealTypeCounts();
+      const chips = [`<button class="chip ${!selectedDealType ? "active" : ""}" onclick="selectDealType('')">All types ${typeCountBase().length}</button>`]
+        .concat(counts.map(item => `<button class="chip ${selectedDealType === item.name ? "active" : ""}" onclick="selectDealType('${escAttr(item.name)}')">${esc(dealTypeLabel(item.name))} ${item.count}</button>`));
+      document.getElementById("dealTypeChips").innerHTML = chips.join("");
+    }
+    function selectDealType(dealType) {
+      selectedDealType = selectedDealType === dealType ? "" : (dealType || "");
+      renderStore();
+      renderConsole();
+    }
+    function selectCategory(category) {
+      selectedCategory = selectedCategory === category ? "" : (category || "");
+      renderStore();
+      renderConsole();
+    }
+    function resetStoreView() {
+      selectedRetailer = "";
+      selectedDealType = "";
+      selectedCategory = "";
+      document.getElementById("storeSearch").value = "";
+      setView("store");
+      renderStore();
+      renderConsole();
+      document.getElementById("app").scrollIntoView({ block: "start" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
     function renderHeader() {
       const retailer = selectedRetailer || "All Deals";
@@ -656,23 +763,32 @@
       document.getElementById("retailerMono").textContent = meta.mono;
       document.getElementById("retailerMono").className = `mono ${meta.className}`;
       document.getElementById("retailerTitle").textContent = retailer;
-      document.getElementById("eventLine").textContent = selectedRetailer ? "Penny day staging snapshot" : "Worth-ranked · staging snapshot";
+      const filters = [];
+      if (selectedDealType) filters.push(dealTypeLabel(selectedDealType));
+      if (selectedCategory) filters.push(selectedCategory);
+      document.getElementById("eventLine").textContent = filters.length ? filters.join(" · ") : "Worth-ranked · family snapshot";
     }
     function filteredDeals() {
       const search = (document.getElementById("storeSearch")?.value || "").trim().toLowerCase();
       const photosOnly = document.getElementById("photosOnlyToggle")?.checked;
       const hideFound = document.getElementById("hideFoundToggle")?.checked;
       return deals.filter(deal => {
-        if (selectedRetailer && deal.retailer !== selectedRetailer) return false;
+        if (!matchesActiveFilters(deal)) return false;
         if (search && !searchText(deal).includes(search)) return false;
         if (photosOnly && !deal.image) return false;
         if (hideFound && isFound(deal)) return false;
         return true;
       }).sort(clientSort);
     }
+    function matchesActiveFilters(deal) {
+      if (selectedRetailer && deal.retailer !== selectedRetailer) return false;
+      if (selectedDealType && dealTypeValue(deal) !== selectedDealType) return false;
+      if (selectedCategory && deal.category !== selectedCategory) return false;
+      return true;
+    }
     function clientSort(a, b) {
-      if (currentSort === "active") return b.velocity - a.velocity || b.comments - a.comments;
-      if (currentSort === "value") return valueScore(b) - valueScore(a) || b.velocity - a.velocity;
+      if (currentSort === "active") return metric(b, "velocity") - metric(a, "velocity") || metric(b, "comments") - metric(a, "comments");
+      if (currentSort === "value") return valueScore(b) - valueScore(a) || metric(b, "velocity") - metric(a, "velocity");
       return deals.indexOf(a) - deals.indexOf(b);
     }
     function renderGridTile(deal) {
@@ -681,7 +797,7 @@
       const imageHtml = deal.image
         ? `<img src="${esc(deal.image)}" alt="${esc(deal.title)}" loading="eager" onerror="this.outerHTML=placeholderHtml()">`
         : placeholderHtml();
-      const imageClick = deal.image ? `onclick="showImage('${escAttr(deal.image)}')"` : "";
+      const imageClick = deal.image ? `onclick="showImage('${escAttr(deal.id)}')"` : "";
       return `<article class="tile-card${foundClass}" ondblclick="toggleFound('${escAttr(deal.id)}')">
         <div class="image-well" ${imageClick}>
           ${imageHtml}
@@ -697,7 +813,7 @@
       const fresh = freshness(deal);
       const foundClass = isFound(deal) ? " found" : "";
       const imageHtml = deal.image
-        ? `<img src="${esc(deal.image)}" alt="${esc(deal.title)}" loading="eager" onclick="showImage('${escAttr(deal.image)}')" onerror="this.outerHTML=placeholderHtml()">`
+        ? `<img src="${esc(deal.image)}" alt="${esc(deal.title)}" loading="eager" onclick="showImage('${escAttr(deal.id)}')" onerror="this.outerHTML=placeholderHtml()">`
         : placeholderHtml();
       return `<article class="list-row${foundClass}" ondblclick="toggleFound('${escAttr(deal.id)}')">
         <div class="list-thumb">${imageHtml}</div>
@@ -729,8 +845,22 @@
     }
     function retailerCounts() {
       const counts = new Map();
-      deals.forEach(deal => counts.set(deal.retailer, (counts.get(deal.retailer) || 0) + 1));
+      retailerCountBase().forEach(deal => counts.set(deal.retailer, (counts.get(deal.retailer) || 0) + 1));
       return Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    }
+    function retailerCountBase() {
+      return deals.filter(deal => (!selectedDealType || dealTypeValue(deal) === selectedDealType) && (!selectedCategory || deal.category === selectedCategory));
+    }
+    function typeCountBase() {
+      return deals.filter(deal => (!selectedRetailer || deal.retailer === selectedRetailer) && (!selectedCategory || deal.category === selectedCategory));
+    }
+    function dealTypeCounts() {
+      const counts = new Map();
+      typeCountBase().forEach(deal => {
+        const type = dealTypeValue(deal);
+        if (type) counts.set(type, (counts.get(type) || 0) + 1);
+      });
+      return Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || dealTypeLabel(a.name).localeCompare(dealTypeLabel(b.name)));
     }
     function retailerMeta(retailer) {
       if (retailer === "Dollar Tree" || retailer === "All Deals") return { mono: retailer === "All Deals" ? "DH" : "DT", className: retailer === "All Deals" ? "" : "dt" };
@@ -744,21 +874,65 @@
       return { label: "old", className: "fresh-chip fresh-red" };
     }
     function valueScore(deal) {
-      return Number(deal.off.replace("%", "")) || 0;
+      return Number(String(deal.off || "").replace("%", "")) || 0;
+    }
+    function metric(deal, key) {
+      return Number(deal[key]) || 0;
     }
     function priceHtml(deal) {
       if (!deal.price) return `<div class="price-block"><span class="sale-price">Check tag</span>${deal.dealType ? `<span class="price-pill">${esc(deal.dealType)}</span>` : ""}</div>`;
       return `<div class="price-block"><span class="sale-price">${esc(deal.price)}</span>${deal.was ? `<span class="was-price">was ${esc(deal.was)}</span>` : ""}${deal.off ? `<span class="price-pill">-${esc(deal.off)}</span>` : ""}</div>`;
     }
+    function dealTypeValue(deal) {
+      if (deal.dealType) return String(deal.dealType).trim().toLowerCase();
+      if (deal.price === "$0.01") return "penny";
+      return "";
+    }
+    function dealTypeLabel(type) {
+      return String(type || "").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    }
     function searchText(deal) {
-      return [deal.title, deal.retailer, deal.sku, deal.note].join(" ").toLowerCase();
+      return [deal.title, deal.retailer, deal.sku, deal.note, dealTypeValue(deal), deal.category].join(" ").toLowerCase();
     }
     function placeholderHtml() {
       return `<div class="placeholder">${BAG_ICON}</div>`;
     }
-    function showImage(src) {
-      document.getElementById("modalImage").src = src;
+    function showImage(idOrSrc) {
+      modalDeals = filteredDeals().filter(deal => deal.image);
+      modalIndex = modalDeals.findIndex(deal => deal.id === idOrSrc);
+      if (modalIndex < 0) modalIndex = modalDeals.findIndex(deal => deal.image === idOrSrc);
+      if (modalIndex < 0) return;
+      updateModalImage();
       document.getElementById("imageModal").classList.add("active");
+    }
+    function updateModalImage() {
+      const deal = modalDeals[modalIndex];
+      if (!deal) return;
+      const image = document.getElementById("modalImage");
+      image.src = deal.image;
+      image.alt = deal.title || "Deal image";
+      document.getElementById("modalTitle").textContent = deal.title || "Deal";
+      document.getElementById("modalPrice").textContent = modalPriceText(deal);
+      const single = modalDeals.length < 2;
+      document.getElementById("modalPrev").hidden = single;
+      document.getElementById("modalNext").hidden = single;
+    }
+    function modalPriceText(deal) {
+      const parts = [deal.price || "Check tag"];
+      if (deal.was) parts.push(`was ${deal.was}`);
+      const type = dealTypeValue(deal);
+      if (type) parts.push(dealTypeLabel(type));
+      return parts.join(" · ");
+    }
+    function moveModalImage(direction, event) {
+      if (event) event.stopPropagation();
+      if (modalDeals.length < 2) return;
+      modalIndex = (modalIndex + direction + modalDeals.length) % modalDeals.length;
+      updateModalImage();
+    }
+    function closeImageModal(event) {
+      if (event && event.target !== document.getElementById("imageModal")) return;
+      document.getElementById("imageModal").classList.remove("active");
     }
     function isFound(deal) {
       const id = typeof deal === "string" ? deal : deal.id;
@@ -792,6 +966,23 @@
     document.getElementById("storeSearch").addEventListener("input", debounce(() => { renderStore(); renderConsole(); }, 120));
     document.getElementById("photosOnlyToggle").addEventListener("change", renderStore);
     document.getElementById("hideFoundToggle").addEventListener("change", renderStore);
+    document.getElementById("imageModal").addEventListener("touchstart", event => {
+      const touch = event.changedTouches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+    document.getElementById("imageModal").addEventListener("touchend", event => {
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) moveModalImage(dx < 0 ? 1 : -1, event);
+    }, { passive: true });
+    document.addEventListener("keydown", event => {
+      if (!document.getElementById("imageModal").classList.contains("active")) return;
+      if (event.key === "ArrowLeft") moveModalImage(-1, event);
+      if (event.key === "ArrowRight") moveModalImage(1, event);
+      if (event.key === "Escape") closeImageModal();
+    });
     initGate();
     renderStore();
     renderConsole();

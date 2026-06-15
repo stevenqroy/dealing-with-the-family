@@ -4,117 +4,327 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Deal Hunter — Plan</title>
+<title>The Plan</title>
 <style>
   :root {
-    --bg:#fffefa; --ink:#23231f; --muted:#77736a; --line:#e7e3d8; --chip:#efede6;
-    --p0:#b42318; --p1:#bb4d00; --p2:#2f6f12; --p3:#5b6470; --p4:#a6a198;
-    --prog:#993556; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --bg: #f9f8f4;
+    --surface: #ffffff;
+    --ink: #1c1c18;
+    --muted: #6b6860;
+    --line: #e4e1d8;
+    --chip-bg: #eeecea;
+    --green: #2d7d46;
+    --green-light: #e8f5ec;
+    --amber: #a05c00;
+    --amber-light: #fef3e2;
+    --blue: #1d5ea8;
+    --blue-light: #e8f0fb;
+    --red: #b42318;
+    --red-light: #fdecea;
+    --pill-active: #1c1c18;
+    --pill-active-fg: #ffffff;
+    --accent: #2d7d46;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); }
-  .wrap { width:100%; max-width:1100px; margin:0 auto; padding:clamp(14px,2.5vw,28px); }
-  header h1 { margin:0 0 4px; font-size:20px; }
-  header .sub { color:var(--muted); font-size:13px; margin-bottom:6px; }
-  .totals { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 18px; }
-  .totals .t { background:var(--chip); border:1px solid var(--line); border-radius:999px;
-    padding:5px 11px; font-size:12px; font-weight:700; }
-  .lane { margin:0 0 22px; }
-  .lane h2 { font-size:15px; margin:0 0 10px; display:flex; align-items:center; gap:8px; }
-  .lane h2 .count { background:var(--ink); color:var(--bg); border-radius:999px;
-    font-size:11px; padding:2px 8px; font-weight:800; }
-  .lane-note { color:var(--muted); font-size:12px; margin:-4px 0 10px; }
-  .grid { }
-  .cards, .lane { }
-  .card { border:1px solid var(--line); border-left:4px solid var(--p3);
-    border-radius:12px; padding:11px 13px; margin:0 0 9px; background:#fff; }
-  .card.p0 { border-left-color:var(--p0); }
-  .card.p1 { border-left-color:var(--p1); }
-  .card.p2 { border-left-color:var(--p2); }
-  .card.p3 { border-left-color:var(--p3); }
-  .card.p4 { border-left-color:var(--p4); }
-  .card .row { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
-  .pri { font-size:11px; font-weight:800; border-radius:6px; padding:1px 7px; color:#fff; }
-  .pri0 { background:var(--p0); } .pri1 { background:var(--p1); }
-  .pri2 { background:var(--p2); } .pri3 { background:var(--p3); } .pri4 { background:var(--p4); }
-  .status { font-size:11px; font-weight:700; color:var(--muted); text-transform:capitalize; }
-  .st-in-progress { color:var(--prog); font-weight:800; }
-  .id { font-size:11px; color:var(--p4); margin-left:auto; font-variant:tabular-nums; }
-  .title { font-size:14px; font-weight:650; line-height:1.3; }
-  .snip { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.35; }
-  .parked .card { background:#faf9f5; opacity:.92; }
-  .done .donelist { list-style:none; padding:0; margin:0; columns:2; column-gap:18px; }
-  .done .donelist li { font-size:12px; color:var(--muted); margin:0 0 5px;
-    break-inside:avoid; line-height:1.3; }
-  .done .more { font-weight:700; color:var(--ink); }
-  @media (max-width:560px) { .done .donelist { columns:1; } }
-  footer { color:var(--p4); font-size:11px; margin-top:8px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); min-height: 100vh; }
+  .wrap { width: 100%; max-width: 1000px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* Header */
+  .page-header { margin-bottom: 24px; }
+  .page-header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .page-header .intro { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 14px; }
+  .summary-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .summary-chip { background: var(--chip-bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: var(--ink); }
+  .summary-chip.sc-active { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .summary-chip.sc-done { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
+  /* Filter bar */
+  .filter-bar { position: sticky; top: 0; z-index: 100;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: 10px 0 8px; margin: 0 -16px 20px; padding-left: 16px; padding-right: 16px; }
+  .filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; flex-shrink: 0; line-height: 30px; margin-right: 2px; }
+  .pill { flex-shrink: 0; border: 1.5px solid var(--line); border-radius: 999px;
+    padding: 5px 13px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    background: var(--surface); color: var(--ink); transition: all 0.12s ease;
+    white-space: nowrap; }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+  .pill.active { background: var(--pill-active); color: var(--pill-active-fg);
+    border-color: var(--pill-active); }
+  .filter-divider { width: 1px; background: var(--line); flex-shrink: 0; margin: 4px 4px; }
+
+  /* Lanes */
+  .lane { margin-bottom: 32px; }
+  .lane.hidden { display: none; }
+  .lane h2 { margin-bottom: 12px; }
+  .heading-btn { background: none; border: none; padding: 0; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800;
+    color: var(--ink); text-align: left; width: 100%; line-height: 1.25; }
+  .heading-btn:hover { color: var(--accent); }
+  .heading-btn:hover .horizon-hint { opacity: 1; }
+  .count { background: var(--ink); color: var(--bg); border-radius: 999px;
+    font-size: 11px; padding: 2px 8px; font-weight: 800; flex-shrink: 0; }
+  .horizon-hint { font-size: 11px; font-weight: 600; color: var(--accent);
+    opacity: 0; transition: opacity 0.15s; margin-left: auto; flex-shrink: 0; }
+  .lane-note { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.4; }
+
+  /* Cards */
+  .cards { display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+  .card { background: var(--surface); border: 1.5px solid var(--line);
+    border-radius: 14px; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s;
+    min-height: 60px; }
+  .card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(45,125,70,0.08); }
+  .card:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .card.hidden { display: none; }
+  .card-title { font-size: 14px; font-weight: 650; line-height: 1.35; flex: 1; }
+
+  /* Status chips */
+  .chip { flex-shrink: 0; border-radius: 999px; font-size: 11px; font-weight: 700;
+    padding: 3px 9px; white-space: nowrap; margin-top: 1px; }
+  .chip-active { background: var(--green-light); color: var(--green); }
+  .chip-open { background: var(--blue-light); color: var(--blue); }
+  .chip-blocked { background: var(--red-light); color: var(--red); }
+  .chip-parked { background: var(--chip-bg); color: var(--muted); }
+  .chip-done { background: var(--green-light); color: var(--green); }
+
+  /* Done list */
+  .done-list { list-style: none; columns: 2; column-gap: 20px; }
+  .done-list li { font-size: 13px; color: var(--muted); margin-bottom: 6px;
+    break-inside: avoid; line-height: 1.35; padding-left: 12px; position: relative; }
+  .done-list li::before { content: "✓"; position: absolute; left: 0; color: var(--green);
+    font-size: 11px; top: 1px; }
+  .more-done { font-weight: 700; color: var(--ink); }
+  @media (max-width: 560px) {
+    .done-list { columns: 1; }
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  /* ---- Modals ---- */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+    padding: 20px; animation: fadeIn 0.15s ease; }
+  .modal-backdrop.hidden { display: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal { background: var(--surface); border-radius: 20px; width: 100%;
+    max-width: 480px; padding: 28px 26px 24px; position: relative;
+    animation: slideUp 0.18s ease; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
+  @keyframes slideUp { from { transform: translateY(16px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; } }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: var(--chip-bg);
+    border: none; border-radius: 999px; width: 30px; height: 30px; font-size: 16px;
+    cursor: pointer; color: var(--muted); display: flex; align-items: center;
+    justify-content: center; line-height: 1; }
+  .modal-close:hover { background: var(--line); color: var(--ink); }
+  .modal h3 { font-size: 18px; font-weight: 800; line-height: 1.3; margin-bottom: 16px;
+    padding-right: 28px; }
+  .modal-section { margin-bottom: 16px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--muted); margin-bottom: 5px; }
+  .modal-text { font-size: 15px; line-height: 1.55; color: var(--ink); }
+  .modal-why { font-size: 15px; line-height: 1.55; font-weight: 650; color: var(--ink); }
+  .horizon-text { font-size: 15px; line-height: 1.6; color: var(--ink); }
+
+  /* Footer */
+  footer { color: var(--muted); font-size: 11px; text-align: center; margin-top: 20px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Deal Hunter — Plan</h1>
-    <div class="sub">Live from the issue tracker · grouped by theme</div>
-    <div class="totals">
-      <span class="t">26 active</span>
-      <span class="t">2 in progress</span>
-      <span class="t">10 parked</span>
-      <span class="t">29 done</span>
+  <header class="page-header">
+    <h1>The Plan</h1>
+    <p class="intro">Everything we're working on, in plain English. Tap any card to see why it matters. Tap a section heading to see the big picture for that area.</p>
+    <div class="summary-chips">
+      <span class="summary-chip sc-active">2 active right now</span>
+      <span class="summary-chip">27 items in progress or planned</span>
+      <span class="summary-chip">10 on hold</span>
+      <span class="summary-chip sc-done">29 completed</span>
     </div>
   </header>
-  <section class="lane"><h2>📡 Keep deals flowing (capture) <span class="count">4</span></h2><div class="card p0"><div class="row"><span class="pri pri0">P0</span><span class="status st-in-progress">in progress</span><span class="id">dealhunter-905</span></div><div class="title">Extension: unparseable timestamps must not defeat the age cap (FB-safety)</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 2</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-l6t</span></div><div class="title">Add runtime heartbeat for capture loop</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-o31</span></div><div class="title">Pause-aware capture staleness alarm</div><div class="snip">Scheduled check that alerts when capture goes stale UNEXPECTEDLY</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-phf</span></div><div class="title">Deal watch + alert/notification system</div><div class="snip">Saved-search watches: user enters a term (e.g</div></div></section>
-<section class="lane"><h2>💎 Make the deals good (core mission) <span class="count">5</span></h2><div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-3t4</span></div><div class="title">Track deal quality as a metric over time</div><div class="snip">Log photo-coverage % and match-rate % (and extraction-confidence trend) so we can SEE if deals improve</div></div>
-<div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-7f4</span></div><div class="title">Grow catalog matching so deals get photos</div><div class="snip">97% of captured deals (528/541 mentions) never resolve to a catalog product, so most cards are blank</div></div>
-<div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-rs3</span></div><div class="title">Image finder: value-based privacy validation (close field-name bypass)</div><div class="snip">Codex review of the dealhunter-7f4 first slice found a CRITICAL privacy bypass: scripts/image_candidate_finder.py rejects forbidden KWARGS (field-name based)…</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-87e</span></div><div class="title">Reprocess extraction when late comments arrive</div><div class="snip">/api/posts/comments only updates comments_text; never re-scores or re-extracts, dropping comment signal</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-vnl</span></div><div class="title">One ranking score (fix/kill dead worth_score)</div><div class="snip">score_post (engagement, 0-400+) vs worth_score (taxonomy, maxes 3.43/100 = dead) conflict; &#x27;sort by value&#x27; is near-random</div></div></section>
-<section class="lane"><h2>🛠️ Tooling &amp; visibility <span class="count">1</span></h2><div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-u9x</span></div><div class="title">build_staging_snapshot.py emits non-deterministic order</div><div class="snip">The imageless-live-deal tail and tie groups sort with no stable tiebreak, so re-running the builder on an unchanged DB produces a reshuffled data.js (224/224…</div></div></section>
-<section class="lane"><h2>🛒 Family app (your phone) <span class="count">7</span></h2><div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-82f</span></div><div class="title">Store-focused view: hide other store names when inside one store</div><div class="snip">Selecting a store (e.g</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-m21</span></div><div class="title">High-end redesign of the top filter/nav UI</div><div class="snip">Current top filter buttons feel a little ugly / not high-end</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-nun</span></div><div class="title">Aisle-aligned product categories (map categories to store aisles)</div><div class="snip">Categories should match the aisles a shopper is standing in, so they can find products in-store</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-2qv</span></div><div class="title">Family app: surface in-store where-to-look / run-the-play notes per deal</div><div class="snip">Original Store-Mode direction + deal taxonomy (actionPlan/inStoreSigns) carry where-to-look guidance, but nothing surfaces it in the family app detail view</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-6ge</span></div><div class="title">Family app: remove &#x27;Staging snapshot for family review&#x27; banner</div><div class="snip">Operator says the green &#x27;Staging snapshot for family review</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-70o</span></div><div class="title">Accounts page</div><div class="snip">User accounts page</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-fwz</span></div><div class="title">Family app: photo-swipe as a first-class view mode (grid/list/photo-swipe)</div><div class="snip">Design proposal wanted grid / list / photo-swipe as three coequal views; today photo-swipe is only a modal triggered from a tile</div></div></section>
-<section class="lane"><h2>🔒 Security &amp; data <span class="count">7</span></h2><div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-1k0</span></div><div class="title">Authenticate the /api/intake endpoint</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 3</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-7a1</span></div><div class="title">Modern protection: rulesets + CODEOWNERS (+ merge queue)</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 10</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-in-progress">in progress</span><span class="id">dealhunter-8zn</span></div><div class="title">Branch-protection drift check + fix stale enforce_admins doc</div><div class="snip">Codex&#x27;s neutral review (2026-06-15) of the deterministic-gate proposal caught a real drift: docs/golden-migration/CI_GATE_AND_BRANCH_PROTECTION.md:47 says en…</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-hgf</span></div><div class="title">Automated DB backup</div><div class="snip">deals.db (725 irreplaceable posts) last backed up manually 6 days ago</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-pd7</span></div><div class="title">Reaper for stale &#x27;claimed&#x27; envelopes in extract_worker</div><div class="snip">Follow-up to dealhunter-2ba: if a worker crashes after claim_batch but before process_batch, rows stay status=&#x27;claimed&#x27; forever</div></div>
-<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-yaf</span></div><div class="title">Durable private mobile access via Tailscale Serve</div><div class="snip">Recurring need: reach the operator dashboard (FastAPI 127.0.0.1:8099, FB-private data) from the phone while away</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-oxv</span></div><div class="title">bd doctor --deep + gitleaks in CI</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 9</div></div></section>
-<section class="lane"><h2>🧹 Cleanup <span class="count">2</span></h2><div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-11y</span></div><div class="title">Delete inherited Telegram code from the extension</div><div class="snip">Dormant Telegram alert path (popup/background sendTelegram) inherited from OpenClaw; defaults off but a latent FB-data exfil path + stored-credential surface…</div></div>
-<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-edi</span></div><div class="title">Remove vestigial --changed path from verify_packets.py</div><div class="snip">CI uses default (content-addressed baseline) mode now; the --changed/changed_result_files git-diff path in scripts/verify_packets.py is unused</div></div></section>
-<section class="lane parked"><h2>🅿️ Parked · decided against <span class="count">10</span></h2><p class="lane-note">Deliberately not doing these now — kept so the decision is visible and we can change our mind.</p><div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-6nq</span></div><div class="title">Extract reusable multi-project Golden Workflow core after pilot evidence</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-082</span></div><div class="title">[PARKED] GitHub Issues instead of Beads for task tracking</div><div class="snip">REJECTED after Codex analysis: GitHub Issues would throttle agents (~80 mutations/min secondary limits) and lose local-DB speed + agent-native workflow</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-1d7</span></div><div class="title">[PARKED] Display FB post photos (even scrubbed/cropped) in any client app</div><div class="snip">REJECTED on privacy + provenance: FB post photos are PRIVATE VALIDATORS ONLY, never displayed to family even scrubbed/cropped</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-open">open</span><span class="id">dealhunter-1kz</span></div><div class="title">[PARKED] Family feedback as the PRIMARY improvement engine</div><div class="snip">DECIDED AGAINST 2026-06-15: demoted from primary improvement engine to a SECONDARY signal after a blind adversarial Codex review reversed the convenient yes</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-2yk</span></div><div class="title">[PARKED] Google Shopping API for product image search</div><div class="snip">REJECTED: Google Custom Search needs a paid API key and is closed to new customers; Content API sunset -&gt; Merchant API (also keyed)</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-8ej</span></div><div class="title">[PARKED] Family feedback as the PRIMARY improvement engine</div><div class="snip">DECIDED AGAINST 2026-06-15: demoted from primary improvement engine to a SECONDARY signal after a blind adversarial Codex review reversed the convenient yes</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-d4e</span></div><div class="title">[PARKED] Monetization / paid proof-photos / referral revenue</div><div class="snip">FROZEN until deals are genuinely good (fresh + matched + photos)</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-dmr</span></div><div class="title">[PARKED] Homemade claim-ledger orchestrator (claim.py / claims.jsonl)</div><div class="snip">RETIRED 2026-06-12 (PR #3), archived under archive/orchestration-legacy-*</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-hw0</span></div><div class="title">[PARKED] Public tunnels (cloudflared/ngrok) as DURABLE mobile access</div><div class="snip">REJECTED as a standing setup: independent Codex review judged public tunnels below the bar for FB-private data</div></div>
-<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-open">open</span><span class="id">dealhunter-n2o</span></div><div class="title">[PARKED] Monetization / paid proof-photos / referral revenue</div><div class="snip">FROZEN until deals are genuinely good (fresh + matched + photos)</div></div></section>
-<section class="lane done"><h2>✅ Recently done <span class="count">29</span></h2><ul class="donelist"><li><span class="id">dealhunter-0l3</span> Family app: kill wasted whitespace frame, fill the screen at all widths</li>
-<li><span class="id">dealhunter-1ol</span> Document eval harness recommendation</li>
-<li><span class="id">dealhunter-2ba</span> Atomic envelope claiming in extract_worker</li>
-<li><span class="id">dealhunter-4lw</span> UI: rename the &#x27;Console&#x27; tab to a plain label</li>
-<li><span class="id">dealhunter-5rj</span> Restore product grid view + keep all view options</li>
-<li><span class="id">dealhunter-6g1</span> LLM extraction eval harness (pytest golden, opt-in, no API keys)</li>
-<li><span class="id">dealhunter-6n5</span> Publish family-facing Deal Hunter staging app</li>
-<li><span class="id">dealhunter-6px</span> Build read-only kanban board generated from Beads (category swimlanes)</li>
-<li><span class="id">dealhunter-86r</span> Improve deal-type classification in extraction (eval 0.90)</li>
-<li><span class="id">dealhunter-9oy</span> UI: make the app fully responsive</li>
-<li><span class="id">dealhunter-9rv</span> UI: hide internal &#x27;N staged&#x27; counter from users</li>
-<li><span class="id">dealhunter-avo</span> UI: brand/category filter pills</li>
-<li><span class="id">dealhunter-c57</span> Add upstream sanity and mechanical context breaker</li>
-<li><span class="id">dealhunter-gb6</span> PR tonight&#x27;s security fixes (SSRF + auth host-allowlist)</li>
-<li><span class="id">dealhunter-h93</span> Add CI check gate and branch-protection documentation</li><li class="more">+14 more done</li></ul></section>
-  <footer>Read-only snapshot. Regenerate with scripts/build_plan_board.py.</footer>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-row" id="themeRow">
+      <span class="filter-label">Area</span>
+      <button class="pill pill-theme active" data-theme="all" onclick="filterTheme(this,'all')">All</button>
+      <button class="pill pill-theme" data-theme="capture" onclick="filterTheme(this,'capture')">📡 Keeping deals coming in</button>
+<button class="pill pill-theme" data-theme="deals" onclick="filterTheme(this,'deals')">💎 Making the deals good</button>
+<button class="pill pill-theme" data-theme="tooling" onclick="filterTheme(this,'tooling')">🛠️ Tools and visibility</button>
+<button class="pill pill-theme" data-theme="app" onclick="filterTheme(this,'app')">🛒 The phone app</button>
+<button class="pill pill-theme" data-theme="security" onclick="filterTheme(this,'security')">🔒 Safety and your data</button>
+<button class="pill pill-theme" data-theme="cleanup" onclick="filterTheme(this,'cleanup')">🧹 Tidying up</button>
+<button class="pill pill-theme" data-theme="parked" onclick="filterTheme(this,'parked')">🅿️ On hold</button>
+<button class="pill pill-theme" data-theme="done" onclick="filterTheme(this,'done')">✅ Completed</button>
+    </div>
+    <div class="filter-row" id="statusRow" style="margin-top:6px;">
+      <span class="filter-label">Status</span>
+      <button class="pill pill-status active" data-status="all" onclick="filterStatus(this,'all')">All</button>
+      <button class="pill pill-status" data-status="active" onclick="filterStatus(this,'active')">Active</button>
+      <button class="pill pill-status" data-status="open" onclick="filterStatus(this,'open')">Planned</button>
+      <button class="pill pill-status" data-status="parked" onclick="filterStatus(this,'parked')">On hold</button>
+      <button class="pill pill-status" data-status="done" onclick="filterStatus(this,'done')">Done</button>
+    </div>
+  </div>
+
+  <!-- Lanes -->
+  <section class="lane" data-theme="capture"><h2><button class="heading-btn" onclick="openHorizon('capture','📡 Keeping deals coming in',this)" data-horizon="The deal capture pipeline is the foundation of everything — if deals stop coming in, the whole app goes dark. Right now we&#x27;re working on making capture smarter about when it pauses (intentional vs broken), adding a heartbeat so we always know if it&#x27;s running, and making sure it never runs too long in ways that look suspicious. The goal is a capture system that runs reliably in the background, alerts only when something is actually wrong, and protects the Facebook account it depends on." aria-label="See the big picture for Keeping deals coming in">📡 Keeping deals coming in<span class="count">4</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="capture" data-status="active" data-what="The browser plugin sometimes misreads how old a Facebook post is and keeps scrolling forever instead of stopping — this fixes that." data-why="Without a fix, the plugin behaves like a bot and could put your Facebook account at risk." data-title="Fix the scroll-forever time bug" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Fix the scroll-forever time bug</span><span class="chip chip-active">Active</span></div>
+<div class="card" data-theme="capture" data-status="open" data-what="Make the deal-capture plugin send a regular &#x27;I&#x27;m alive&#x27; signal so we always know whether it&#x27;s actually running." data-why="Without a heartbeat, capture can silently stop and we won&#x27;t notice until we check manually." data-title="Add a heartbeat to deal capture" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Add a heartbeat to deal capture</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="capture" data-status="open" data-what="A scheduled check that only sends an alert if deals stop coming in unexpectedly, and stays silent when capture is intentionally paused." data-why="A noisy false-alarm alert is worse than no alert; this one knows the difference between &#x27;paused on purpose&#x27; and &#x27;something broke&#x27;." data-title="Smart alert when deal capture actually stops" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Smart alert when deal capture actually stops</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="capture" data-status="open" data-what="Save a product you&#x27;re watching (like &#x27;laundry detergent&#x27;) and get a notification the next time a great deal on it shows up." data-why="Without alerts, you have to manually check the app constantly — this lets the app do the watching for you." data-title="Get notified when a deal you care about appears" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Get notified when a deal you care about appears</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane" data-theme="deals"><h2><button class="heading-btn" onclick="openHorizon('deals','💎 Making the deals good',this)" data-horizon="The core mission is making each deal actually useful — right now most deals show up with no photo, the ranking is broken, and comments that arrive late get ignored. The plan is to automatically find product photos from public sources (eBay, Amazon, manufacturer sites), fix the deal ranking so &#x27;best deals first&#x27; actually means something, re-run scoring when new comments come in, and track quality over time so we can see improvement. This is the highest-leverage area: better deals mean the family app is genuinely worth opening." aria-label="See the big picture for Making the deals good">💎 Making the deals good<span class="count">5</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="deals" data-status="open" data-what="Log a score each day showing what percentage of deals have photos and how often products are correctly matched, so we can see if things are improving." data-why="Without a measure, we can&#x27;t tell if the app is getting better or worse." data-title="Track deal quality over time" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Track deal quality over time</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="deals" data-status="open" data-what="Right now most deals show up with no picture; this builds a pipeline to automatically find clean product photos from public sources like eBay and Amazon." data-why="Deals with photos are far easier to spot on the shelf — this is the single biggest quality improvement we can make." data-title="Add photos to almost every deal" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Add photos to almost every deal</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="deals" data-status="open" data-what="Closes a gap where private Facebook data could accidentally sneak into an outside product-image search." data-why="Protecting your private deal data is non-negotiable — this seals the last known gap." data-title="Tighten up image-search privacy rules" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Tighten up image-search privacy rules</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="deals" data-status="open" data-what="When a comment arrives after a deal was already processed, re-run the analysis so the comment&#x27;s extra information improves the deal card." data-why="Comments often contain price details, store locations, and shopper tips that the initial scan missed." data-title="Re-score deals when new comments come in" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Re-score deals when new comments come in</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="deals" data-status="open" data-what="Two different scoring systems are fighting each other, making &#x27;sort by value&#x27; nearly random — replace them with one clear, explainable ranking." data-why="If &#x27;best deals first&#x27; doesn&#x27;t actually work, the whole app becomes unreliable for shopping decisions." data-title="Fix the broken deal ranking" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Fix the broken deal ranking</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane" data-theme="tooling"><h2><button class="heading-btn" onclick="openHorizon('tooling','🛠️ Tools and visibility',this)" data-horizon="This covers the behind-the-scenes tools that keep everything running smoothly — the plan board you&#x27;re reading now, the automated build that publishes the family app, and the checks that catch mistakes before they go live. The near-term focus is making the plan board readable and filterable for non-technical use, and fixing a build inconsistency that creates noisy false diffs. These are infrastructure improvements that make every other area easier to work on." aria-label="See the big picture for Tools and visibility">🛠️ Tools and visibility<span class="count">2</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="tooling" data-status="open" data-what="Rewrite the plan board so it uses plain language, lets you filter by topic or status, and shows a simple explanation when you tap any item." data-why="The old board was full of code jargon — this one is easy for anyone to read on their phone." data-title="Rebuild the plan board for non-technical readers" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Rebuild the plan board for non-technical readers</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="tooling" data-status="open" data-what="Fix a bug where rebuilding the family app from the same data produces a different file each time, causing confusing unnecessary updates." data-why="Inconsistent builds make it hard to tell whether a real change was published or just noise." data-title="Make the app build consistent every time" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Make the app build consistent every time</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane" data-theme="app"><h2><button class="heading-btn" onclick="openHorizon('app','🛒 The phone app',this)" data-horizon="The family app is the thing people actually use in the store. A lot has already shipped — grid view, filters, swipe-through-photos, responsive layout. What&#x27;s left is more refinement: categories that match real store aisles, a focused single-store view, photo-swipe as a first-class mode, where-to-look hints per deal, and a cleaner filter bar. The direction is toward an app that&#x27;s fast, focused, and feels polished enough that family members reach for it automatically when they&#x27;re out shopping." aria-label="See the big picture for The phone app">🛒 The phone app<span class="count">7</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="app" data-status="open" data-what="When you pick a store (like Target), only that store&#x27;s deals show — other store names are hidden so you&#x27;re not distracted." data-why="Showing all stores at once is confusing; a focused single-store view makes it easy to shop efficiently." data-title="Focus the app on one store at a time" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Focus the app on one store at a time</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="Redesign the store and category buttons at the top of the app to look and feel cleaner and more polished." data-why="First impressions matter — the current buttons look rough and don&#x27;t match the quality of the rest of the app." data-title="Premium redesign of the top filters" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Premium redesign of the top filters</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="Change the product categories to match the actual aisles you walk through in a store (like &#x27;Laundry&#x27;, &#x27;Snacks&#x27;, &#x27;Health&#x27;) instead of internal labels." data-why="When you&#x27;re standing in a store aisle, you need to find deals in that aisle — not guess which category they&#x27;re filed under." data-title="Categories that match real store aisles" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Categories that match real store aisles</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="When a deal has a note about where in the store to find it (clearance end-cap, seasonal aisle, etc.), show that hint in the deal&#x27;s detail view." data-why="Knowing exactly where to look in a store saves time and means you don&#x27;t miss a deal because you couldn&#x27;t find it." data-title="Show where-to-look hints in deal details" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Show where-to-look hints in deal details</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="Remove the green informational banner at the top of the family app that says &#x27;Staging snapshot for family review.&#x27;" data-why="The banner is clutter that family users don&#x27;t need to see — it belongs in the background, not on screen." data-title="Remove the &#x27;staging&#x27; notice banner" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Remove the &#x27;staging&#x27; notice banner</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="Build a dedicated accounts page for managing who has access to the family app." data-why="As more family members use the app, a proper accounts page makes it easier to manage access and preferences." data-title="User accounts page" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">User accounts page</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="app" data-status="open" data-what="Add a dedicated &#x27;swipe through photos&#x27; view alongside grid and list, so you can quickly flip through deal images like a photo album." data-why="Swiping through photos is the fastest way to check whether a shelf item matches a deal — especially when you&#x27;re standing in the aisle." data-title="Photo-swipe as its own view mode" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Photo-swipe as its own view mode</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane" data-theme="security"><h2><button class="heading-btn" onclick="openHorizon('security','🔒 Safety and your data',this)" data-horizon="Security here means protecting your private Facebook data and making sure only the right things can talk to the app. Recent work closed the two biggest gaps (blocked outside-link fetching, locked the deal-intake door). What&#x27;s left is finishing off the intake authentication, cleaning up leftover code that could theoretically leak data, adding a secret scanner to tests, modernizing the repository safety rules, and setting up private phone access via a secure network tunnel instead of a public one. The goal is a system where no private data can leave through an unintended path." aria-label="See the big picture for Safety and your data">🔒 Safety and your data<span class="count">7</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="security" data-status="open" data-what="Add a password check to the internal endpoint that receives new deals, so only the plugin can submit them." data-why="Right now anyone who knows the address could submit fake deals — this closes that opening." data-title="Lock the deal-intake door" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Lock the deal-intake door</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="security" data-status="open" data-what="Move the code repository&#x27;s safety rules to a newer, more precise system that defines exactly who can approve and merge changes." data-why="Tighter rules mean accidental or unauthorized code changes can&#x27;t slip through, keeping the system reliable." data-title="Modernize repo safety rules" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Modernize repo safety rules</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="security" data-status="active" data-what="A daily check that compares our current safety settings to what they should be, and raises an alert if anything was changed." data-why="It&#x27;s easy for a safety setting to drift without anyone noticing — this makes sure we catch that instantly." data-title="Watchdog that flags changed safety settings" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Watchdog that flags changed safety settings</span><span class="chip chip-active">Active</span></div>
+<div class="card" data-theme="security" data-status="open" data-what="Schedule the database to back itself up automatically every day so we never lose deal history." data-why="The deal database has hundreds of posts that can&#x27;t be recaptured — a manual backup is too easy to forget." data-title="Automatic daily database backup" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Automatic daily database backup</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="security" data-status="open" data-what="If the deal processor crashes mid-job, those deals get stuck and never finish — this adds a cleanup that unsticks them after a few minutes." data-why="Stuck deals are silently lost; this ensures every deal that started processing eventually completes." data-title="Rescue deals stuck in processing limbo" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Rescue deals stuck in processing limbo</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="security" data-status="open" data-what="Set up a private network tunnel so the operator dashboard is reachable on the phone without exposing it publicly on the internet." data-why="The temporary workaround put private deal data on a public URL — this keeps it safely private." data-title="Secure private phone access at home and away" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Secure private phone access at home and away</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="security" data-status="open" data-what="Add a more thorough system health check to the test suite and include a scan that makes sure no secrets (passwords, tokens) were accidentally committed to the code." data-why="Catching a leaked secret early is far cheaper than discovering it after it&#x27;s been misused." data-title="Deeper health check + secret scanner in tests" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Deeper health check + secret scanner in tests</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane" data-theme="cleanup"><h2><button class="heading-btn" onclick="openHorizon('cleanup','🧹 Tidying up',this)" data-horizon="Cleanup is about removing things that don&#x27;t belong anymore — leftover Telegram code from an old version, unused code paths in the checker, and retired systems that are now archived. None of these are urgent, but each one removes a small source of future confusion or risk. The general principle: keep the codebase as simple as possible so the parts that matter are easy to understand and change." aria-label="See the big picture for Tidying up">🧹 Tidying up<span class="count">2</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><div class="cards"><div class="card" data-theme="cleanup" data-status="open" data-what="Delete leftover code from an old version that could theoretically send deal data to Telegram — it&#x27;s never used but shouldn&#x27;t be there." data-why="Dead code that touches private data is a liability; removing it keeps the app cleaner and safer." data-title="Remove unused Telegram code" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Remove unused Telegram code</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="cleanup" data-status="open" data-what="Remove or clearly mark a section of the automated checker that&#x27;s no longer used by anything." data-why="Unused code confuses future maintenance and can hide bugs — removing it keeps things clear." data-title="Clean up an unused code path in the checker" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Clean up an unused code path in the checker</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane lane-parked" data-theme="parked"><h2><button class="heading-btn" onclick="openHorizon('parked','🅿️ On hold or decided against',this)" data-horizon="These are ideas or approaches we looked at carefully and decided not to pursue right now — or things that are on hold until the core app is solid. We keep them here so the reasoning is visible and we can revisit them later if anything changes." aria-label="See context for parked items">🅿️ On hold or decided against<span class="count">10</span><span class="horizon-hint" aria-hidden="true">▸ big picture</span></button></h2><p class="lane-note">Deliberately not doing these now — kept so the reasoning stays visible.</p><div class="cards"><div class="card" data-theme="parked" data-status="parked" data-what="Once this project proves the PR-based agent review process works well, package it so other projects can adopt the same pattern." data-why="Spreading a proven safe workflow saves time and reduces risk across other work." data-title="Package the workflow for other projects" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Package the workflow for other projects</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="A proposed switch from Beads to GitHub for tracking tasks — reviewed and declined because GitHub&#x27;s limits would slow down automated work." data-why="Keeping the right tool for the job means agents stay fast and reliable." data-title="Switch task tracking to GitHub (decided against)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Switch task tracking to GitHub (decided against)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="A proposal to display cropped Facebook post photos as product images — rejected because those photos are private and should never appear in the app." data-why="Showing private Facebook photos, even cropped, would be a privacy breach — clean public product photos are the only right source." data-title="Show Facebook photos in the family app (rejected)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Show Facebook photos in the family app (rejected)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="open" data-what="An earlier plan to use family reactions as the primary signal for improving deals — set aside after a second opinion showed it&#x27;s better as a secondary input." data-why="Family taste and deal freshness/quality are different things; relying only on family reactions could mislead the ranking." data-title="Family feedback as main driver (reconsidered)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Family feedback as main driver (reconsidered)</span><span class="chip chip-open">Planned</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="Looked into using Google&#x27;s product image service — found it requires a paid key we can&#x27;t use, so it&#x27;s off the table." data-why="Knowing this early saves us from building toward a dead end." data-title="Google image search for products (can&#x27;t use)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Google image search for products (can&#x27;t use)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="Same as above — the plan to use family reactions as the top improvement signal was set aside after independent review." data-why="A second opinion revealed it would optimize for popularity rather than actual deal quality." data-title="Family feedback as main driver (set aside)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Family feedback as main driver (set aside)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="Revenue-generating feature ideas are frozen until the app&#x27;s core quality is proven." data-why="Charging for a product that isn&#x27;t reliable yet would damage trust." data-title="Revenue features (frozen)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Revenue features (frozen)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="The homemade system we used to coordinate multiple AI agents was retired and replaced by a better one." data-why="Keeping a retired system around would cause confusion — it&#x27;s archived so we remember the decision." data-title="Old task-coordination system (retired)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Old task-coordination system (retired)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="parked" data-what="A proposal to use a public internet tunnel for phone access — rejected because it would put private deal data on a public URL." data-why="Private deal data should never be publicly accessible; a private network tunnel is the right answer instead." data-title="Public internet tunnel for phone access (rejected)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Public internet tunnel for phone access (rejected)</span><span class="chip chip-parked">Parked</span></div>
+<div class="card" data-theme="parked" data-status="open" data-what="Plans to add paid features or referral revenue — deliberately frozen until the core deal quality is solid." data-why="Building revenue features before the deals are actually good would be putting the cart before the horse." data-title="Monetization ideas (on hold)" role="button" tabindex="0" onclick="openCard(this)" onkeydown="keyCard(event,this)"><span class="card-title">Monetization ideas (on hold)</span><span class="chip chip-open">Planned</span></div></div></section>
+<section class="lane lane-done" data-theme="done"><h2>✅ Completed <span class="count">29</span></h2><ul class="done-list"><li>Fixed a bug that made the score go haywire</li><li>Moved to a better agent workflow</li><li>Fixed the broken back arrow</li><li>Unified deal quality checker</li><li>Automated honesty check on agent work</li><li>Researched best practices for AI agent review</li><li>Operator inspection view per deal</li><li>Standardized task handoff between agents</li><li>Hardened quality-check test cases</li><li>Stop storing expiring Facebook image links</li><li>Verified and fixed navigation arrows</li><li>Researched how other solo operators work</li><li>Swipe to next product in photo view</li><li>Retired the old task-coordination system</li><li>Set up automated code testing and safety gates</li><li>Locked down two security fixes</li><li>Added automatic safety checks before publishing</li><li>Added store and category filter pills</li><li>Removed the internal counter from the family view</li><li>Made the app fully responsive</li><li class="more-done">…and 9 more completed items</li></ul></section>
+
+  <footer>Updated every time the plan is regenerated · read-only view</footer>
 </div>
+
+<!-- Card detail modal -->
+<div class="modal-backdrop hidden" id="cardModal" onclick="closeModal(event,'cardModal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cardModalTitle">
+    <button class="modal-close" onclick="closeModalDirect('cardModal')" aria-label="Close">✕</button>
+    <h3 id="cardModalTitle"></h3>
+    <div class="modal-section">
+      <div class="modal-label">What this is</div>
+      <p class="modal-text" id="cardModalWhat"></p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Why it matters</div>
+      <p class="modal-why" id="cardModalWhy"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Horizon modal -->
+<div class="modal-backdrop hidden" id="horizonModal" onclick="closeModal(event,'horizonModal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
+    <button class="modal-close" onclick="closeModalDirect('horizonModal')" aria-label="Close">✕</button>
+    <h3 id="horizonModalTitle"></h3>
+    <div class="modal-section">
+      <div class="modal-label">Where this area is heading</div>
+      <p class="horizon-text" id="horizonModalText"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var activeTheme = 'all';
+  var activeStatus = 'all';
+
+  function applyFilters() {
+    var lanes = document.querySelectorAll('.lane');
+    lanes.forEach(function(lane) {
+      var lt = lane.dataset.theme;
+      var themeMatch = (activeTheme === 'all') || (lt === activeTheme);
+      if (!themeMatch) { lane.classList.add('hidden'); return; }
+      // Within matching lane, filter cards by status
+      var cards = lane.querySelectorAll('.card');
+      var anyVisible = false;
+      cards.forEach(function(c) {
+        var cs = c.dataset.status;
+        var statusMatch = (activeStatus === 'all') || (cs === activeStatus);
+        if (statusMatch) { c.classList.remove('hidden'); anyVisible = true; }
+        else { c.classList.add('hidden'); }
+      });
+      // Hide done/parked sections if filtering by a status they don't hold
+      if (!anyVisible && activeStatus !== 'all') {
+        lane.classList.add('hidden');
+      } else {
+        lane.classList.remove('hidden');
+      }
+    });
+  }
+
+  window.filterTheme = function(btn, key) {
+    activeTheme = key;
+    document.querySelectorAll('.pill-theme').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    applyFilters();
+  };
+
+  window.filterStatus = function(btn, key) {
+    activeStatus = key;
+    document.querySelectorAll('.pill-status').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    applyFilters();
+  };
+
+  window.openCard = function(el) {
+    document.getElementById('cardModalTitle').textContent = el.dataset.title || '';
+    document.getElementById('cardModalWhat').textContent = el.dataset.what || '';
+    document.getElementById('cardModalWhy').textContent = el.dataset.why || '';
+    document.getElementById('cardModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.keyCard = function(e, el) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCard(el); }
+  };
+
+  window.openHorizon = function(key, label, btn) {
+    var horizon = btn ? btn.dataset.horizon : '';
+    document.getElementById('horizonModalTitle').textContent = label || '';
+    document.getElementById('horizonModalText').textContent = horizon || 'Details coming soon.';
+    document.getElementById('horizonModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeModal = function(e, id) {
+    if (e.target === document.getElementById(id)) closeModalDirect(id);
+  };
+
+  window.closeModalDirect = function(id) {
+    document.getElementById(id).classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModalDirect('cardModal');
+      closeModalDirect('horizonModal');
+    }
+  });
+})();
+</script>
 </body>
 </html>

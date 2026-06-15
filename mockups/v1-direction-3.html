@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Deal Hunter</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a18; font-size: 15px; line-height: 1.4; max-width: 390px; margin: 0 auto; }
+
+.topbar { background: #fff; border-bottom: 1px solid #e8e8e5; padding: 14px 16px 12px; position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #1a1a18; }
+.topbar-sub { font-size: 12px; color: #888; margin-top: 1px; }
+.notif-btn { display: flex; align-items: center; gap: 6px; background: #f0f0ed; border: none; border-radius: 20px; padding: 6px 12px 6px 10px; font-size: 13px; font-weight: 500; color: #444; cursor: pointer; white-space: nowrap; }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #2e9e6b; flex-shrink: 0; }
+
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.6px; color: #999; text-transform: uppercase; padding: 16px 16px 8px; }
+
+.store-card { background: #fff; border-top: 1px solid #ebebea; border-bottom: 1px solid #ebebea; margin-bottom: 2px; display: flex; align-items: stretch; cursor: pointer; }
+.store-card:active { background: #f8f8f6; }
+.store-icon { width: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; border-right: 1px solid #f0f0ee; }
+.store-body { flex: 1; padding: 11px 14px 11px 12px; min-width: 0; }
+.store-name { font-size: 13px; font-weight: 600; color: #555; margin-bottom: 2px; }
+.store-headline { font-size: 14px; color: #1a1a18; line-height: 1.35; }
+.store-meta { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+.badge-fresh { font-size: 11px; background: #eaf5ee; color: #1d7a48; border-radius: 4px; padding: 2px 6px; font-weight: 500; }
+.badge-aging { font-size: 11px; background: #faf3e0; color: #a06000; border-radius: 4px; padding: 2px 6px; font-weight: 500; }
+.deal-count { font-size: 11px; color: #aaa; }
+.store-chevron { width: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 18px; padding-right: 4px; }
+
+.store-expanded { background: #f8f8f6; border-top: 2px solid #2e9e6b; padding-bottom: 4px; margin-bottom: 2px; }
+.store-expanded-header { background: #fff; padding: 12px 16px 10px; border-bottom: 1px solid #ebebea; display: flex; align-items: center; justify-content: space-between; }
+.store-expanded-name { font-size: 15px; font-weight: 600; color: #1a1a18; display: flex; align-items: center; gap: 8px; }
+.store-expanded-name span.emoji { font-size: 18px; }
+.back-btn { font-size: 13px; color: #2e9e6b; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+
+.deals-list { padding: 0 12px; }
+.deal-card { background: #fff; border: 1px solid #e8e8e5; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+.deal-photo { background: #e8e8e5; height: 96px; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 12px; letter-spacing: 0.3px; position: relative; }
+.deal-photo-icon { font-size: 32px; opacity: 0.35; }
+.deal-type-chip { position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; }
+.chip-penny { background: #eaf5ee; color: #1d7a48; }
+.chip-clearance { background: #fde8e8; color: #a02020; }
+.chip-coupon { background: #e8eefa; color: #1a4da0; }
+.chip-glitch { background: #f3eafa; color: #6b30a8; }
+.chip-pink { background: #fde8f3; color: #a01b5a; }
+
+.deal-body { padding: 10px 12px 0; }
+.deal-title { font-size: 14px; font-weight: 500; color: #1a1a18; line-height: 1.3; }
+.deal-price-row { display: flex; align-items: baseline; gap: 7px; margin-top: 5px; }
+.deal-price { font-size: 18px; font-weight: 600; color: #1a1a18; letter-spacing: -0.5px; }
+.deal-was { font-size: 12px; color: #aaa; text-decoration: line-through; }
+.deal-meta-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.trust-chip { font-size: 11px; border-radius: 4px; padding: 2px 7px; font-weight: 500; border: 1px solid; }
+.trust-reported { background: #fafaf7; color: #777; border-color: #e0e0db; }
+.trust-matched { background: #eaf5ee; color: #1d7a48; border-color: #b8dec8; }
+.trust-scan { background: #faf3e0; color: #a06000; border-color: #e8d89a; }
+.deal-sku { font-size: 11px; color: #bbb; font-family: 'SF Mono', 'Menlo', monospace; letter-spacing: 0.2px; }
+.deal-freshness { font-size: 11px; color: #aaa; }
+
+.deal-footer { padding: 8px 12px 10px; display: flex; align-items: center; justify-content: space-between; }
+.playbook-toggle { font-size: 12px; color: #2e9e6b; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 3px; border: none; background: none; padding: 0; }
+.deal-actions { display: flex; gap: 8px; }
+.btn-sm { font-size: 12px; border: 1px solid #d8d8d4; border-radius: 6px; padding: 5px 10px; background: #fff; color: #444; cursor: pointer; font-weight: 500; white-space: nowrap; }
+.btn-sm:active { background: #f0f0ed; }
+.btn-primary-sm { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+
+.playbook-panel { border-top: 1px solid #f0f0ee; padding: 10px 12px 12px; background: #fafaf8; }
+.playbook-title { font-size: 11px; font-weight: 600; letter-spacing: 0.4px; color: #999; text-transform: uppercase; margin-bottom: 8px; }
+.playbook-step { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 7px; }
+.step-num { width: 18px; height: 18px; border-radius: 50%; background: #1a1a18; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.step-text { font-size: 13px; color: #444; line-height: 1.35; }
+.store-signs-note { font-size: 12px; color: #999; border-top: 1px solid #ebebea; margin-top: 8px; padding-top: 8px; line-height: 1.4; }
+
+.detail-section { margin: 0 0 12px; }
+.detail-wrapper { background: #fff; border: 1px solid #e8e8e5; border-radius: 10px; margin: 10px 12px; overflow: hidden; }
+.detail-photo { background: #e0e0dd; height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bbb; gap: 6px; position: relative; }
+.detail-photo-icon { font-size: 52px; opacity: 0.3; }
+.detail-photo-label { font-size: 12px; letter-spacing: 0.3px; }
+.detail-type-chip { position: absolute; top: 10px; left: 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; padding: 4px 9px; border-radius: 5px; }
+.detail-body { padding: 14px 14px 0; }
+.detail-title { font-size: 16px; font-weight: 500; color: #1a1a18; line-height: 1.3; }
+.detail-price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+.detail-price { font-size: 24px; font-weight: 700; color: #1a1a18; letter-spacing: -0.8px; }
+.detail-was { font-size: 14px; color: #aaa; text-decoration: line-through; }
+.detail-meta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.detail-sku-block { margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0ee; }
+.detail-sku-label { font-size: 11px; color: #bbb; font-weight: 500; letter-spacing: 0.3px; margin-bottom: 2px; }
+.detail-sku-val { font-size: 13px; color: #555; font-family: 'SF Mono', 'Menlo', monospace; }
+
+.detail-playbook { padding: 0 14px 4px; }
+.detail-playbook-title { font-size: 11px; font-weight: 600; letter-spacing: 0.4px; color: #999; text-transform: uppercase; padding-top: 12px; padding-bottom: 8px; border-top: 1px solid #f0f0ee; margin-top: 12px; }
+.detail-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.detail-step-num { width: 22px; height: 22px; border-radius: 50%; background: #1a1a18; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.detail-step-text { font-size: 14px; color: #333; line-height: 1.4; }
+.signs-note { font-size: 12px; color: #999; border: 1px solid #f0f0ee; background: #fafaf8; border-radius: 6px; padding: 8px 10px; margin-top: 4px; line-height: 1.45; }
+
+.detail-actions { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+.btn-full { display: block; width: 100%; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; cursor: pointer; border: none; }
+.btn-dark { background: #1a1a18; color: #fff; }
+.btn-outline { background: #fff; color: #1a1a18; border: 1px solid #d8d8d4; }
+.btn-success { background: #eaf5ee; color: #1d7a48; border: none; }
+
+.divider { height: 1px; background: #ebebea; margin: 8px 0; }
+.spacer { height: 40px; }
+
+.section-hdr { padding: 20px 16px 4px; display: flex; align-items: baseline; justify-content: space-between; }
+.section-hdr-title { font-size: 12px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.6px; }
+.section-hdr-sub { font-size: 12px; color: #bbb; }
+
+.found-check { display: flex; align-items: center; gap: 8px; padding: 10px 14px 14px; }
+.check-circle { width: 22px; height: 22px; border-radius: 50%; background: #2e9e6b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.check-label { font-size: 13px; color: #2e9e6b; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- ───── SECTION 1: LANDING (retailer-first) ───── -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">Deal Hunter</div>
+    <div class="topbar-sub">5 stores · updated 8 min ago</div>
+  </div>
+  <button class="notif-btn" aria-label="Notification settings">
+    <div class="notif-dot" aria-hidden="true"></div>
+    Alerts on
+  </button>
+</div>
+
+<div class="section-label">Stores</div>
+
+<div class="store-card">
+  <div class="store-icon">🌳</div>
+  <div class="store-body">
+    <div class="store-name">Dollar Tree</div>
+    <div class="store-headline">Penny list dropped — socks &amp; lipstick 1¢</div>
+    <div class="store-meta">
+      <span class="badge-fresh">Fresh today</span>
+      <span class="deal-count">12 deals</span>
+    </div>
+  </div>
+  <div class="store-chevron">›</div>
+</div>
+
+<div class="store-card">
+  <div class="store-icon">🎯</div>
+  <div class="store-body">
+    <div class="store-name">Target</div>
+    <div class="store-headline">70% off camping clearance, lawn &amp; garden</div>
+    <div class="store-meta">
+      <span class="badge-fresh">Fresh today</span>
+      <span class="deal-count">8 deals</span>
+    </div>
+  </div>
+  <div class="store-chevron">›</div>
+</div>
+
+<div class="store-card">
+  <div class="store-icon">🏪</div>
+  <div class="store-body">
+    <div class="store-name">Dollar General</div>
+    <div class="store-headline">$5 off $25 + penny finds in health &amp; beauty</div>
+    <div class="store-meta">
+      <span class="badge-fresh">Fresh today</span>
+      <span class="deal-count">6 deals</span>
+    </div>
+  </div>
+  <div class="store-chevron">›</div>
+</div>
+
+<div class="store-card">
+  <div class="store-icon">💊</div>
+  <div class="store-body">
+    <div class="store-name">CVS</div>
+    <div class="store-headline">Stack 3 coupons on Crest — under $1 each</div>
+    <div class="store-meta">
+      <span class="badge-aging">Aging · 2 days</span>
+      <span class="deal-count">4 deals</span>
+    </div>
+  </div>
+  <div class="store-chevron">›</div>
+</div>
+
+<div class="store-card">
+  <div class="store-icon">🅦</div>
+  <div class="store-body">
+    <div class="store-name">Walgreens</div>
+    <div class="store-headline">Clearance endcaps refreshed — HBA &amp; snacks</div>
+    <div class="store-meta">
+      <span class="badge-aging">Aging · 3 days</span>
+      <span class="deal-count">3 deals</span>
+    </div>
+  </div>
+  <div class="store-chevron">›</div>
+</div>
+
+<!-- ───── SECTION 2: STORE VIEW (Dollar Tree expanded) ───── -->
+<div style="height: 16px; background: #f5f5f3;"></div>
+
+<div class="store-expanded">
+  <div class="store-expanded-header">
+    <div class="store-expanded-name">
+      <span class="emoji">🌳</span> Dollar Tree
+    </div>
+    <div class="back-btn">‹ All stores</div>
+  </div>
+
+  <div class="section-hdr">
+    <span class="section-hdr-title">Active deals</span>
+    <span class="section-hdr-sub">12 total · sorted by value</span>
+  </div>
+
+  <div class="deals-list">
+
+    <!-- Deal 1: Penny -->
+    <div class="deal-card">
+      <div class="deal-photo">
+        <div class="deal-photo-icon">🧦</div>
+        <div class="deal-type-chip chip-penny">Penny</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-title">Women's Crew Socks 3-Pack, assorted</div>
+        <div class="deal-price-row">
+          <span class="deal-price">$0.01</span>
+          <span class="deal-was">was $1.25</span>
+        </div>
+        <div class="deal-meta-row">
+          <span class="trust-chip trust-matched">Matched to catalog</span>
+          <span class="deal-freshness">Fresh today</span>
+        </div>
+        <div class="deal-sku" style="margin-top:5px; margin-bottom:4px;">SKU 396424 · UPC 0-44800-12341-2</div>
+      </div>
+      <div class="deal-footer">
+        <button class="playbook-toggle">How to get it ▾</button>
+        <div class="deal-actions">
+          <button class="btn-sm">Scan</button>
+          <button class="btn-sm btn-primary-sm">Found</button>
+        </div>
+      </div>
+      <div class="playbook-panel">
+        <div class="playbook-title">Playbook</div>
+        <div class="playbook-step"><div class="step-num">1</div><div class="step-text">Find the item in-store using the SKU or UPC above.</div></div>
+        <div class="playbook-step"><div class="step-num">2</div><div class="step-text">Check shelf — no sticker needed, ring at register.</div></div>
+        <div class="playbook-step"><div class="step-num">3</div><div class="step-text">If price shows $1.25, ask cashier to scan again or call manager.</div></div>
+        <div class="playbook-step"><div class="step-num">4</div><div class="step-text">Limit varies by store; 4–6 per visit is typical.</div></div>
+        <div class="store-signs-note">In-store signs: penny items have no markdown tag — they ring up at 1¢ automatically at checkout.</div>
+      </div>
+    </div>
+
+    <!-- Deal 2: Clearance -->
+    <div class="deal-card">
+      <div class="deal-photo">
+        <div class="deal-photo-icon">💄</div>
+        <div class="deal-type-chip chip-penny">Penny</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-title">NYX Butter Lip Gloss, Berry Strudel</div>
+        <div class="deal-price-row">
+          <span class="deal-price">$0.01</span>
+          <span class="deal-was">was $1.25</span>
+        </div>
+        <div class="deal-meta-row">
+          <span class="trust-chip trust-reported">Reported</span>
+          <span class="deal-freshness">Fresh today</span>
+        </div>
+        <div class="deal-sku" style="margin-top:5px; margin-bottom:4px;">SKU 412201</div>
+      </div>
+      <div class="deal-footer">
+        <button class="playbook-toggle">How to get it ▾</button>
+        <div class="deal-actions">
+          <button class="btn-sm">Scan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal 3: Clearance -->
+    <div class="deal-card">
+      <div class="deal-photo" style="background: #e5e0e8;">
+        <div class="deal-photo-icon">🧴</div>
+        <div class="deal-type-chip chip-clearance">Clearance</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-title">Suave Essentials Body Wash, Tropical Breeze 18 oz</div>
+        <div class="deal-price-row">
+          <span class="deal-price">$0.50</span>
+          <span class="deal-was">was $1.25</span>
+        </div>
+        <div class="deal-meta-row">
+          <span class="trust-chip trust-scan">Scan to confirm</span>
+          <span class="deal-freshness">Aging · 2 days</span>
+        </div>
+        <div class="deal-sku" style="margin-top:5px; margin-bottom:4px;">SKU 388109 · UPC 0-37000-11093-5</div>
+      </div>
+      <div class="deal-footer">
+        <button class="playbook-toggle">How to get it ▾</button>
+        <div class="deal-actions">
+          <button class="btn-sm">Scan</button>
+          <button class="btn-sm btn-primary-sm">Found</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal 4: Coupon stack -->
+    <div class="deal-card">
+      <div class="deal-photo" style="background: #dce4f0;">
+        <div class="deal-photo-icon">🪥</div>
+        <div class="deal-type-chip chip-coupon">Coupon</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-title">Colgate Total Toothpaste 4.8 oz</div>
+        <div class="deal-price-row">
+          <span class="deal-price">$0.25</span>
+          <span class="deal-was">was $1.25</span>
+        </div>
+        <div class="deal-meta-row">
+          <span class="trust-chip trust-reported">Reported</span>
+          <span class="deal-freshness">Fresh today</span>
+        </div>
+        <div class="deal-sku" style="margin-top:5px; margin-bottom:4px;">SKU 302881</div>
+      </div>
+      <div class="deal-footer">
+        <button class="playbook-toggle">How to get it ▾</button>
+        <div class="deal-actions">
+          <button class="btn-sm">Scan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal 5: Pink tag / glitch -->
+    <div class="deal-card">
+      <div class="deal-photo" style="background: #f0dde8;">
+        <div class="deal-photo-icon">🎀</div>
+        <div class="deal-type-chip chip-pink">Pink tag°</div>
+      </div>
+      <div class="deal-body">
+        <div class="deal-title">Barbie Mini Styling Head, unverified pink penny</div>
+        <div class="deal-price-row">
+          <span class="deal-price">$0.01</span>
+          <span class="deal-was">was $5.00</span>
+        </div>
+        <div class="deal-meta-row">
+          <span class="trust-chip trust-reported">Reported</span>
+          <span class="badge-aging" style="font-size:11px;">Unverified °</span>
+        </div>
+        <div class="deal-sku" style="margin-top:5px; margin-bottom:4px;">SKU 441230</div>
+      </div>
+      <div class="deal-footer">
+        <button class="playbook-toggle">How to get it ▾</button>
+        <div class="deal-actions">
+          <button class="btn-sm">Scan</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ───── SECTION 3: DEAL DETAIL (expanded) ───── -->
+<div style="height: 16px; background: #f5f5f3;"></div>
+
+<div style="padding: 0 0 4px;">
+  <div class="section-hdr" style="padding-top: 12px;">
+    <span class="section-hdr-title">Deal detail</span>
+    <span class="back-btn" style="color: #2e9e6b; font-size: 12px; font-weight:500;">‹ Dollar Tree</span>
+  </div>
+
+  <div class="detail-wrapper">
+    <div class="detail-photo">
+      <div class="detail-photo-icon">🧦</div>
+      <div class="detail-photo-label">Photo placeholder</div>
+      <div class="detail-type-chip chip-penny">Penny</div>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-title">Women's Crew Socks 3-Pack, assorted colors</div>
+      <div class="detail-price-row">
+        <span class="detail-price">$0.01</span>
+        <span class="detail-was">was $1.25</span>
+      </div>
+      <div class="detail-meta">
+        <span class="trust-chip trust-matched">Matched to catalog</span>
+        <span class="badge-fresh">Fresh today</span>
+      </div>
+      <div class="detail-sku-block">
+        <div class="detail-sku-label">SKU / UPC</div>
+        <div class="detail-sku-val">396424 · 0-44800-12341-2</div>
+      </div>
+
+      <div class="detail-playbook">
+        <div class="detail-playbook-title">How to get it</div>
+        <div class="detail-step"><div class="detail-step-num">1</div><div class="detail-step-text">Find the item using SKU 396424 — usually in the socks aisle or seasonal endcap.</div></div>
+        <div class="detail-step"><div class="detail-step-num">2</div><div class="detail-step-text">No markdown sticker is needed. Penny items ring up automatically at 1¢.</div></div>
+        <div class="detail-step"><div class="detail-step-num">3</div><div class="detail-step-text">If register shows $1.25, show cashier the penny list and ask for a manager override.</div></div>
+        <div class="detail-step"><div class="detail-step-num">4</div><div class="detail-step-text">Typical store limit: 4–6 per customer per visit.</div></div>
+        <div class="signs-note">In-store signs: penny items carry no shelf tag or clearance sticker — they are identified by SKU only. Check the master penny list for the full SKU set before your trip.</div>
+      </div>
+    </div>
+
+    <div class="detail-actions">
+      <button class="btn-full btn-dark">Scan to confirm price</button>
+      <div class="found-check" style="padding: 0;">
+        <div class="check-circle" aria-hidden="true" style="width:20px;height:20px;font-size:12px;">✓</div>
+        <span class="check-label">Marked found — tap to undo</span>
+      </div>
+      <button class="btn-full btn-outline" style="margin-top:4px;">Report an issue with this deal</button>
+    </div>
+  </div>
+</div>
+
+<div class="spacer"></div>
+</body>
+</html>

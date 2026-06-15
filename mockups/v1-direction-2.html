@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Deal Hunter v1 — Direction 2</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0f0f12;
+  color: #f0f0f0;
+  width: 390px;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── DEAL TYPE COLOR CODING ── */
+.deal-penny  { --dt-bg: #b8860b; --dt-text: #fff8e1; --dt-label: #ffe082; }
+.deal-glitch  { --dt-bg: #b71c1c; --dt-text: #fff; --dt-label: #ff8a80; }
+.deal-clearance { --dt-bg: #1b5e20; --dt-text: #f1f8e9; --dt-label: #a5d6a7; }
+.deal-coupon  { --dt-bg: #0d47a1; --dt-text: #e3f2fd; --dt-label: #90caf9; }
+.deal-pinktag { --dt-bg: #880e4f; --dt-text: #fce4ec; --dt-label: #f48fb1; }
+
+/* ── HEADER ── */
+.app-header {
+  background: #1a1a22;
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #2a2a38;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.app-logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+.app-logo span { color: #ffd600; }
+.notif-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #2a2a38;
+  border: 1px solid #3a3a52;
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bell-icon {
+  width: 16px; height: 16px;
+  fill: #ffd600;
+}
+.notif-dot {
+  width: 8px; height: 8px;
+  background: #ffd600;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ── SECTION HEADERS ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #888;
+  padding: 18px 16px 8px;
+}
+
+/* ── STORE CARDS (landing) ── */
+.stores-list { padding: 0 12px 8px; }
+.store-card {
+  background: #1a1a22;
+  border: 1px solid #2a2a38;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.store-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.store-card.rank-1::before { background: #ffd600; }
+.store-card.rank-2::before { background: #ff4444; }
+.store-card.rank-3::before { background: #00c853; }
+.store-card.rank-4::before { background: #2979ff; }
+.store-card.rank-5::before { background: #f50057; }
+
+.store-logo {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+.logo-dt   { background: #b71c1c; color: #fff; }
+.logo-tgt  { background: #cc0000; color: #fff; }
+.logo-dg   { background: #f9a825; color: #1a1a00; }
+.logo-cvs  { background: #cc0000; color: #fff; }
+.logo-wag  { background: #e30025; color: #fff; }
+
+.store-info { flex: 1; min-width: 0; }
+.store-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.store-headline {
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.store-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+}
+.deal-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffd600;
+  background: rgba(255,214,0,0.12);
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+.freshness-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #00e676;
+}
+.fresh-label { font-size: 11px; color: #00e676; font-weight: 600; }
+.store-chevron {
+  color: #444;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ── SCORE BADGE ── */
+.score-badge {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.score-s { background: #ffd600; color: #1a1a00; }
+.score-a { background: #ff4444; color: #fff; }
+.score-b { background: #00c853; color: #003300; }
+
+/* ── STORE VIEW HEADER ── */
+.store-view-header {
+  background: #1a1a22;
+  padding: 14px 16px;
+  border-bottom: 1px solid #2a2a38;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.back-btn {
+  font-size: 22px;
+  color: #ffd600;
+  cursor: pointer;
+  font-weight: 300;
+  line-height: 1;
+}
+.store-view-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+.store-view-sub {
+  font-size: 12px;
+  color: #888;
+  margin-top: 1px;
+}
+.store-view-badge {
+  margin-left: auto;
+  background: rgba(0,200,83,0.15);
+  color: #00e676;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,200,83,0.3);
+}
+
+/* ── DEAL CARDS (store view) ── */
+.deals-list { padding: 0 12px 8px; }
+
+.deal-card {
+  background: #1a1a22;
+  border: 1px solid #2a2a38;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.deal-type-banner {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dt-bg);
+}
+.deal-type-name {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dt-text);
+  opacity: 0.9;
+}
+.deal-type-score {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--dt-label);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.worth-star { font-size: 11px; }
+
+.deal-body {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+.deal-photo {
+  width: 76px; height: 76px;
+  border-radius: 8px;
+  background: #252530;
+  border: 1px solid #333;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.deal-info { flex: 1; min-width: 0; }
+.deal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f0f0f0;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.deal-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.deal-price-now {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dt-label, #ffd600);
+}
+.deal-price-was {
+  font-size: 13px;
+  color: #666;
+  text-decoration: line-through;
+}
+.deal-price-off {
+  font-size: 11px;
+  font-weight: 700;
+  color: #00e676;
+}
+
+.deal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.chip-fresh    { background: rgba(0,200,83,0.15); color: #00e676; border: 1px solid rgba(0,200,83,0.3); }
+.chip-aging    { background: rgba(255,152,0,0.15); color: #ff9800; border: 1px solid rgba(255,152,0,0.3); }
+.chip-reported { background: rgba(255,255,255,0.06); color: #aaa; border: 1px solid #333; }
+.chip-matched  { background: rgba(41,121,255,0.15); color: #90caf9; border: 1px solid rgba(41,121,255,0.3); }
+.chip-confirm  { background: rgba(255,214,0,0.12); color: #ffd600; border: 1px solid rgba(255,214,0,0.3); }
+
+.deal-sku {
+  font-size: 10px;
+  color: #555;
+  margin-top: 5px;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.deal-footer {
+  border-top: 1px solid #222;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.playbook-toggle {
+  font-size: 12px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.playbook-arrow { font-size: 10px; }
+
+/* ── PLAYBOOK (expanded inline) ── */
+.playbook {
+  background: #13131a;
+  border-top: 1px solid #222;
+  padding: 12px 14px;
+}
+.playbook-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #ffd600;
+  margin-bottom: 10px;
+}
+.playbook-step {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
+.step-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #2a2a38;
+  color: #ffd600;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-text {
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.4;
+}
+.step-text strong { color: #fff; }
+.instore-note {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: rgba(255,214,0,0.07);
+  border-left: 3px solid #ffd600;
+  border-radius: 0 6px 6px 0;
+  font-size: 11px;
+  color: #ccc;
+}
+
+/* ── DEAL DETAIL (modal-style, in-flow) ── */
+.deal-detail-wrap {
+  background: rgba(0,0,0,0.6);
+  padding: 16px 12px;
+}
+.deal-detail {
+  background: #1a1a22;
+  border-radius: 16px;
+  border: 1px solid #2a2a38;
+  overflow: hidden;
+}
+.detail-banner {
+  background: var(--dt-bg);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.detail-type-name {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dt-text);
+}
+.detail-worth {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dt-label);
+}
+.detail-photo {
+  width: 100%;
+  height: 160px;
+  background: #252530;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  border-bottom: 1px solid #222;
+}
+.detail-body { padding: 16px; }
+.detail-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.detail-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.detail-price-now {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--dt-label, #ffd600);
+}
+.detail-price-was {
+  font-size: 15px;
+  color: #555;
+  text-decoration: line-through;
+}
+.detail-price-off {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00e676;
+}
+
+.detail-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.trust-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+.tc-matched { background: rgba(41,121,255,0.2); color: #90caf9; border: 1px solid rgba(41,121,255,0.4); }
+.tc-fresh   { background: rgba(0,200,83,0.15); color: #00e676; border: 1px solid rgba(0,200,83,0.3); }
+
+.detail-sku {
+  font-size: 11px;
+  color: #555;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.detail-playbook-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--dt-label, #ffd600);
+  margin-bottom: 10px;
+}
+.detail-step {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 9px;
+  align-items: flex-start;
+}
+.detail-step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--dt-bg);
+  color: var(--dt-label);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.detail-step-text {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+.detail-step-text strong { color: #fff; }
+
+.detail-instore-note {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: rgba(255,214,0,0.07);
+  border-left: 3px solid #ffd600;
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.btn-scan {
+  flex: 1;
+  background: #ffd600;
+  color: #1a1a00;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 0;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-found {
+  flex: 0 0 auto;
+  background: rgba(0,200,83,0.15);
+  color: #00e676;
+  border: 1.5px solid rgba(0,200,83,0.4);
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── DIVIDER LABELS ── */
+.section-divider {
+  background: #ffd600;
+  color: #1a1a00;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+}
+
+/* ── SCORE RING DISPLAY (compact) ── */
+.score-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--dt-label, #ffd600);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1: LANDING — RETAILER-FIRST        -->
+<!-- ═══════════════════════════════════════════ -->
+
+<header class="app-header">
+  <div class="app-logo">Deal<span>Hunter</span></div>
+  <button class="notif-btn" aria-label="Notification settings">
+    <svg class="bell-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-5-5.91V4a1 1 0 0 0-2 0v1.09A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2z"/>
+    </svg>
+    <span class="notif-dot" aria-hidden="true"></span>
+    Alerts on
+  </button>
+</header>
+
+<div class="section-divider">Best deals right now</div>
+
+<div class="stores-list" role="list" aria-label="Stores ranked by deal quality">
+
+  <!-- #1 Dollar Tree -->
+  <div class="store-card rank-1" role="listitem">
+    <div class="score-badge score-s" aria-label="Score S">S</div>
+    <div class="store-logo logo-dt" aria-hidden="true">DT</div>
+    <div class="store-info">
+      <div class="store-name">Dollar Tree</div>
+      <div class="store-headline">Penny list dropped — socks &amp; lipstick 1¢</div>
+      <div class="store-meta">
+        <div class="freshness-dot" aria-hidden="true"></div>
+        <span class="fresh-label">Fresh today</span>
+        <span class="deal-count">14 deals</span>
+      </div>
+    </div>
+    <div class="store-chevron" aria-hidden="true">›</div>
+  </div>
+
+  <!-- #2 Target -->
+  <div class="store-card rank-2" role="listitem">
+    <div class="score-badge score-s" aria-label="Score S">S</div>
+    <div class="store-logo logo-tgt" aria-hidden="true">TGT</div>
+    <div class="store-info">
+      <div class="store-name">Target</div>
+      <div class="store-headline">70% off camping clearance — racks just reset</div>
+      <div class="store-meta">
+        <div class="freshness-dot" aria-hidden="true"></div>
+        <span class="fresh-label">Fresh today</span>
+        <span class="deal-count">9 deals</span>
+      </div>
+    </div>
+    <div class="store-chevron" aria-hidden="true">›</div>
+  </div>
+
+  <!-- #3 Dollar General -->
+  <div class="store-card rank-3" role="listitem">
+    <div class="score-badge score-a" aria-label="Score A">A</div>
+    <div class="store-logo logo-dg" aria-hidden="true">DG</div>
+    <div class="store-info">
+      <div class="store-name">Dollar General</div>
+      <div class="store-headline">$5 off $25 + penny finds this week</div>
+      <div class="store-meta">
+        <div class="freshness-dot" aria-hidden="true"></div>
+        <span class="fresh-label">Fresh today</span>
+        <span class="deal-count">7 deals</span>
+      </div>
+    </div>
+    <div class="store-chevron" aria-hidden="true">›</div>
+  </div>
+
+  <!-- #4 CVS -->
+  <div class="store-card rank-4" role="listitem">
+    <div class="score-badge score-a" aria-label="Score A">A</div>
+    <div class="store-logo logo-cvs" aria-hidden="true">CVS</div>
+    <div class="store-info">
+      <div class="store-name">CVS</div>
+      <div class="store-headline">Stack 3 coupons on Crest — nets $0.49</div>
+      <div class="store-meta">
+        <span style="color:#ff9800;font-size:11px;font-weight:600;">Aging (2d)</span>
+        <span class="deal-count">5 deals</span>
+      </div>
+    </div>
+    <div class="store-chevron" aria-hidden="true">›</div>
+  </div>
+
+  <!-- #5 Walgreens -->
+  <div class="store-card rank-5" role="listitem">
+    <div class="score-badge score-b" aria-label="Score B">B</div>
+    <div class="store-logo logo-wag" aria-hidden="true">WAG</div>
+    <div class="store-info">
+      <div class="store-name">Walgreens</div>
+      <div class="store-headline">Clearance endcaps refreshed — cosmetics 75% off</div>
+      <div class="store-meta">
+        <div class="freshness-dot" aria-hidden="true"></div>
+        <span class="fresh-label">Fresh today</span>
+        <span class="deal-count">6 deals</span>
+      </div>
+    </div>
+    <div class="store-chevron" aria-hidden="true">›</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: STORE VIEW — Dollar Tree        -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider" style="margin-top:8px;">Store view: Dollar Tree</div>
+
+<div class="store-view-header">
+  <div class="back-btn" aria-label="Back to stores">‹</div>
+  <div>
+    <div class="store-view-title">Dollar Tree</div>
+    <div class="store-view-sub">14 active deals · updated 2h ago</div>
+  </div>
+  <div class="store-view-badge">LIVE</div>
+</div>
+
+<div class="deals-list" role="list" aria-label="Dollar Tree deals">
+
+  <!-- DEAL 1: Penny — shown WITH playbook expanded -->
+  <div class="deal-card deal-penny" role="listitem">
+    <div class="deal-type-banner">
+      <span class="deal-type-name">Penny Deal</span>
+      <span class="deal-type-score">★★★ Worth Score 98</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-photo" role="img" aria-label="Product photo placeholder">🧦</div>
+      <div class="deal-info">
+        <div class="deal-title">Ankle Socks 6-Pack — Women's Assorted</div>
+        <div class="deal-price-row">
+          <span class="deal-price-now" style="color:#ffd600;">$0.01</span>
+          <span class="deal-price-was">$1.25</span>
+          <span class="deal-price-off">99% off</span>
+        </div>
+        <div class="deal-chips">
+          <span class="chip chip-fresh">Fresh today</span>
+          <span class="chip chip-matched">Matched to catalog</span>
+        </div>
+        <div class="deal-sku">SKU 396424 · UPC 0-40000-12345-6</div>
+      </div>
+    </div>
+
+    <!-- Playbook expanded for demo -->
+    <div class="playbook">
+      <div class="playbook-title">How to get it</div>
+      <div class="playbook-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Head to the <strong>socks &amp; hosiery aisle</strong> — usually aisle 4–6 near seasonal.</div>
+      </div>
+      <div class="playbook-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Look for the <strong>green clearance tag</strong> or unmarked pegs — penny items often have no new label.</div>
+      </div>
+      <div class="playbook-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Scan the barcode with this app or the Dollar Tree app to <strong>confirm the $0.01 price</strong> before checkout.</div>
+      </div>
+      <div class="playbook-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Bring to <strong>a register with a live cashier</strong> — self-checkout sometimes won't process penny items.</div>
+      </div>
+      <div class="instore-note">Look for: no shelf tag = often penny. Green dot on tag = recent markdown. White blank tag = possible penny candidate.</div>
+    </div>
+
+    <div class="deal-footer">
+      <span class="playbook-toggle">
+        <span class="playbook-arrow">▲</span> Collapse playbook
+      </span>
+      <span style="font-size:12px;color:#666;">Tap to scan</span>
+    </div>
+  </div>
+
+  <!-- DEAL 2: Clearance -->
+  <div class="deal-card deal-clearance" role="listitem">
+    <div class="deal-type-banner">
+      <span class="deal-type-name">Clearance</span>
+      <span class="deal-type-score">★★★ Worth Score 87</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-photo" role="img" aria-label="Product photo placeholder">💄</div>
+      <div class="deal-info">
+        <div class="deal-title">NYX Butter Lip Gloss — 3 shades</div>
+        <div class="deal-price-row">
+          <span class="deal-price-now" style="color:#a5d6a7;">$0.01</span>
+          <span class="deal-price-was">$1.25</span>
+          <span class="deal-price-off">99% off</span>
+        </div>
+        <div class="deal-chips">
+          <span class="chip chip-fresh">Fresh today</span>
+          <span class="chip chip-confirm">Scan to confirm</span>
+        </div>
+        <div class="deal-sku">SKU 402817 · UPC 0-80162-88214-3</div>
+      </div>
+    </div>
+    <div class="deal-footer">
+      <span class="playbook-toggle">
+        <span class="playbook-arrow">▼</span> How to get it
+      </span>
+      <span style="font-size:12px;color:#666;">Tap to expand</span>
+    </div>
+  </div>
+
+  <!-- DEAL 3: Glitch -->
+  <div class="deal-card deal-glitch" role="listitem">
+    <div class="deal-type-banner">
+      <span class="deal-type-name">Glitch Price</span>
+      <span class="deal-type-score">★★☆ Worth Score 74</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-photo" role="img" aria-label="Product photo placeholder">🪴</div>
+      <div class="deal-info">
+        <div class="deal-title">Succulent Planter Set — 4-inch, assorted</div>
+        <div class="deal-price-row">
+          <span class="deal-price-now" style="color:#ff8a80;">$0.25</span>
+          <span class="deal-price-was">$5.00</span>
+          <span class="deal-price-off">95% off</span>
+        </div>
+        <div class="deal-chips">
+          <span class="chip chip-aging">Aging (3d)</span>
+          <span class="chip chip-reported">Reported</span>
+        </div>
+        <div class="deal-sku">SKU 391033 · UPC 0-12000-84991-0</div>
+      </div>
+    </div>
+    <div class="deal-footer">
+      <span class="playbook-toggle">
+        <span class="playbook-arrow">▼</span> How to get it
+      </span>
+      <span style="font-size:12px;color:#666;">Tap to expand</span>
+    </div>
+  </div>
+
+  <!-- DEAL 4: Coupon -->
+  <div class="deal-card deal-coupon" role="listitem">
+    <div class="deal-type-banner">
+      <span class="deal-type-name">Coupon Stack</span>
+      <span class="deal-type-score">★★☆ Worth Score 68</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-photo" role="img" aria-label="Product photo placeholder">🧼</div>
+      <div class="deal-info">
+        <div class="deal-title">Dial Body Wash 12oz — Spring Fresh</div>
+        <div class="deal-price-row">
+          <span class="deal-price-now" style="color:#90caf9;">$0.50</span>
+          <span class="deal-price-was">$1.25</span>
+          <span class="deal-price-off">60% off</span>
+        </div>
+        <div class="deal-chips">
+          <span class="chip chip-fresh">Fresh today</span>
+          <span class="chip chip-matched">Matched to catalog</span>
+        </div>
+        <div class="deal-sku">SKU 388112 · UPC 0-17000-01929-4</div>
+      </div>
+    </div>
+    <div class="deal-footer">
+      <span class="playbook-toggle">
+        <span class="playbook-arrow">▼</span> How to get it
+      </span>
+      <span style="font-size:12px;color:#666;">Tap to expand</span>
+    </div>
+  </div>
+
+  <!-- DEAL 5: Pink-tag -->
+  <div class="deal-card deal-pinktag" role="listitem">
+    <div class="deal-type-banner">
+      <span class="deal-type-name">Pink Tag</span>
+      <span class="deal-type-score">★☆☆ Worth Score 55</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-photo" role="img" aria-label="Product photo placeholder">🎀</div>
+      <div class="deal-info">
+        <div class="deal-title">Gift Wrap Ribbon Spool — Assorted 3pk</div>
+        <div class="deal-price-row">
+          <span class="deal-price-now" style="color:#f48fb1;">$0.50</span>
+          <span class="deal-price-was">$1.25</span>
+          <span class="deal-price-off">60% off</span>
+        </div>
+        <div class="deal-chips">
+          <span class="chip chip-aging">Aging (5d)</span>
+          <span class="chip chip-reported">Reported</span>
+        </div>
+        <div class="deal-sku">SKU 404221 · UPC 0-73012-21300-8</div>
+      </div>
+    </div>
+    <div class="deal-footer">
+      <span class="playbook-toggle">
+        <span class="playbook-arrow">▼</span> How to get it
+      </span>
+      <span style="font-size:12px;color:#666;">Tap to expand</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3: DEAL DETAIL (expanded modal)    -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider" style="margin-top:8px;">Deal detail view</div>
+
+<div class="deal-detail-wrap">
+  <div class="deal-detail deal-clearance">
+
+    <div class="detail-banner">
+      <span class="detail-type-name">Clearance</span>
+      <span class="detail-worth">★★★ Worth Score 91</span>
+    </div>
+
+    <div class="detail-photo" role="img" aria-label="Product photo placeholder">🏕️</div>
+
+    <div class="detail-body">
+      <div class="detail-title">Coleman 6-Person Instant Cabin Tent</div>
+
+      <div class="detail-price-row">
+        <span class="detail-price-now">$29.98</span>
+        <span class="detail-price-was">$99.99</span>
+        <span class="detail-price-off">70% off</span>
+      </div>
+
+      <div class="detail-chips-row">
+        <span class="trust-chip tc-matched">Matched to catalog</span>
+        <span class="trust-chip tc-fresh">Fresh today</span>
+      </div>
+
+      <div class="detail-sku">SKU 87004219 · UPC 0-76501-08882-1</div>
+
+      <div class="detail-playbook-title">How to get it</div>
+
+      <div class="detail-step">
+        <div class="detail-step-num">1</div>
+        <div class="detail-step-text">Go to the <strong>sporting goods / camping aisle</strong> — clearance items are on back endcaps.</div>
+      </div>
+      <div class="detail-step">
+        <div class="detail-step-num">2</div>
+        <div class="detail-step-text">Look for the <strong>red clearance sticker</strong> — 70% off tag should be applied at shelf.</div>
+      </div>
+      <div class="detail-step">
+        <div class="detail-step-num">3</div>
+        <div class="detail-step-text"><strong>Scan barcode below</strong> or use Target's app to confirm the $29.98 price before adding to cart.</div>
+      </div>
+      <div class="detail-step">
+        <div class="detail-step-num">4</div>
+        <div class="detail-step-text">Use the <strong>Target Circle app</strong> at checkout — additional 5% Circle discount may stack.</div>
+      </div>
+
+      <div class="detail-instore-note">In-store signs to look for: red clearance tag · "As low as" shelf tag · "Final sale" clearance sticker on box. No digital price guarantee on in-store clearance.</div>
+
+      <div class="detail-actions">
+        <button class="btn-scan" aria-label="Scan barcode to confirm price">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
+            <rect x="3" y="16" width="5" height="5" rx="1"/>
+            <path d="M21 16h-3v3m0-3v3h3M11 3v2m0 4v2m-4 4h2m4 0h2m-2 4h2m4 0v2m-8-6h2v2h-2z"/>
+          </svg>
+          Scan to confirm price
+        </button>
+        <button class="btn-found" aria-label="Mark deal as found">
+          ✓ Found
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="height:32px;background:#0f0f12;"></div>
+
+</body>
+</html>

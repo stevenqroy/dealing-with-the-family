@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Deal Hunter · v1 Direction 1 — Premium Editorial</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #1a1a18;
+    --ink-2:     #3d3d38;
+    --ink-3:     #6b6b64;
+    --ink-4:     #9b9b91;
+    --paper:     #faf9f5;
+    --surface:   #f2f0ea;
+    --rule:      rgba(26,26,24,0.10);
+    --rule-mid:  rgba(26,26,24,0.18);
+    --teal:      #0d6a55;
+    --teal-lt:   #e2f2ed;
+    --teal-mid:  #1a8f70;
+    --teal-dk:   #09463a;
+    --fresh:     #1a7a40;
+    --fresh-lt:  #e5f5ec;
+    --aging:     #7a5a10;
+    --aging-lt:  #f7f0dd;
+    --red-dk:    #8c2020;
+    --red-lt:    #faeaea;
+    --placeholder: #d8d5cc;
+  }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--paper);
+    color: var(--ink);
+    max-width: 390px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    padding: 28px 20px 0;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .masthead-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .wordmark {
+    font-size: 11px;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .wordmark strong {
+    display: block;
+    font-size: 28px;
+    font-family: Georgia, serif;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-weight: 400;
+    line-height: 1;
+    margin-top: 3px;
+  }
+  .bell-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0 0;
+  }
+  .bell-icon {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--teal);
+    border-radius: 50%;
+    color: var(--teal);
+  }
+  .bell-icon svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .bell-label {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .dateline {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    padding-bottom: 10px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    font-weight: 500;
+    padding: 18px 20px 10px;
+  }
+
+  /* ── STORE CARDS (Landing) ── */
+  .store-list {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .store-rule { height: 0.5px; background: var(--rule); margin: 0 20px; }
+
+  .store-card {
+    background: var(--paper);
+    padding: 18px 0;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 8px;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .store-card:last-child { border-bottom: none; }
+
+  .store-rank {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 400;
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+  }
+  .store-name {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+  .store-headline {
+    font-family: Georgia, serif;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .store-meta {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    margin-top: 7px;
+    letter-spacing: 0.02em;
+  }
+  .store-badge {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    background: var(--teal-lt);
+    color: var(--teal-dk);
+    border-radius: 3px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    align-self: start;
+    margin-top: 4px;
+  }
+  .store-badge.warm {
+    background: var(--aging-lt);
+    color: var(--aging);
+  }
+  .store-chevron {
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .store-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1.5px;
+    background: var(--ink);
+    margin: 24px 20px 0;
+  }
+
+  /* ── STORE VIEW ── */
+  .store-header {
+    padding: 20px 20px 0;
+  }
+  .store-header-back {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .store-header-back svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .store-header-name {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .store-header-sub {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-3);
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+  .store-header-rule {
+    height: 0.5px;
+    background: var(--rule-mid);
+    margin: 16px 20px 0;
+  }
+
+  .deal-type-filter {
+    display: flex;
+    gap: 0;
+    padding: 14px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .deal-type-filter::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 5px 12px;
+    border: 0.5px solid var(--rule-mid);
+    background: var(--paper);
+    color: var(--ink-3);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .filter-chip:first-child { border-radius: 3px 0 0 3px; }
+  .filter-chip:last-child { border-radius: 0 3px 3px 0; margin-right: 0; }
+  .filter-chip.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ── DEAL CARDS ── */
+  .deal-list {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 12px;
+  }
+
+  .deal-card {
+    background: var(--paper);
+    border: 0.5px solid var(--rule-mid);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .deal-photo {
+    width: 100%;
+    height: 170px;
+    background: var(--placeholder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .deal-photo svg { opacity: 0.35; }
+  .deal-photo-label {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(26,26,24,0.55);
+    padding: 2px 7px;
+    border-radius: 2px;
+  }
+  .freshness-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 2px;
+  }
+  .freshness-badge.fresh { background: var(--fresh-lt); color: var(--fresh); }
+  .freshness-badge.aging { background: var(--aging-lt); color: var(--aging); }
+
+  .deal-body { padding: 14px 14px 0; }
+  .deal-title {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .deal-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .deal-price {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--teal);
+  }
+  .deal-was {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: var(--ink-4);
+    text-decoration: line-through;
+  }
+  .deal-savings {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  .deal-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  .trust-chip {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 2px;
+    border: 0.5px solid;
+  }
+  .trust-chip.reported    { color: #5a4a0a; background: #fdf5d8; border-color: #d4b84a; }
+  .trust-chip.matched     { color: var(--teal-dk); background: var(--teal-lt); border-color: var(--teal-mid); }
+  .trust-chip.scan        { color: #5a1e1e; background: #fdeaea; border-color: #c97a7a; }
+  .trust-chip.penny       { color: var(--teal-dk); background: var(--teal-lt); border-color: var(--teal-mid); }
+  .trust-chip.clearance   { color: #3a2060; background: #ece8f8; border-color: #9a85d8; }
+  .trust-chip.coupon      { color: #1a3a60; background: #e4eef8; border-color: #7aaad8; }
+  .trust-chip.glitch      { color: var(--red-dk); background: var(--red-lt); border-color: #d49090; }
+  .trust-chip.pinktag     { color: #6a1a40; background: #faecf2; border-color: #d490b8; }
+
+  .deal-sku {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .deal-sku span { color: var(--ink-3); font-weight: 500; }
+
+  /* ── PLAYBOOK ── */
+  .playbook {
+    border-top: 0.5px solid var(--rule);
+    padding: 14px 14px;
+  }
+  .playbook-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    padding: 0;
+    text-align: left;
+  }
+  .playbook-label {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  .playbook-chevron {
+    color: var(--ink-4);
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .playbook-chevron svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .playbook-content { display: none; padding-top: 12px; }
+  .playbook-content.open { display: block; }
+  .playbook-step {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--teal);
+    min-width: 16px;
+    padding-top: 1px;
+  }
+  .step-text {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .playbook-signs {
+    border-top: 0.5px solid var(--rule);
+    margin-top: 8px;
+    padding-top: 10px;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .playbook-signs strong {
+    font-weight: 600;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    font-size: 9px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ── SECTION: DEAL DETAIL ── */
+  .detail-section { padding: 0 20px 0; }
+
+  .detail-card {
+    border: 1.5px solid var(--ink-2);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .detail-photo {
+    width: 100%;
+    height: 230px;
+    background: var(--placeholder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .detail-photo-corner {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--teal);
+    color: #fff;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .detail-photo-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 2px;
+    background: var(--fresh-lt);
+    color: var(--fresh);
+  }
+  .detail-body { padding: 18px 16px 0; }
+  .detail-eyebrow {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .detail-title {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .detail-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .detail-price {
+    font-family: Georgia, serif;
+    font-size: 32px;
+    color: var(--teal);
+    font-weight: 400;
+    line-height: 1;
+  }
+  .detail-was {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: var(--ink-4);
+    text-decoration: line-through;
+  }
+  .detail-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .detail-sku {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    color: var(--ink-4);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .detail-sku span { color: var(--ink-3); font-weight: 500; }
+
+  /* ── PLAYBOOK EXPANDED ── */
+  .playbook-expanded {
+    border-top: 0.5px solid var(--rule);
+    padding: 16px 16px;
+  }
+  .playbook-expanded-label {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+  }
+  .playbook-expanded .playbook-step { margin-bottom: 12px; }
+  .playbook-expanded .step-text { font-size: 14px; }
+  .playbook-expanded .playbook-signs {
+    font-size: 11px;
+    margin-top: 10px;
+  }
+
+  /* ── CTA BUTTONS ── */
+  .detail-ctas {
+    padding: 16px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 0.5px solid var(--rule);
+  }
+  .btn-primary {
+    width: 100%;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 14px 20px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .btn-secondary {
+    width: 100%;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 13px 20px;
+    background: transparent;
+    color: var(--teal);
+    border: 1.5px solid var(--teal);
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-secondary svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .btn-found {
+    width: 100%;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 13px 20px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 0.5px solid var(--rule-mid);
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-found svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    padding: 32px 20px 48px;
+    text-align: center;
+    border-top: 1.5px solid var(--ink);
+    margin-top: 32px;
+  }
+  .footer-wordmark {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: var(--ink-3);
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .footer-sub {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+
+  /* ── SECTION LABELS ── */
+  .anno {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 600;
+    background: var(--teal);
+    padding: 4px 10px;
+    display: inline-block;
+    margin: 0 20px;
+  }
+  .anno-wrap {
+    padding-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .anno-line { flex: 1; height: 0.5px; background: var(--rule-mid); }
+
+  /* placeholder icon */
+  .ph-icon { color: var(--paper); }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 1 · LANDING — RETAILER-FIRST     -->
+<!-- ═══════════════════════════════════════════ -->
+
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="wordmark">
+      Your local deals
+      <strong>Deal Hunter</strong>
+    </div>
+    <button class="bell-btn" aria-label="Alerts on — tap to manage">
+      <div class="bell-icon">
+        <!-- Bell SVG -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          <circle cx="18" cy="7" r="3" fill="var(--teal)" stroke="none"/>
+        </svg>
+      </div>
+      <span class="bell-label">Alerts on</span>
+    </button>
+  </div>
+  <div class="dateline">Sunday, June 15 · 6 stores active</div>
+</header>
+
+<p class="section-label">Today's best finds, by store</p>
+
+<div class="store-list">
+
+  <div class="store-card">
+    <div>
+      <div class="store-rank">#1 · Best value today</div>
+      <div class="store-name">Dollar Tree</div>
+      <div class="store-headline">Penny list dropped — socks, lip gloss &amp; seasonal décor for 1¢</div>
+      <div class="store-meta">12 items confirmed · Updated 2 h ago</div>
+    </div>
+    <div class="store-card-right">
+      <span class="store-badge">Hot</span>
+      <svg class="store-chevron" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+  <div class="store-card">
+    <div>
+      <div class="store-rank">#2</div>
+      <div class="store-name">Target</div>
+      <div class="store-headline">70% off camping &amp; outdoor clearance — backpacks from $4</div>
+      <div class="store-meta">8 reports matched · Updated 4 h ago</div>
+    </div>
+    <div class="store-card-right">
+      <span class="store-badge">Fresh</span>
+      <svg class="store-chevron" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+  <div class="store-card">
+    <div>
+      <div class="store-rank">#3</div>
+      <div class="store-name">Dollar General</div>
+      <div class="store-headline">$5 off $25 digital coupon + penny finds in household</div>
+      <div class="store-meta">5 items · Coupon expires tonight</div>
+    </div>
+    <div class="store-card-right">
+      <span class="store-badge">Fresh</span>
+      <svg class="store-chevron" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+  <div class="store-card">
+    <div>
+      <div class="store-rank">#4</div>
+      <div class="store-name">CVS</div>
+      <div class="store-headline">Stack 3 coupons on Crest — paying under $1 after ExtraBucks</div>
+      <div class="store-meta">3 coupon stacks confirmed · Updated 6 h ago</div>
+    </div>
+    <div class="store-card-right">
+      <span class="store-badge warm">Aging</span>
+      <svg class="store-chevron" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+  <div class="store-card">
+    <div>
+      <div class="store-rank">#5</div>
+      <div class="store-name">Walgreens</div>
+      <div class="store-headline">Clearance endcaps refreshed — 50–75% off health &amp; beauty</div>
+      <div class="store-meta">Unconfirmed · Check in-store</div>
+    </div>
+    <div class="store-card-right">
+      <span class="store-badge warm">Unverified</span>
+      <svg class="store-chevron" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 2 · STORE VIEW — DOLLAR TREE      -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider"></div>
+
+<div class="anno-wrap" style="padding: 20px 20px 0; gap: 0;">
+  <span class="anno" style="margin: 0;">Section 2 · Store view</span>
+</div>
+
+<div class="store-header">
+  <div class="store-header-back">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    All stores
+  </div>
+  <div class="store-header-name">Dollar Tree</div>
+  <div class="store-header-sub">Penny list dropped today · 12 items matched to catalog</div>
+</div>
+<div class="store-header-rule"></div>
+
+<div class="deal-type-filter">
+  <div class="filter-chip active">All</div>
+  <div class="filter-chip">Penny</div>
+  <div class="filter-chip">Clearance</div>
+  <div class="filter-chip">Coupon</div>
+  <div class="filter-chip">Glitch</div>
+  <div class="filter-chip">Pink tag</div>
+</div>
+
+<div class="deal-list">
+
+  <!-- Deal 1: Penny -->
+  <div class="deal-card">
+    <div class="deal-photo">
+      <!-- Photo placeholder with SVG icon -->
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b8b5ac" stroke-width="1" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <span class="deal-photo-label">Penny · $0.01</span>
+      <span class="freshness-badge fresh">Fresh today</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-title">Assorted Crew Socks, 2-pk — various styles</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+        <span class="deal-savings">Save 99%</span>
+      </div>
+      <div class="deal-chips">
+        <span class="trust-chip penny">Penny list</span>
+        <span class="trust-chip matched">Matched to catalog</span>
+      </div>
+      <div class="deal-sku">SKU <span>396424</span> · UPC <span>0-49200-12673-8</span></div>
+    </div>
+    <div class="playbook">
+      <button class="playbook-toggle" onclick="togglePlaybook(this)" aria-expanded="false">
+        <span class="playbook-label">How to get it</span>
+        <span class="playbook-chevron"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="playbook-content">
+        <div class="playbook-step">
+          <span class="step-num">1.</span>
+          <span class="step-text">Find socks on the shelf or endcap — look in seasonal or hosiery aisle.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">2.</span>
+          <span class="step-text">Scan the barcode on the app or a price-check station to confirm $0.01.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">3.</span>
+          <span class="step-text">Take to a self-checkout — penny items occasionally need cashier override.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">4.</span>
+          <span class="step-text">Limit to a reasonable quantity; do not ask staff about penny items.</span>
+        </div>
+        <div class="playbook-signs">
+          <strong>In-store signs</strong>
+          No signage — penny list items are not marked. Price only shows at register. Sticker price may still read $1.25.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deal 2: Clearance -->
+  <div class="deal-card">
+    <div class="deal-photo">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b8b5ac" stroke-width="1" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <span class="deal-photo-label">Clearance</span>
+      <span class="freshness-badge fresh">Fresh today</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-title">Easter Basket Filler Set — plush, eggs, ribbon grass</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.25</span>
+        <span class="deal-was">$5.00</span>
+        <span class="deal-savings">Save 95%</span>
+      </div>
+      <div class="deal-chips">
+        <span class="trust-chip clearance">Clearance</span>
+        <span class="trust-chip scan">Scan to confirm</span>
+      </div>
+      <div class="deal-sku">SKU <span>412880</span></div>
+    </div>
+    <div class="playbook">
+      <button class="playbook-toggle" onclick="togglePlaybook(this)" aria-expanded="false">
+        <span class="playbook-label">How to get it</span>
+        <span class="playbook-chevron"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="playbook-content">
+        <div class="playbook-step">
+          <span class="step-num">1.</span>
+          <span class="step-text">Head to the seasonal/holiday clearance section — usually back wall or endcap.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">2.</span>
+          <span class="step-text">Scan to verify markdown — price may vary by location.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">3.</span>
+          <span class="step-text">Look for yellow clearance stickers; Easter stock often marked 75–95% after the holiday.</span>
+        </div>
+        <div class="playbook-signs">
+          <strong>In-store signs</strong>
+          Yellow clearance sticker on packaging. May be in a clearance bin near front or seasonal aisle.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deal 3: Coupon / Glitch -->
+  <div class="deal-card">
+    <div class="deal-photo">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b8b5ac" stroke-width="1" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <span class="deal-photo-label">Glitch price</span>
+      <span class="freshness-badge aging">Aging</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-title">Revlon ColorStay Lip Liner — various shades</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$7.49</span>
+        <span class="deal-savings">Glitch</span>
+      </div>
+      <div class="deal-chips">
+        <span class="trust-chip glitch">Glitch</span>
+        <span class="trust-chip reported">Reported</span>
+      </div>
+      <div class="deal-sku">SKU <span>388210</span> · UPC <span>0-30938-11210-3</span></div>
+    </div>
+    <div class="playbook">
+      <button class="playbook-toggle" onclick="togglePlaybook(this)" aria-expanded="false">
+        <span class="playbook-label">How to get it</span>
+        <span class="playbook-chevron"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="playbook-content">
+        <div class="playbook-step">
+          <span class="step-num">1.</span>
+          <span class="step-text">Scan in the Dollar Tree app before heading to register — glitch prices disappear fast.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">2.</span>
+          <span class="step-text">Take multiple items to self-checkout to test before committing.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">3.</span>
+          <span class="step-text">If it rings $1.25, the glitch may have been patched — skip or come back tomorrow.</span>
+        </div>
+        <div class="playbook-signs">
+          <strong>In-store signs</strong>
+          No special sign. Sticker price reads $7.49 or regular. Only shows $0.01 at register if glitch is live.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deal 4: Pink Tag -->
+  <div class="deal-card">
+    <div class="deal-photo">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b8b5ac" stroke-width="1" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <span class="deal-photo-label">Pink tag</span>
+      <span class="freshness-badge fresh">Fresh today</span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-title">Kids' Art Supply Kit — 48-piece colored pencil set</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$3.00</span>
+        <span class="deal-savings">Pink Penny</span>
+      </div>
+      <div class="deal-chips">
+        <span class="trust-chip pinktag">Pink penny °</span>
+        <span class="trust-chip scan">Scan to confirm</span>
+      </div>
+      <div class="deal-sku">SKU <span>403991</span></div>
+    </div>
+    <div class="playbook">
+      <button class="playbook-toggle" onclick="togglePlaybook(this)" aria-expanded="false">
+        <span class="playbook-label">How to get it</span>
+        <span class="playbook-chevron"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="playbook-content">
+        <div class="playbook-step">
+          <span class="step-num">1.</span>
+          <span class="step-text">Look for a small pink price tag or sticker — art supplies, often near school section.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">2.</span>
+          <span class="step-text">Items are ° unverified — this is community-reported, not confirmed against catalog.</span>
+        </div>
+        <div class="playbook-step">
+          <span class="step-num">3.</span>
+          <span class="step-text">Scan before going to register. Price may read $3.00 if the store hasn't rolled it.</span>
+        </div>
+        <div class="playbook-signs">
+          <strong>In-store signs</strong>
+          Distinctive small pink price sticker on the item. Not all stores participate in every pink penny event.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SECTION 3 · DEAL DETAIL (EXPANDED)        -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="section-divider"></div>
+
+<div class="anno-wrap" style="padding: 20px 20px 0; gap: 0;">
+  <span class="anno" style="margin: 0;">Section 3 · Deal detail</span>
+</div>
+
+<div class="detail-section" style="padding-top: 20px;">
+  <div class="detail-card">
+    <div class="detail-photo">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#b8b5ac" stroke-width="0.8" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <span class="detail-photo-corner">Dollar Tree</span>
+      <span class="detail-photo-badge">Fresh today</span>
+    </div>
+    <div class="detail-body">
+      <div class="detail-eyebrow">Penny list · Confirmed match</div>
+      <div class="detail-title">Assorted Crew Socks, 2-pk — various styles &amp; colors</div>
+      <div class="detail-price-row">
+        <span class="detail-price">$0.01</span>
+        <span class="detail-was">was $1.25</span>
+      </div>
+      <div class="detail-chips">
+        <span class="trust-chip penny">Penny list</span>
+        <span class="trust-chip matched">Matched to catalog</span>
+        <span class="trust-chip fresh" style="background: var(--fresh-lt); color: var(--fresh); border-color: var(--fresh);">Verified</span>
+      </div>
+      <div class="detail-sku">SKU <span>396424</span> · UPC <span>0-49200-12673-8</span></div>
+    </div>
+
+    <div class="playbook-expanded">
+      <div class="playbook-expanded-label">How to get it — playbook</div>
+      <div class="playbook-step">
+        <span class="step-num">1.</span>
+        <span class="step-text">Look in the hosiery aisle or seasonal endcap. Multiple styles may be mixed together.</span>
+      </div>
+      <div class="playbook-step">
+        <span class="step-num">2.</span>
+        <span class="step-text">Scan the barcode below (or UPC on packaging) at any price-check kiosk to confirm $0.01.</span>
+      </div>
+      <div class="playbook-step">
+        <span class="step-num">3.</span>
+        <span class="step-text">Use self-checkout where possible. If a cashier is needed, they can override — be polite, don't mention "penny list."</span>
+      </div>
+      <div class="playbook-step">
+        <span class="step-num">4.</span>
+        <span class="step-text">Grab a reasonable quantity (under 10 per household). Do not clear the shelf.</span>
+      </div>
+      <div class="playbook-signs">
+        <strong>In-store signs to look for</strong>
+        No shelf signage — these are not marked as penny items in-store. The printed price tag reads $1.25. Price updates only at the register. If it rings $1.25, the list may not have rolled to that store yet — try another location.
+      </div>
+    </div>
+
+    <div class="detail-ctas">
+      <button class="btn-primary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Scan to confirm price
+      </button>
+      <button class="btn-secondary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Mark found
+      </button>
+      <button class="btn-found">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Report not found
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="page-footer">
+  <div class="footer-wordmark">Deal Hunter</div>
+  <div class="footer-sub">Direction 1 · Premium Editorial · v1 mockup</div>
+</footer>
+
+<script>
+  function togglePlaybook(btn) {
+    var content = btn.parentElement.querySelector('.playbook-content');
+    var chevron = btn.querySelector('.playbook-chevron');
+    var isOpen = content.classList.contains('open');
+    content.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+</script>
+
+</body>
+</html>

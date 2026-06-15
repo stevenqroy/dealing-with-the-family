@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Deal Hunter — Plan</title>
+<style>
+  :root {
+    --bg:#fffefa; --ink:#23231f; --muted:#77736a; --line:#e7e3d8; --chip:#efede6;
+    --p0:#b42318; --p1:#bb4d00; --p2:#2f6f12; --p3:#5b6470; --p4:#a6a198;
+    --prog:#993556; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); }
+  .wrap { width:100%; max-width:1100px; margin:0 auto; padding:clamp(14px,2.5vw,28px); }
+  header h1 { margin:0 0 4px; font-size:20px; }
+  header .sub { color:var(--muted); font-size:13px; margin-bottom:6px; }
+  .totals { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 18px; }
+  .totals .t { background:var(--chip); border:1px solid var(--line); border-radius:999px;
+    padding:5px 11px; font-size:12px; font-weight:700; }
+  .lane { margin:0 0 22px; }
+  .lane h2 { font-size:15px; margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+  .lane h2 .count { background:var(--ink); color:var(--bg); border-radius:999px;
+    font-size:11px; padding:2px 8px; font-weight:800; }
+  .lane-note { color:var(--muted); font-size:12px; margin:-4px 0 10px; }
+  .grid { }
+  .cards, .lane { }
+  .card { border:1px solid var(--line); border-left:4px solid var(--p3);
+    border-radius:12px; padding:11px 13px; margin:0 0 9px; background:#fff; }
+  .card.p0 { border-left-color:var(--p0); }
+  .card.p1 { border-left-color:var(--p1); }
+  .card.p2 { border-left-color:var(--p2); }
+  .card.p3 { border-left-color:var(--p3); }
+  .card.p4 { border-left-color:var(--p4); }
+  .card .row { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .pri { font-size:11px; font-weight:800; border-radius:6px; padding:1px 7px; color:#fff; }
+  .pri0 { background:var(--p0); } .pri1 { background:var(--p1); }
+  .pri2 { background:var(--p2); } .pri3 { background:var(--p3); } .pri4 { background:var(--p4); }
+  .status { font-size:11px; font-weight:700; color:var(--muted); text-transform:capitalize; }
+  .st-in-progress { color:var(--prog); font-weight:800; }
+  .id { font-size:11px; color:var(--p4); margin-left:auto; font-variant:tabular-nums; }
+  .title { font-size:14px; font-weight:650; line-height:1.3; }
+  .snip { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.35; }
+  .parked .card { background:#faf9f5; opacity:.92; }
+  .done .donelist { list-style:none; padding:0; margin:0; columns:2; column-gap:18px; }
+  .done .donelist li { font-size:12px; color:var(--muted); margin:0 0 5px;
+    break-inside:avoid; line-height:1.3; }
+  .done .more { font-weight:700; color:var(--ink); }
+  @media (max-width:560px) { .done .donelist { columns:1; } }
+  footer { color:var(--p4); font-size:11px; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Deal Hunter — Plan</h1>
+    <div class="sub">Live from the issue tracker · grouped by theme</div>
+    <div class="totals">
+      <span class="t">26 active</span>
+      <span class="t">1 in progress</span>
+      <span class="t">10 parked</span>
+      <span class="t">25 done</span>
+    </div>
+  </header>
+  <section class="lane"><h2>📡 Keep deals flowing (capture) <span class="count">4</span></h2><div class="card p0"><div class="row"><span class="pri pri0">P0</span><span class="status st-in-progress">in progress</span><span class="id">dealhunter-905</span></div><div class="title">Extension: unparseable timestamps must not defeat the age cap (FB-safety)</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 2</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-l6t</span></div><div class="title">Add runtime heartbeat for capture loop</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-o31</span></div><div class="title">Pause-aware capture staleness alarm</div><div class="snip">Scheduled check that alerts when capture goes stale UNEXPECTEDLY</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-phf</span></div><div class="title">Deal watch + alert/notification system</div><div class="snip">Saved-search watches: user enters a term (e.g</div></div></section>
+<section class="lane"><h2>💎 Make the deals good (core mission) <span class="count">4</span></h2><div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-3t4</span></div><div class="title">Track deal quality as a metric over time</div><div class="snip">Log photo-coverage % and match-rate % (and extraction-confidence trend) so we can SEE if deals improve</div></div>
+<div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-7f4</span></div><div class="title">Grow catalog matching so deals get photos</div><div class="snip">97% of captured deals (528/541 mentions) never resolve to a catalog product, so most cards are blank</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-87e</span></div><div class="title">Reprocess extraction when late comments arrive</div><div class="snip">/api/posts/comments only updates comments_text; never re-scores or re-extracts, dropping comment signal</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-vnl</span></div><div class="title">One ranking score (fix/kill dead worth_score)</div><div class="snip">score_post (engagement, 0-400+) vs worth_score (taxonomy, maxes 3.43/100 = dead) conflict; &#x27;sort by value&#x27; is near-random</div></div></section>
+<section class="lane"><h2>🛠️ Tooling &amp; visibility <span class="count">2</span></h2><div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-6px</span></div><div class="title">Build read-only kanban board generated from Beads (category swimlanes)</div><div class="snip">Decision (Claude+Codex): keep Beads as fast SSoT; GENERATE a read-only kanban board grouped by category swimlanes, showing category-&gt;epic-&gt;task, status colum…</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-u9x</span></div><div class="title">build_staging_snapshot.py emits non-deterministic order</div><div class="snip">The imageless-live-deal tail and tie groups sort with no stable tiebreak, so re-running the builder on an unchanged DB produces a reshuffled data.js (224/224…</div></div></section>
+<section class="lane"><h2>🛒 Family app (your phone) <span class="count">8</span></h2><div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-82f</span></div><div class="title">Store-focused view: hide other store names when inside one store</div><div class="snip">Selecting a store (e.g</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-m21</span></div><div class="title">High-end redesign of the top filter/nav UI</div><div class="snip">Current top filter buttons feel a little ugly / not high-end</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-nun</span></div><div class="title">Aisle-aligned product categories (map categories to store aisles)</div><div class="snip">Categories should match the aisles a shopper is standing in, so they can find products in-store</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-2qv</span></div><div class="title">Family app: surface in-store where-to-look / run-the-play notes per deal</div><div class="snip">Original Store-Mode direction + deal taxonomy (actionPlan/inStoreSigns) carry where-to-look guidance, but nothing surfaces it in the family app detail view</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-6ge</span></div><div class="title">Family app: remove &#x27;Staging snapshot for family review&#x27; banner</div><div class="snip">Operator says the green &#x27;Staging snapshot for family review</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-70o</span></div><div class="title">Accounts page</div><div class="snip">User accounts page</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-fwz</span></div><div class="title">Family app: photo-swipe as a first-class view mode (grid/list/photo-swipe)</div><div class="snip">Design proposal wanted grid / list / photo-swipe as three coequal views; today photo-swipe is only a modal triggered from a tile</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-mhe</span></div><div class="title">Family app: verify + fix back/prev arrows (operator reported breakage)</div><div class="snip">Operator reported a broken left/back arrow earlier</div></div></section>
+<section class="lane"><h2>🔒 Security &amp; data <span class="count">6</span></h2><div class="card p1"><div class="row"><span class="pri pri1">P1</span><span class="status st-open">open</span><span class="id">dealhunter-1k0</span></div><div class="title">Authenticate the /api/intake endpoint</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 3</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-7a1</span></div><div class="title">Modern protection: rulesets + CODEOWNERS (+ merge queue)</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 10</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-hgf</span></div><div class="title">Automated DB backup</div><div class="snip">deals.db (725 irreplaceable posts) last backed up manually 6 days ago</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-pd7</span></div><div class="title">Reaper for stale &#x27;claimed&#x27; envelopes in extract_worker</div><div class="snip">Follow-up to dealhunter-2ba: if a worker crashes after claim_batch but before process_batch, rows stay status=&#x27;claimed&#x27; forever</div></div>
+<div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-open">open</span><span class="id">dealhunter-yaf</span></div><div class="title">Durable private mobile access via Tailscale Serve</div><div class="snip">Recurring need: reach the operator dashboard (FastAPI 127.0.0.1:8099, FB-private data) from the phone while away</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-oxv</span></div><div class="title">bd doctor --deep + gitleaks in CI</div><div class="snip">See docs/review/CODEX_EXECUTION_PLAN.md Task 9</div></div></section>
+<section class="lane"><h2>🧹 Cleanup <span class="count">2</span></h2><div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-11y</span></div><div class="title">Delete inherited Telegram code from the extension</div><div class="snip">Dormant Telegram alert path (popup/background sendTelegram) inherited from OpenClaw; defaults off but a latent FB-data exfil path + stored-credential surface…</div></div>
+<div class="card p3"><div class="row"><span class="pri pri3">P3</span><span class="status st-open">open</span><span class="id">dealhunter-edi</span></div><div class="title">Remove vestigial --changed path from verify_packets.py</div><div class="snip">CI uses default (content-addressed baseline) mode now; the --changed/changed_result_files git-diff path in scripts/verify_packets.py is unused</div></div></section>
+<section class="lane parked"><h2>🅿️ Parked · decided against <span class="count">10</span></h2><p class="lane-note">Deliberately not doing these now — kept so the decision is visible and we can change our mind.</p><div class="card p2"><div class="row"><span class="pri pri2">P2</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-6nq</span></div><div class="title">Extract reusable multi-project Golden Workflow core after pilot evidence</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-082</span></div><div class="title">[PARKED] GitHub Issues instead of Beads for task tracking</div><div class="snip">REJECTED after Codex analysis: GitHub Issues would throttle agents (~80 mutations/min secondary limits) and lose local-DB speed + agent-native workflow</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-1d7</span></div><div class="title">[PARKED] Display FB post photos (even scrubbed/cropped) in any client app</div><div class="snip">REJECTED on privacy + provenance: FB post photos are PRIVATE VALIDATORS ONLY, never displayed to family even scrubbed/cropped</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-open">open</span><span class="id">dealhunter-1kz</span></div><div class="title">[PARKED] Family feedback as the PRIMARY improvement engine</div><div class="snip">DECIDED AGAINST 2026-06-15: demoted from primary improvement engine to a SECONDARY signal after a blind adversarial Codex review reversed the convenient yes</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-2yk</span></div><div class="title">[PARKED] Google Shopping API for product image search</div><div class="snip">REJECTED: Google Custom Search needs a paid API key and is closed to new customers; Content API sunset -&gt; Merchant API (also keyed)</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-8ej</span></div><div class="title">[PARKED] Family feedback as the PRIMARY improvement engine</div><div class="snip">DECIDED AGAINST 2026-06-15: demoted from primary improvement engine to a SECONDARY signal after a blind adversarial Codex review reversed the convenient yes</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-d4e</span></div><div class="title">[PARKED] Monetization / paid proof-photos / referral revenue</div><div class="snip">FROZEN until deals are genuinely good (fresh + matched + photos)</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-dmr</span></div><div class="title">[PARKED] Homemade claim-ledger orchestrator (claim.py / claims.jsonl)</div><div class="snip">RETIRED 2026-06-12 (PR #3), archived under archive/orchestration-legacy-*</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-deferred">deferred</span><span class="id">dealhunter-hw0</span></div><div class="title">[PARKED] Public tunnels (cloudflared/ngrok) as DURABLE mobile access</div><div class="snip">REJECTED as a standing setup: independent Codex review judged public tunnels below the bar for FB-private data</div></div>
+<div class="card p4"><div class="row"><span class="pri pri4">P4</span><span class="status st-open">open</span><span class="id">dealhunter-n2o</span></div><div class="title">[PARKED] Monetization / paid proof-photos / referral revenue</div><div class="snip">FROZEN until deals are genuinely good (fresh + matched + photos)</div></div></section>
+<section class="lane done"><h2>✅ Recently done <span class="count">25</span></h2><ul class="donelist"><li><span class="id">dealhunter-0l3</span> Family app: kill wasted whitespace frame, fill the screen at all widths</li>
+<li><span class="id">dealhunter-1ol</span> Document eval harness recommendation</li>
+<li><span class="id">dealhunter-2ba</span> Atomic envelope claiming in extract_worker</li>
+<li><span class="id">dealhunter-4lw</span> UI: rename the &#x27;Console&#x27; tab to a plain label</li>
+<li><span class="id">dealhunter-5rj</span> Restore product grid view + keep all view options</li>
+<li><span class="id">dealhunter-6g1</span> LLM extraction eval harness (pytest golden, opt-in, no API keys)</li>
+<li><span class="id">dealhunter-6n5</span> Publish family-facing Deal Hunter staging app</li>
+<li><span class="id">dealhunter-86r</span> Improve deal-type classification in extraction (eval 0.90)</li>
+<li><span class="id">dealhunter-9oy</span> UI: make the app fully responsive</li>
+<li><span class="id">dealhunter-9rv</span> UI: hide internal &#x27;N staged&#x27; counter from users</li>
+<li><span class="id">dealhunter-avo</span> UI: brand/category filter pills</li>
+<li><span class="id">dealhunter-c57</span> Add upstream sanity and mechanical context breaker</li>
+<li><span class="id">dealhunter-gb6</span> PR tonight&#x27;s security fixes (SSRF + auth host-allowlist)</li>
+<li><span class="id">dealhunter-h93</span> Add CI check gate and branch-protection documentation</li>
+<li><span class="id">dealhunter-hsj</span> Replace AGENTS.md ledger workflow with Beads/worktrees/PR truth</li><li class="more">+10 more done</li></ul></section>
+  <footer>Read-only snapshot. Regenerate with scripts/build_plan_board.py.</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,1313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter v2 — Direction 1</title>
+<style>
+/* ── Design tokens ── */
+:root {
+  --chrome:       #111318;
+  --chrome-mid:   #1a1e26;
+  --chrome-sub:   #242830;
+  --surface:      #f4f5f7;
+  --card:         #ffffff;
+  --ink:          #0f1117;
+  --ink-2:        #3d4250;
+  --ink-3:        #7a7f90;
+  --accent:       #1a7cff;
+  --accent-glow:  rgba(26, 124, 255, .18);
+  --accent-2:     #0adf8e;       /* emerald for "found" / green signals */
+  --danger:       #ff4a4a;
+  --warn:         #ffb31a;
+  --penny:        #b3a0ff;       /* soft purple for penny deals */
+  --rail-h:       60px;
+  --nav-h:        52px;
+  --bar-h:        calc(var(--rail-h) + var(--nav-h));
+  --r-card:       14px;
+  --r-chip:       999px;
+  --shadow-card:  0 2px 8px rgba(0,0,0,.09), 0 0 1px rgba(0,0,0,.06);
+  --shadow-float: 0 8px 28px rgba(0,0,0,.18), 0 1px 4px rgba(0,0,0,.12);
+  font: -apple-system-body, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { background: var(--chrome); }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--surface);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  /* Constrain to mobile viewport for mockup */
+  max-width: 390px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ────────────────────────────────────────────
+   TOP CHROME  (dark nav + store rail)
+──────────────────────────────────────────── */
+.top-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--chrome);
+}
+
+/* Status-bar placeholder */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: rgba(255,255,255,.55);
+}
+.status-bar .time { color: #fff; font-size: 14px; font-weight: 700; }
+.status-icons { display: flex; gap: 5px; align-items: center; }
+.status-icons svg { width: 14px; height: 14px; fill: rgba(255,255,255,.8); }
+
+/* App nav row */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 10px;
+  height: var(--nav-h);
+}
+.app-wordmark {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  color: #fff;
+  flex: 1;
+}
+.app-wordmark span { color: var(--accent); }
+.nav-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.85);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.nav-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bell-badge {
+  position: absolute;
+  top: 6px; right: 7px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--chrome);
+  animation: bellpulse 2.4s ease-in-out infinite;
+}
+@keyframes bellpulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.live-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,.45);
+  padding: 0 14px 8px;
+  letter-spacing: .01em;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  animation: dotpulse 2s infinite;
+}
+@keyframes dotpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+/* Store rail */
+.store-rail {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.store-rail::-webkit-scrollbar { display: none; }
+.store-tile {
+  flex: 0 0 auto;
+  background: var(--chrome-sub);
+  border-radius: 12px;
+  padding: 9px 12px 8px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color .12s;
+  min-width: 84px;
+}
+.store-tile.active {
+  border-color: var(--accent);
+  background: rgba(26,124,255,.12);
+}
+.store-tile-logo {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.store-tile.active .store-tile-logo { color: var(--accent); }
+.store-tile-deal {
+  font-size: 10px;
+  line-height: 1.25;
+  color: rgba(255,255,255,.75);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+.store-tile-count {
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.28);
+  text-transform: uppercase;
+}
+
+/* ────────────────────────────────────────────
+   FILTER STRIP
+──────────────────────────────────────────── */
+.filter-strip {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.filter-strip::-webkit-scrollbar { display: none; }
+.fchip {
+  flex: 0 0 auto;
+  border-radius: var(--r-chip);
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid #dde0e8;
+  background: var(--card);
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: .01em;
+}
+.fchip.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.fchip.penny-chip.active {
+  background: var(--penny);
+  border-color: var(--penny);
+  color: #fff;
+}
+
+/* Section header */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 4px 14px 8px;
+}
+.section-head h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.2px;
+  color: var(--ink);
+}
+.section-head .count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+/* ────────────────────────────────────────────
+   DEAL GRID — 2 columns, tight
+──────────────────────────────────────────── */
+.deal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 10px 100px;
+}
+
+.deal-card {
+  background: var(--card);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: transform .12s, box-shadow .12s;
+  -webkit-user-select: none;
+}
+.deal-card:active { transform: scale(.975); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+/* Photo area */
+.deal-photo {
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient placeholders — each store/type gets a color pair */
+.gp-1  { background: linear-gradient(135deg, #f5c8c8 0%, #f9e0e0 60%, #fdeef8 100%); }
+.gp-2  { background: linear-gradient(135deg, #c8d5f5 0%, #dce8fc 60%, #eef6ff 100%); }
+.gp-3  { background: linear-gradient(135deg, #c8f5d5 0%, #dafce8 60%, #eefffb 100%); }
+.gp-4  { background: linear-gradient(135deg, #f5e4c8 0%, #fdf3dc 60%, #fff9ee 100%); }
+.gp-5  { background: linear-gradient(135deg, #e4c8f5 0%, #f3dcfd 60%, #fbeeff 100%); }
+.gp-6  { background: linear-gradient(135deg, #c8f5f5 0%, #dcfdfc 60%, #eefeff 100%); }
+.gp-7  { background: linear-gradient(135deg, #f5f5c8 0%, #fdfce0 60%, #fefff0 100%); }
+.gp-8  { background: linear-gradient(135deg, #f5cae8 0%, #fdddf4 60%, #fff0fc 100%); }
+.gp-9  { background: linear-gradient(135deg, #caf5e8 0%, #dcfdf4 60%, #eefff8 100%); }
+.gp-10 { background: linear-gradient(135deg, #cae0f5 0%, #dceeff 60%, #f0f8ff 100%); }
+.gp-11 { background: linear-gradient(135deg, #f5d0ca 0%, #fde7e4 60%, #fff5f3 100%); }
+.gp-12 { background: linear-gradient(135deg, #d0caf5 0%, #e4defb 60%, #f3f0ff 100%); }
+
+.deal-photo-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  line-height: 1;
+  position: relative;
+}
+
+/* Deal-type badge over photo */
+.deal-type-badge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  line-height: 1.4;
+  backdrop-filter: blur(6px);
+}
+.badge-penny   { background: rgba(100,60,220,.82); color: #e8e0ff; }
+.badge-clear   { background: rgba(255,59,48,.75);  color: #fff; }
+.badge-coupon  { background: rgba(10,120,200,.8);  color: #fff; }
+.badge-glitch  { background: rgba(0,0,0,.65);       color: #fff; }
+.badge-pink    { background: rgba(180,0,90,.75);   color: #ffd6ec; }
+
+/* Freshness pip — top right */
+.fresh-pip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.7);
+}
+.pip-fresh { background: #0adf8e; }
+.pip-ok    { background: #ffb31a; }
+.pip-old   { background: #ff5a5a; }
+
+/* Store logo strip at bottom of photo */
+.photo-store-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 8px 6px;
+  background: linear-gradient(to top, rgba(0,0,0,.3) 0%, transparent 100%);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.85);
+}
+
+/* Card body */
+.deal-body {
+  padding: 8px 9px 9px;
+}
+.deal-title {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  letter-spacing: -.1px;
+}
+.deal-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+.deal-price {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -.5px;
+}
+.deal-price.penny-price { color: #7050c8; }
+.deal-was {
+  font-size: 10px;
+  color: var(--ink-3);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+.deal-off {
+  font-size: 10px;
+  font-weight: 800;
+  color: #12b070;
+  letter-spacing: .01em;
+}
+
+/* Trust + freshness row */
+.deal-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.meta-chip {
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  line-height: 1.4;
+}
+.trust-high   { background: #e5f9f0; color: #0a7a46; }
+.trust-mid    { background: #fff4e0; color: #8a5800; }
+.trust-unver  { background: #f4f4f8; color: var(--ink-3); }
+.fresh-chip-new  { background: #e8f4ff; color: #0050b3; }
+.fresh-chip-ok   { background: #f4f4f8; color: var(--ink-3); }
+.fresh-chip-old  { background: #fff1f1; color: #b30000; }
+
+.meta-dot { color: var(--ink-3); font-size: 9px; }
+.meta-velo {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.meta-velo .arrow { color: #0adf8e; font-size: 8px; }
+
+/* Found overlay */
+.deal-card.found::after {
+  content: "✓ Got it";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .02em;
+  border-radius: var(--r-card);
+}
+
+/* ────────────────────────────────────────────
+   BOTTOM NAV
+──────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 390px;
+  background: rgba(17,19,24,.96);
+  backdrop-filter: blur(14px) saturate(160%);
+  border-top: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  z-index: 30;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 0 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,.35);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.bnav-item.active { color: var(--accent); }
+.bnav-item svg {
+  width: 22px; height: 22px;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.bnav-item.active svg { stroke: var(--accent); }
+
+/* Progress bar strip */
+.progress-strip {
+  position: sticky;
+  bottom: var(--nav-h);
+  z-index: 20;
+  background: rgba(244,245,247,.94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  padding: 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.progress-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.progress-bar-track {
+  flex: 1;
+  height: 4px;
+  background: #e4e6ed;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 18%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width .3s;
+}
+.progress-sort {
+  display: flex;
+  gap: 4px;
+}
+.sort-btn {
+  border-radius: 6px;
+  border: 1px solid #dde0e8;
+  background: var(--card);
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  cursor: pointer;
+  letter-spacing: .02em;
+}
+.sort-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ────────────────────────────────────────────
+   DEAL DETAIL MODAL
+──────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(8,10,16,.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.hidden { display: none; }
+.modal-sheet {
+  width: 100%;
+  max-width: 390px;
+  background: var(--card);
+  border-radius: 22px 22px 0 0;
+  box-shadow: var(--shadow-float);
+  max-height: 88dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-drag-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #dde0e8;
+  margin: 10px auto 14px;
+}
+
+/* Big photo in modal */
+.modal-photo {
+  margin: 0 14px;
+  aspect-ratio: 3/2;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  position: relative;
+  overflow: hidden;
+}
+.modal-photo-store {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+.modal-photo-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+}
+
+.modal-body { padding: 14px 16px 20px; }
+.modal-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  margin: 0 0 2px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.modal-sku {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: .02em;
+  margin-bottom: 10px;
+}
+
+.modal-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.modal-price-big {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: #7050c8;
+}
+.modal-was { font-size: 13px; text-decoration: line-through; color: var(--ink-3); }
+.modal-off {
+  background: #e5f9f0;
+  color: #0a7a46;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 7px;
+  padding: 3px 8px;
+}
+
+/* Trust bar */
+.trust-bar {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trust-icon { font-size: 18px; }
+.trust-label-text { font-size: 12px; font-weight: 700; color: var(--ink-2); }
+.trust-sub { font-size: 11px; color: var(--ink-3); }
+.trust-signal {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0a7a46;
+}
+
+/* Playbook steps */
+.playbook-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -.1px;
+  color: var(--ink);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 11px;
+}
+.step-list { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 9px 11px;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.step-text { font-size: 12px; line-height: 1.4; color: var(--ink-2); font-weight: 500; }
+.step-text strong { color: var(--ink); font-weight: 700; }
+
+/* In-signs row */
+.signs-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.sign-chip {
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sign-red   { background: #fff1f1; color: #c0001a; }
+.sign-blue  { background: #e8f2ff; color: #0040a0; }
+.sign-green { background: #e6fbf2; color: #007040; }
+
+/* Action buttons */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: .01em;
+}
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid #dde0e8;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-found {
+  background: var(--accent-2);
+  color: #003820;
+}
+
+/* ────────────────────────────────────────────
+   SCAN CONFIRM BANNER
+──────────────────────────────────────────── */
+.scan-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(26,124,255,.1), rgba(26,124,255,.05));
+  border: 1.5px solid rgba(26,124,255,.25);
+  border-radius: 10px;
+  padding: 9px 12px;
+  margin-bottom: 14px;
+}
+.scan-icon { font-size: 22px; }
+.scan-text { font-size: 12px; font-weight: 600; color: var(--ink-2); flex: 1; }
+.scan-text strong { color: var(--accent); font-weight: 800; }
+.scan-btn {
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Inline search */
+.grid-search {
+  margin: 0 10px 8px;
+  position: relative;
+}
+.grid-search input {
+  width: 100%;
+  padding: 9px 10px 9px 34px;
+  border: 1.5px solid #dde0e8;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--card);
+  outline: none;
+}
+.grid-search input:focus { border-color: var(--accent); }
+.grid-search .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+}
+.grid-search .search-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP CHROME ─── -->
+<div class="top-chrome">
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 24 24"><path d="M1 6c0 0 5-4 11-4s11 4 11 4M4 10c0 0 3.5-3 8-3s8 3 8 3M7 14c0 0 2-2 5-2s5 2 5 2M12 18h.01"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"/><path d="M22 11v2"/></svg>
+    </div>
+  </div>
+
+  <div class="app-nav">
+    <div class="app-wordmark">Deal<span>Hunter</span></div>
+    <button class="nav-icon-btn" onclick="void 0">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="nav-icon-btn" onclick="void 0">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="bell-badge"></span>
+    </button>
+  </div>
+
+  <div class="live-row">
+    <span class="live-dot"></span>
+    Alerts on · updated 4 min ago
+  </div>
+
+  <!-- Store rail -->
+  <div class="store-rail">
+    <div class="store-tile active" onclick="void 0">
+      <div class="store-tile-logo">DT</div>
+      <div class="store-tile-deal">Penny list · 1¢</div>
+      <div class="store-tile-count">24 deals</div>
+    </div>
+    <div class="store-tile" onclick="void 0">
+      <div class="store-tile-logo">Target</div>
+      <div class="store-tile-deal">70% off camping</div>
+      <div class="store-tile-count">11 deals</div>
+    </div>
+    <div class="store-tile" onclick="void 0">
+      <div class="store-tile-logo">DG</div>
+      <div class="store-tile-deal">$5 off $25+</div>
+      <div class="store-tile-count">8 deals</div>
+    </div>
+    <div class="store-tile" onclick="void 0">
+      <div class="store-tile-logo">Wmt</div>
+      <div class="store-tile-deal">Glitch · $2 toys</div>
+      <div class="store-tile-count">3 deals</div>
+    </div>
+    <div class="store-tile" onclick="void 0">
+      <div class="store-tile-logo">JCP</div>
+      <div class="store-tile-deal">Pink tag $5</div>
+      <div class="store-tile-count">6 deals</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FILTER STRIP ─── -->
+<div class="filter-strip">
+  <div class="fchip active">All</div>
+  <div class="fchip penny-chip active" onclick="void 0">🪙 Penny</div>
+  <div class="fchip">Clearance</div>
+  <div class="fchip">Coupon</div>
+  <div class="fchip">Glitch</div>
+  <div class="fchip">Pink Tag</div>
+</div>
+
+<!-- Search -->
+<div class="grid-search">
+  <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+  <input type="search" placeholder="Search name or SKU…">
+</div>
+
+<!-- Section header -->
+<div class="section-head">
+  <h2>Dollar Tree · Penny List</h2>
+  <span class="count">24 deals</span>
+</div>
+
+<!-- ─── DEAL GRID ─── -->
+<div class="deal-grid">
+
+  <!-- Card 1: Penny socks -->
+  <div class="deal-card" onclick="openModal()">
+    <div class="deal-photo gp-1">
+      <div class="deal-photo-inner">🧦</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Dollar Tree</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Elmo Black Crew Socks</p>
+      <div class="deal-price-row">
+        <span class="deal-price penny-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Verified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-new">Just in</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Penny socks -->
+  <div class="deal-card" onclick="openModal()">
+    <div class="deal-photo gp-5">
+      <div class="deal-photo-inner">🦸</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Dollar Tree</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Spiderman Face Crew Socks</p>
+      <div class="deal-price-row">
+        <span class="deal-price penny-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Verified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-velo"><span class="arrow">▲</span>9</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Clearance -->
+  <div class="deal-card">
+    <div class="deal-photo gp-3">
+      <div class="deal-photo-inner">🏕️</div>
+      <span class="deal-type-badge badge-clear">Clearance</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Target</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Coleman Camp Chair — Alpine</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$7.49</span>
+        <span class="deal-was">$24.99</span>
+        <span class="deal-off">−70%</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Confirmed</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-new">Today</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Coupon -->
+  <div class="deal-card">
+    <div class="deal-photo gp-2">
+      <div class="deal-photo-inner">🧴</div>
+      <span class="deal-type-badge badge-coupon">Coupon</span>
+      <span class="fresh-pip pip-ok"></span>
+      <div class="photo-store-label">Dollar General</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Dove Body Wash 20 oz</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$2.95</span>
+        <span class="deal-was">$7.99</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-mid">Likely</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-ok">2d ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: Glitch -->
+  <div class="deal-card">
+    <div class="deal-photo gp-7">
+      <div class="deal-photo-inner">🚂</div>
+      <span class="deal-type-badge badge-glitch">Glitch</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Walmart</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Melissa & Doug Train Set</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$2.00</span>
+        <span class="deal-was">$29.97</span>
+        <span class="deal-off">−93%</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-unver">Unverified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-new">1h ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 6: Pink tag, found -->
+  <div class="deal-card found">
+    <div class="deal-photo gp-8">
+      <div class="deal-photo-inner">👗</div>
+      <span class="deal-type-badge badge-pink">Pink Tag</span>
+      <span class="fresh-pip pip-ok"></span>
+      <div class="photo-store-label">JCPenney</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Women's Summer Dress</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$5.00</span>
+        <span class="deal-was">$39.99</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Confirmed</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-ok">Yesterday</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 7: Penny -->
+  <div class="deal-card" onclick="openModal()">
+    <div class="deal-photo gp-6">
+      <div class="deal-photo-inner">🦕</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Dollar Tree</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Jurassic Park Claws Socks</p>
+      <div class="deal-price-row">
+        <span class="deal-price penny-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Verified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-velo"><span class="arrow">▲</span>14</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 8: Clearance -->
+  <div class="deal-card">
+    <div class="deal-photo gp-4">
+      <div class="deal-photo-inner">🍳</div>
+      <span class="deal-type-badge badge-clear">Clearance</span>
+      <span class="fresh-pip pip-ok"></span>
+      <div class="photo-store-label">Target</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Calphalon Nonstick Pan 10"</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$11.24</span>
+        <span class="deal-was">$44.99</span>
+        <span class="deal-off">−75%</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-mid">Likely</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-ok">2d ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 9: Penny -->
+  <div class="deal-card" onclick="openModal()">
+    <div class="deal-photo gp-9">
+      <div class="deal-photo-inner">🧀</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="fresh-pip pip-ok"></span>
+      <div class="photo-store-label">Dollar Tree</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Cheez-It Crew Socks</p>
+      <div class="deal-price-row">
+        <span class="deal-price penny-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Verified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-ok">2d ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 10: Coupon -->
+  <div class="deal-card">
+    <div class="deal-photo gp-10">
+      <div class="deal-photo-inner">🥤</div>
+      <span class="deal-type-badge badge-coupon">Coupon</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Dollar General</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Gatorade 32 oz 4-pack</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$3.50</span>
+        <span class="deal-was">$8.99</span>
+        <span class="deal-off">−61%</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Confirmed</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-new">Today</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 11: Penny -->
+  <div class="deal-card" onclick="openModal()">
+    <div class="deal-photo gp-11">
+      <div class="deal-photo-inner">🏔️</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="fresh-pip pip-fresh"></span>
+      <div class="photo-store-label">Dollar Tree</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">Mountain Dew Crew Socks</p>
+      <div class="deal-price-row">
+        <span class="deal-price penny-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-high">Verified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-velo"><span class="arrow">▲</span>11</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 12: Glitch -->
+  <div class="deal-card">
+    <div class="deal-photo gp-12">
+      <div class="deal-photo-inner">🎮</div>
+      <span class="deal-type-badge badge-glitch">Glitch</span>
+      <span class="fresh-pip pip-old"></span>
+      <div class="photo-store-label">Walmart</div>
+    </div>
+    <div class="deal-body">
+      <p class="deal-title">LEGO Classic Box Set 484pc</p>
+      <div class="deal-price-row">
+        <span class="deal-price">$5.00</span>
+        <span class="deal-was">$49.99</span>
+        <span class="deal-off">−90%</span>
+      </div>
+      <div class="deal-meta">
+        <span class="meta-chip trust-unver">Unverified</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-chip fresh-chip-old">4d ago</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Progress strip -->
+<div class="progress-strip">
+  <span class="progress-text">4 of 24 found</span>
+  <div class="progress-bar-track"><div class="progress-bar-fill"></div></div>
+  <div class="progress-sort">
+    <button class="sort-btn active">Hot</button>
+    <button class="sort-btn">Value</button>
+    <button class="sort-btn">New</button>
+  </div>
+</div>
+
+<!-- ─── BOTTOM NAV ─── -->
+<div class="bottom-nav">
+  <button class="bnav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Deals
+  </button>
+  <button class="bnav-item">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z"/><path d="M9 7V4h6v3"/></svg>
+    Shopping
+  </button>
+  <button class="bnav-item">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search
+  </button>
+  <button class="bnav-item">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile
+  </button>
+</div>
+
+<!-- ─── DEAL DETAIL MODAL ─── -->
+<div class="modal-overlay hidden" id="modal" onclick="closeModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-drag-handle"></div>
+
+    <!-- Big photo -->
+    <div class="modal-photo gp-1">
+      <div style="font-size:80px;display:flex;align-items:center;justify-content:center;width:100%;height:100%;">🧦</div>
+      <div class="modal-photo-badge badge-penny">Penny List</div>
+      <div class="modal-photo-store">Dollar Tree · SKU 390887</div>
+    </div>
+
+    <div class="modal-body">
+      <h2 class="modal-title">Elmo Black Crew Socks</h2>
+      <div class="modal-sku">SKU 390887 · Novelty Socks · June 2026 penny list</div>
+
+      <!-- Price -->
+      <div class="modal-price-row">
+        <span class="modal-price-big">$0.01</span>
+        <span class="modal-was">was $1.25</span>
+        <span class="modal-off">−99%</span>
+      </div>
+
+      <!-- Trust bar -->
+      <div class="trust-bar">
+        <span class="trust-icon">✅</span>
+        <div>
+          <div class="trust-label-text">Verified by community</div>
+          <div class="trust-sub">18 reports · high confidence</div>
+        </div>
+        <div class="trust-signal">▲ 8 <span style="color:var(--ink-3);font-weight:600;font-size:11px;">/hr</span></div>
+      </div>
+
+      <!-- Scan banner -->
+      <div class="scan-banner">
+        <span class="scan-icon">📷</span>
+        <div class="scan-text">Confirm price at <strong>any register or price scanner</strong> before taking to checkout.</div>
+        <button class="scan-btn">Scan SKU</button>
+      </div>
+
+      <!-- Playbook -->
+      <p class="playbook-title">How to get it</p>
+      <ol class="step-list">
+        <li class="step">
+          <span class="step-num">1</span>
+          <span class="step-text">Head to the <strong>socks &amp; accessories aisle</strong> — usually aisle 4 or 5. Look on lower pegs.</span>
+        </li>
+        <li class="step">
+          <span class="step-num">2</span>
+          <span class="step-text">Find <strong>Elmo black crew socks</strong>. Match the package art — red character on black background, SKU on back.</span>
+        </li>
+        <li class="step">
+          <span class="step-num">3</span>
+          <span class="step-text">Scan at any <strong>price checker kiosk</strong> or self-checkout. Should ring $0.01.</span>
+        </li>
+        <li class="step">
+          <span class="step-num">4</span>
+          <span class="step-text">If it rings wrong, <strong>politely show cashier</strong> this screen. Most will honor it.</span>
+        </li>
+      </ol>
+
+      <!-- In-store signs -->
+      <div class="signs-row">
+        <span class="sign-chip sign-red">🔴 No clearance sticker</span>
+        <span class="sign-chip sign-blue">🔵 Regular shelf price</span>
+        <span class="sign-chip sign-green">✅ Rings at register</span>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="modal-actions">
+        <button class="btn-primary btn-found" onclick="closeModal()">✓ Mark as Found</button>
+        <button class="btn-secondary" onclick="closeModal()">Back to deals</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+}
+
+// Filter chip toggle
+document.querySelectorAll('.fchip').forEach(chip => {
+  chip.addEventListener('click', function() {
+    if (this.textContent.trim() === 'All') {
+      document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    } else {
+      document.querySelector('.fchip:first-child').classList.remove('active');
+      this.classList.toggle('active');
+    }
+  });
+});
+
+// Store rail toggle
+document.querySelectorAll('.store-tile').forEach(tile => {
+  tile.addEventListener('click', function() {
+    document.querySelectorAll('.store-tile').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Sort buttons
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

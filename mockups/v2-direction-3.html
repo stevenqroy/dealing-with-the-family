@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter v2 · Direction 3</title>
+<style>
+:root {
+  --bg: #f5f2ed;
+  --surface: #faf9f6;
+  --card: #ffffff;
+  --ink: #1a1814;
+  --ink2: #4a4640;
+  --ink3: #8a8580;
+  --line: #e4dfd6;
+  --line2: #ede9e2;
+  --accent: #1a3a5c;
+  --accent-bg: #e8eff7;
+  --accent-mid: #2a5a90;
+  --green: #1f5c1a;
+  --green-bg: #eaf3e8;
+  --green-mid: #2e8a26;
+  --pink: #7a1f42;
+  --pink-bg: #f7eaf0;
+  --amber: #7a4a10;
+  --amber-bg: #fdf3e3;
+  --red: #7a1e1e;
+  --red-bg: #faeaea;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --font-disp: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; border: none; background: none; }
+
+/* ─── TOP BAR ─── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(250,249,246,0.93);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line2);
+  padding: 12px 16px 0;
+}
+.topbar-row1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.logo-mark {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.topbar-title {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--ink);
+  flex: 1;
+}
+.topbar-title span { color: var(--accent-mid); }
+.bell-btn {
+  position: relative;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+}
+.bell-btn svg { width: 18px; height: 18px; fill: none; stroke: var(--ink2); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bell-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-mid);
+  border: 2px solid var(--surface);
+}
+.alerts-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  background: var(--accent-bg);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-mid);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ─── STORE CHIPS RAIL ─── */
+.store-rail {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 0 0 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.store-rail::-webkit-scrollbar { display: none; }
+.store-chip {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 11px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  min-width: 0;
+  transition: border-color 0.12s, background 0.12s;
+}
+.store-chip.active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.store-chip-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+}
+.store-chip.active .store-chip-name { color: var(--accent); }
+.store-chip-deal {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink3);
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+.store-chip.active .store-chip-deal { color: var(--accent-mid); }
+
+/* ─── FILTER PILLS ROW ─── */
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 8px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line2);
+  -webkit-overflow-scrolling: touch;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.fpill {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.fpill.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ─── SECTION HEADING ─── */
+.section-head {
+  padding: 12px 16px 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.section-head-title {
+  font-family: var(--font-disp);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+  flex: 1;
+}
+.section-head-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink3);
+}
+.sort-row {
+  display: flex; gap: 4px; align-items: center;
+}
+.sort-btn {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink3);
+  background: transparent;
+  letter-spacing: 0.01em;
+}
+.sort-btn.active {
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+/* ─── DEAL GRID ─── */
+.deal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  padding: 0 12px 12px;
+}
+
+/* ─── DEAL CARD ─── */
+.deal-card {
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--line2);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.deal-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+}
+.deal-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+.deal-type-badge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.badge-penny { background: var(--pink-bg); color: var(--pink); }
+.badge-clearance { background: var(--amber-bg); color: var(--amber); }
+.badge-coupon { background: var(--accent-bg); color: var(--accent); }
+.badge-glitch { background: #e8f7f0; color: #175c3a; }
+.badge-pink-tag { background: var(--pink-bg); color: var(--pink); }
+.deal-fresh {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.7);
+}
+.fresh-hot { background: var(--green-mid); }
+.fresh-ok { background: #c0b060; }
+.fresh-old { background: #c06060; }
+
+.deal-body {
+  padding: 8px 9px 9px;
+}
+.deal-store-row {
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 3px;
+}
+.store-mono {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.sm-dt { background: var(--pink-bg); color: var(--pink); }
+.sm-tgt { background: var(--red-bg); color: var(--red); }
+.sm-dg { background: var(--amber-bg); color: var(--amber); }
+.sm-wm { background: var(--accent-bg); color: var(--accent); }
+.sm-cvs { background: #e8f5ea; color: #1a5c2a; }
+
+.deal-trust {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px;
+  color: var(--ink3);
+}
+.trust-stars { color: #c09020; letter-spacing: -1px; }
+
+.deal-name {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+  line-height: 1.25;
+  letter-spacing: -0.1px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.deal-price-row {
+  display: flex; align-items: baseline; gap: 5px;
+  flex-wrap: wrap;
+}
+.deal-price {
+  font-family: var(--font-disp);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.deal-was {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink3);
+  text-decoration: line-through;
+}
+.deal-off-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: var(--green-bg);
+  color: var(--green);
+  letter-spacing: 0.02em;
+}
+
+/* ─── MODAL OVERLAY ─── */
+.modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10,8,6,0.62);
+  display: none;
+  align-items: flex-end;
+}
+.modal-scrim.open { display: flex; }
+.modal-sheet {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+}
+.modal-drag-bar {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  margin: 10px auto 0;
+  flex-shrink: 0;
+}
+.modal-img-area {
+  width: 100%;
+  aspect-ratio: 1.2 / 1;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.modal-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 72px;
+}
+.modal-badge-row {
+  position: absolute;
+  top: 12px; left: 12px;
+  display: flex; gap: 6px;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  color: var(--ink2);
+  font-weight: 500;
+}
+.modal-body { flex: 1; overflow-y: auto; padding: 14px 16px 32px; }
+.modal-store-row {
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 6px;
+}
+.modal-fresh-badge {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.modal-fresh-hot { background: var(--green-bg); color: var(--green); }
+.modal-fresh-ok { background: #fdf7e3; color: #6b5010; }
+.modal-fresh-old { background: var(--red-bg); color: var(--red); }
+.modal-fresh-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+.modal-title {
+  font-family: var(--font-disp);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.modal-price-row {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 14px;
+}
+.modal-price {
+  font-family: var(--font-disp);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--green);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.modal-was { font-size: 14px; color: var(--ink3); text-decoration: line-through; }
+.modal-off {
+  font-size: 13px; font-weight: 700;
+  padding: 3px 8px; border-radius: 7px;
+  background: var(--green-bg); color: var(--green);
+}
+
+.modal-divider { height: 1px; background: var(--line2); margin: 14px 0; }
+
+.playbook-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+}
+.playbook-steps { display: flex; flex-direction: column; gap: 10px; }
+.playbook-step {
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-text {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink2);
+  flex: 1;
+}
+.step-text strong { color: var(--ink); font-weight: 700; }
+
+.in-store-signs {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--line2);
+}
+.signs-label { font-size: 11px; font-weight: 600; color: var(--ink3); margin-bottom: 6px; }
+.signs-list { display: flex; gap: 6px; flex-wrap: wrap; }
+.sign-chip {
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink2);
+}
+
+.trust-block {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--accent-bg);
+  border-radius: 10px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.trust-icon { font-size: 18px; flex-shrink: 0; }
+.trust-text { font-size: 12px; line-height: 1.4; color: var(--accent); }
+.trust-text strong { font-weight: 700; color: var(--accent); }
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+.action-btn {
+  padding: 13px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  text-align: center;
+  border: 1.5px solid transparent;
+}
+.action-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.action-secondary {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink2);
+}
+
+/* ─── BOTTOM NAV ─── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%; transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(250,249,246,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line2);
+  display: flex;
+  padding: 6px 0 max(env(safe-area-inset-bottom), 6px);
+  z-index: 80;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+}
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; color: var(--ink3); }
+.nav-item.active .nav-label { color: var(--accent); }
+.nav-item.active .nav-icon { filter: hue-rotate(0deg); color: var(--accent); }
+.nav-badge {
+  position: relative;
+  display: inline-flex;
+}
+.nav-badge::after {
+  content: '5';
+  position: absolute;
+  top: -3px; right: -8px;
+  background: var(--accent-mid);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 999px;
+  border: 1.5px solid var(--surface);
+}
+
+/* ─── SPACER ─── */
+.bottom-spacer { height: 72px; }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP BAR ─── -->
+<header class="topbar">
+  <div class="topbar-row1">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0M12 8v4l2.5 2.5"/></svg>
+    </div>
+    <div class="topbar-title">Deal<span>Hunter</span></div>
+    <div class="alerts-pill">
+      <span class="live-dot"></span>
+      Alerts on
+    </div>
+    <button class="bell-btn" onclick="openModal(0)" aria-label="Notifications">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="bell-dot"></span>
+    </button>
+  </div>
+
+  <div class="store-rail">
+    <button class="store-chip active" onclick="selectStore(this)">
+      <span class="store-chip-name">Dollar Tree</span>
+      <span class="store-chip-deal">penny list · 1¢</span>
+    </button>
+    <button class="store-chip" onclick="selectStore(this)">
+      <span class="store-chip-name">Target</span>
+      <span class="store-chip-deal">70% off camping</span>
+    </button>
+    <button class="store-chip" onclick="selectStore(this)">
+      <span class="store-chip-name">Dollar General</span>
+      <span class="store-chip-deal">$5 off $25</span>
+    </button>
+    <button class="store-chip" onclick="selectStore(this)">
+      <span class="store-chip-name">Walmart</span>
+      <span class="store-chip-deal">rollback socks</span>
+    </button>
+    <button class="store-chip" onclick="selectStore(this)">
+      <span class="store-chip-name">CVS</span>
+      <span class="store-chip-deal">40% clearance</span>
+    </button>
+  </div>
+</header>
+
+<!-- ─── FILTER BAR ─── -->
+<div class="filter-bar">
+  <button class="fpill active">All</button>
+  <button class="fpill">🪙 Penny</button>
+  <button class="fpill">🏷 Clearance</button>
+  <button class="fpill">✂️ Coupon</button>
+  <button class="fpill">⚡ Glitch</button>
+  <button class="fpill">🩷 Pink Tag</button>
+</div>
+
+<!-- ─── SECTION HEADING ─── -->
+<div class="section-head">
+  <div class="section-head-title">Dollar Tree · Jun 15</div>
+  <div class="section-head-count">24 deals</div>
+  <div class="sort-row">
+    <button class="sort-btn active">Hot</button>
+    <button class="sort-btn">New</button>
+    <button class="sort-btn">Value</button>
+  </div>
+</div>
+
+<!-- ─── DEAL GRID ─── -->
+<section class="deal-grid" id="dealGrid">
+
+  <!-- Card 1 -->
+  <div class="deal-card" onclick="openModal(0)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#fce4e8,#fbe8f5);">🧦</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dt">DT</span>
+        <div class="deal-trust"><span class="trust-stars">★★★</span><span>94</span></div>
+      </div>
+      <div class="deal-name">Smurfs Grumpy Crew Socks</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+        <span class="deal-off-pill">99%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="deal-card" onclick="openModal(1)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#e6f0fc,#daeeff);">🦸</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dt">DT</span>
+        <div class="deal-trust"><span class="trust-stars">★★★</span><span>87</span></div>
+      </div>
+      <div class="deal-name">Spiderman Face Crew Socks</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+        <span class="deal-off-pill">99%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="deal-card" onclick="openModal(2)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#fff0dc,#fde8c4);">🏕️</div>
+      <span class="deal-type-badge badge-clearance">Clearance</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-tgt">TGT</span>
+        <div class="deal-trust"><span class="trust-stars">★★★</span><span>112</span></div>
+      </div>
+      <div class="deal-name">Coleman 4-Person Tent</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$23.98</span>
+        <span class="deal-was">$79.99</span>
+        <span class="deal-off-pill">70%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="deal-card" onclick="openModal(3)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#e8f8ec,#d6f5df);">🧃</div>
+      <span class="deal-type-badge badge-coupon">Coupon</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dg">DG</span>
+        <div class="deal-trust"><span class="trust-stars">★★☆</span><span>68</span></div>
+      </div>
+      <div class="deal-name">Gatorade 12-pack + $5 off coupon</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$2.99</span>
+        <span class="deal-was">$7.99</span>
+        <span class="deal-off-pill">63%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="deal-card" onclick="openModal(4)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#f5e8f8,#ede0f5);">🧸</div>
+      <span class="deal-type-badge badge-pink-tag">Pink Tag</span>
+      <span class="deal-fresh fresh-ok"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dt">DT</span>
+        <div class="deal-trust"><span class="trust-stars">★★☆</span><span>51</span></div>
+      </div>
+      <div class="deal-name">Elmo Plush Stuffed Toy 8"</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.10</span>
+        <span class="deal-was">$3.00</span>
+        <span class="deal-off-pill">97%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="deal-card" onclick="openModal(5)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#fffae0,#fff3c0);">⚡</div>
+      <span class="deal-type-badge badge-glitch">Glitch</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-wm">WM</span>
+        <div class="deal-trust"><span class="trust-stars">★★★</span><span>203</span></div>
+      </div>
+      <div class="deal-name">Anker 65W USB-C Charger Brick</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.97</span>
+        <span class="deal-was">$29.99</span>
+        <span class="deal-off-pill">97%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 7 -->
+  <div class="deal-card" onclick="openModal(0)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#fce4e8,#fce0e8);">🌙</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="deal-fresh fresh-ok"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dt">DT</span>
+        <div class="deal-trust"><span class="trust-stars">★★☆</span><span>44</span></div>
+      </div>
+      <div class="deal-name">Mountain Dew Crew Socks</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+        <span class="deal-off-pill">99%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 8 -->
+  <div class="deal-card" onclick="openModal(5)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#e8f4ff,#d8ecff);">💊</div>
+      <span class="deal-type-badge badge-clearance">Clearance</span>
+      <span class="deal-fresh fresh-old"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-cvs">CVS</span>
+        <div class="deal-trust"><span class="trust-stars">★☆☆</span><span>29</span></div>
+      </div>
+      <div class="deal-name">Neutrogena Face Wash 6oz</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$2.49</span>
+        <span class="deal-was">$8.99</span>
+        <span class="deal-off-pill">72%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 9 -->
+  <div class="deal-card" onclick="openModal(0)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#e4f4e8,#d4eedc);">🦕</div>
+      <span class="deal-type-badge badge-penny">Penny</span>
+      <span class="deal-fresh fresh-hot"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-dt">DT</span>
+        <div class="deal-trust"><span class="trust-stars">★★★</span><span>77</span></div>
+      </div>
+      <div class="deal-name">Jurassic Park Claws Green Socks</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$0.01</span>
+        <span class="deal-was">$1.25</span>
+        <span class="deal-off-pill">99%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 10 -->
+  <div class="deal-card" onclick="openModal(3)">
+    <div class="deal-img">
+      <div class="deal-img-placeholder" style="background:linear-gradient(140deg,#fff0dc,#ffe8c4);">🎒</div>
+      <span class="deal-type-badge badge-clearance">Clearance</span>
+      <span class="deal-fresh fresh-ok"></span>
+    </div>
+    <div class="deal-body">
+      <div class="deal-store-row">
+        <span class="store-mono sm-tgt">TGT</span>
+        <div class="deal-trust"><span class="trust-stars">★★☆</span><span>59</span></div>
+      </div>
+      <div class="deal-name">Osprey Daypack 20L Hydration Bag</div>
+      <div class="deal-price-row">
+        <span class="deal-price">$17.48</span>
+        <span class="deal-was">$64.99</span>
+        <span class="deal-off-pill">73%</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+<div class="bottom-spacer"></div>
+
+<!-- ─── DEAL DETAIL MODAL ─── -->
+<div class="modal-scrim" id="modalScrim" onclick="handleScrimClick(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-drag-bar"></div>
+    <div class="modal-img-area" id="modalImgArea">
+      <!-- filled by JS -->
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ─── BOTTOM NAV ─── -->
+<nav class="bottom-nav">
+  <button class="nav-item active">
+    <span class="nav-badge">
+      <span class="nav-icon">🏷️</span>
+    </span>
+    <span class="nav-label">Deals</span>
+  </button>
+  <button class="nav-item">
+    <span class="nav-icon">🗺️</span>
+    <span class="nav-label">Stores</span>
+  </button>
+  <button class="nav-item">
+    <span class="nav-icon">✅</span>
+    <span class="nav-label">Found</span>
+  </button>
+  <button class="nav-item">
+    <span class="nav-icon">⚙️</span>
+    <span class="nav-label">Settings</span>
+  </button>
+</nav>
+
+<script>
+const DEALS = [
+  {
+    emoji: '🧦',
+    bg: 'linear-gradient(140deg,#fce4e8,#fbe8f5)',
+    badge: 'Penny', badgeClass: 'badge-penny',
+    store: 'Dollar Tree', storeCode: 'DT', storeMono: 'sm-dt',
+    name: 'Smurfs Grumpy Crew Socks',
+    price: '$0.01', was: '$1.25', off: '99%',
+    fresh: 'hot', freshLabel: 'Hot right now',
+    sku: '397599',
+    trust: '94 sightings · 3 family confirmed',
+    playbook: [
+      ['Head to the <strong>socks aisle</strong> — usually aisle 6–8', 'Look for peg hooks with poly-bagged crew socks'],
+      ['Scan the price tag scanner or ask an associate if unsure', 'The register price is $0.01 — trust the scan, not the shelf tag'],
+      ['Grab multiples if available', 'Penny items often have 2–5 units per location'],
+    ],
+    signs: ['No shelf tag', 'Pink sticker', 'Blank label'],
+    trustNote: 'Verified by 94 DealHunter sightings this week. Penny item confirmed in 3 nearby stores.'
+  },
+  {
+    emoji: '🦸',
+    bg: 'linear-gradient(140deg,#e6f0fc,#daeeff)',
+    badge: 'Penny', badgeClass: 'badge-penny',
+    store: 'Dollar Tree', storeCode: 'DT', storeMono: 'sm-dt',
+    name: 'Spiderman Face Crew Socks',
+    price: '$0.01', was: '$1.25', off: '99%',
+    fresh: 'hot', freshLabel: 'Hot right now',
+    sku: '401005',
+    trust: '87 sightings · 2 family confirmed',
+    playbook: [
+      ['Check the <strong>licensed character socks</strong> section', 'Look for Marvel branding on the packaging'],
+      ['Scan the barcode on the package with the store\'s scanner', 'Price should ring up $0.01 — if it doesn\'t, skip it'],
+      ['Take a photo of the tag for family reference', 'SKU 401005 is on the bottom of the bag'],
+    ],
+    signs: ['No shelf tag', 'Old peg position'],
+    trustNote: 'Confirmed penny at 12 DFW stores. SKU 401005 on the package bottom.'
+  },
+  {
+    emoji: '🏕️',
+    bg: 'linear-gradient(140deg,#fff0dc,#fde8c4)',
+    badge: 'Clearance', badgeClass: 'badge-clearance',
+    store: 'Target', storeCode: 'TGT', storeMono: 'sm-tgt',
+    name: 'Coleman 4-Person Tent',
+    price: '$23.98', was: '$79.99', off: '70%',
+    fresh: 'hot', freshLabel: 'Hot right now',
+    sku: 'DPCI 037-07-1241',
+    trust: '112 sightings · high confidence',
+    playbook: [
+      ['Go to the <strong>camping / sporting goods</strong> clearance endcap', 'Usually marked with a yellow clearance tag'],
+      ['Scan the barcode with the Target app to confirm price', 'App shows markdown history — 70% is the final markdown'],
+      ['Check stacked pallets behind the endcap', 'Overstock is often stacked on the floor nearby'],
+    ],
+    signs: ['Yellow clearance tag', 'Red sticker 70%'],
+    trustNote: 'Verified at multiple Target stores. Yellow clearance tag with red markdown sticker.'
+  },
+  {
+    emoji: '🧃',
+    bg: 'linear-gradient(140deg,#e8f8ec,#d6f5df)',
+    badge: 'Coupon', badgeClass: 'badge-coupon',
+    store: 'Dollar General', storeCode: 'DG', storeMono: 'sm-dg',
+    name: 'Gatorade 12-pack + $5 off $25 coupon',
+    price: '$2.99', was: '$7.99', off: '63%',
+    fresh: 'hot', freshLabel: 'Hot right now',
+    sku: 'DG store coupon',
+    trust: '68 sightings · coupon required',
+    playbook: [
+      ['Load the <strong>$5 off $25 coupon</strong> in the DG app first', 'Clip under "Coupons" → "Store Coupons"'],
+      ['Buy Gatorade 12-packs + any filler to hit $25', 'Store brand water or snacks work well as filler'],
+      ['Coupon applies at checkout automatically', 'Watch the screen — it should deduct $5 before payment'],
+    ],
+    signs: ['App coupon required', 'Price may vary by store'],
+    trustNote: 'Coupon must be loaded in DG app before checkout. Works with any Gatorade 12-pack variety.'
+  },
+  {
+    emoji: '🧸',
+    bg: 'linear-gradient(140deg,#f5e8f8,#ede0f5)',
+    badge: 'Pink Tag', badgeClass: 'badge-pink-tag',
+    store: 'Dollar Tree', storeCode: 'DT', storeMono: 'sm-dt',
+    name: 'Elmo Plush Stuffed Toy 8"',
+    price: '$0.10', was: '$3.00', off: '97%',
+    fresh: 'ok', freshLabel: 'A few days old',
+    sku: 'Unverified (pink penny item)',
+    trust: '51 sightings · unverified °',
+    playbook: [
+      ['Look for items with a <strong>handwritten pink price sticker</strong>', 'Pink sticker = possible penny or near-penny markdown'],
+      ['Scan on the store\'s price checker before checkout', 'Pink penny items don\'t always show on the shelf label'],
+      ['If it doesn\'t ring $0.10, walk away gracefully', 'Casually say "the scanner must be wrong" and put it back'],
+    ],
+    signs: ['Pink handwritten sticker', 'No shelf label', 'End-of-aisle dump bin'],
+    trustNote: 'Unverified pink penny item (°). Not confirmed at a register — scan before committing.'
+  },
+  {
+    emoji: '⚡',
+    bg: 'linear-gradient(140deg,#fffae0,#fff3c0)',
+    badge: 'Glitch', badgeClass: 'badge-glitch',
+    store: 'Walmart', storeCode: 'WM', storeMono: 'sm-wm',
+    name: 'Anker 65W USB-C Charger Brick',
+    price: '$0.97', was: '$29.99', off: '97%',
+    fresh: 'hot', freshLabel: 'Hot right now',
+    sku: '0196394215713',
+    trust: '203 sightings · confirmed glitch pricing',
+    playbook: [
+      ['Search the SKU/UPC in the <strong>Walmart app</strong> first to check price', 'Some stores have it updated, others haven\'t caught up'],
+      ['Find it in the Electronics / Phone Accessories aisle', 'Also try the "Straight Talk" section'],
+      ['Bring to self-checkout — glitch prices sometimes only hold there', 'If it errors, try a different register or call over an associate'],
+    ],
+    signs: ['App price vs shelf price mismatch', 'Electronics aisle'],
+    trustNote: 'Confirmed pricing glitch. 203 reports today — move fast, these get corrected by EOD.'
+  },
+];
+
+function openModal(idx) {
+  const d = DEALS[idx] || DEALS[0];
+  const scrim = document.getElementById('modalScrim');
+  const imgArea = document.getElementById('modalImgArea');
+  const body = document.getElementById('modalBody');
+
+  const freshClass = d.fresh === 'hot' ? 'modal-fresh-hot' : d.fresh === 'ok' ? 'modal-fresh-ok' : 'modal-fresh-old';
+
+  imgArea.innerHTML = `
+    <div class="modal-img-placeholder" style="background:${d.bg};">${d.emoji}</div>
+    <div class="modal-badge-row">
+      <span class="deal-type-badge ${d.badgeClass}">${d.badge}</span>
+    </div>
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>
+  `;
+
+  const stepsHtml = d.playbook.map((step, i) => `
+    <div class="playbook-step">
+      <span class="step-num">${i+1}</span>
+      <span class="step-text">${step[0]}<br><span style="color:var(--ink3);font-size:12px;">${step[1]}</span></span>
+    </div>
+  `).join('');
+
+  const signsHtml = d.signs.map(s => `<span class="sign-chip">${s}</span>`).join('');
+
+  body.innerHTML = `
+    <div class="modal-store-row">
+      <span class="store-mono ${d.storeMono}">${d.storeCode}</span>
+      <span style="font-size:12px;color:var(--ink3);">${d.store}</span>
+      <span class="modal-fresh-badge ${freshClass}" style="margin-left:auto;">
+        <span class="modal-fresh-dot"></span>${d.freshLabel}
+      </span>
+    </div>
+    <div class="modal-title">${d.name}</div>
+    <div class="modal-price-row">
+      <span class="modal-price">${d.price}</span>
+      <span class="modal-was">${d.was}</span>
+      <span class="modal-off">-${d.off}</span>
+    </div>
+    <div style="font-size:11px;color:var(--ink3);margin-bottom:2px;">SKU · ${d.sku}</div>
+    <div class="modal-divider"></div>
+    <div class="playbook-label">How to get it</div>
+    <div class="playbook-steps">${stepsHtml}</div>
+    <div class="in-store-signs">
+      <div class="signs-label">Signs to look for</div>
+      <div class="signs-list">${signsHtml}</div>
+    </div>
+    <div class="trust-block">
+      <span class="trust-icon">🔍</span>
+      <span class="trust-text"><strong>Trust check:</strong> ${d.trustNote}</span>
+    </div>
+    <div class="modal-actions">
+      <button class="action-btn action-primary" onclick="markFound()">✓ Mark found</button>
+      <button class="action-btn action-secondary" onclick="closeModal()">Scan to confirm</button>
+    </div>
+  `;
+
+  scrim.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalScrim').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleScrimClick(e) {
+  if (e.target === document.getElementById('modalScrim')) closeModal();
+}
+
+function markFound() {
+  closeModal();
+}
+
+function selectStore(el) {
+  document.querySelectorAll('.store-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

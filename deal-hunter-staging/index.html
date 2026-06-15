@@ -23,9 +23,15 @@
       --red: #b42318;
       --red-bg: #fff0ed;
       --shadow: 0 18px 44px rgba(35, 35, 31, .12);
+      --grid-min: 190px;
+      --grid-gap: 12px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
     body {
       margin: 0;
       min-height: 100vh;
@@ -52,6 +58,7 @@
       gap: 6px;
       margin-bottom: 12px;
       align-items: center;
+      min-width: 0;
     }
     .tab, .chip, .sort button, .toggle, .back, .btn {
       cursor: pointer;
@@ -78,6 +85,8 @@
       color: var(--muted);
       font-size: 12px;
       gap: 5px;
+      min-width: 0;
+      white-space: nowrap;
     }
     .live-dot {
       width: 6px;
@@ -92,6 +101,7 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 10px;
+      min-width: 0;
     }
     .icon, .back svg, .toggle svg {
       fill: none;
@@ -113,8 +123,8 @@
     }
     .back svg, .toggle svg { width: 18px; height: 18px; }
     .toggle.active {
-      background: var(--chip);
-      color: var(--ink);
+      background: var(--ink);
+      color: var(--surface);
     }
     .mono {
       width: 30px;
@@ -159,7 +169,12 @@
     .chips {
       display: flex;
       gap: 6px;
+      max-width: 100%;
+      min-width: 0;
       overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       margin-bottom: 8px;
     }
@@ -201,7 +216,12 @@
       margin-bottom: 14px;
       font-size: 12px;
       color: var(--muted);
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
     }
+    .sort::-webkit-scrollbar { display: none; }
     .sort button {
       border: 0;
       color: inherit;
@@ -215,8 +235,9 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-      gap: 16px 12px;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--grid-min)), 1fr));
+      gap: 16px var(--grid-gap);
+      animation: viewFade .16s ease;
     }
     .tile-card { min-width: 0; }
     .image-well {
@@ -284,6 +305,7 @@
       margin-top: 6px;
       min-width: 0;
       white-space: nowrap;
+      overflow: hidden;
     }
     .sale-price { color: var(--green); font-size: 15px; font-weight: 850; }
     .was-price { color: var(--muted); font-size: 11px; text-decoration: line-through; }
@@ -349,7 +371,14 @@
     }
     .delta { color: var(--green); font-weight: 800; }
     .view-list .grid { display: none; }
-    .view-list .list { display: block; }
+    .view-list .list {
+      display: block;
+      animation: viewFade .16s ease;
+    }
+    @keyframes viewFade {
+      from { opacity: .72; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .store-footer {
       position: sticky;
       bottom: 0;
@@ -357,6 +386,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      min-width: 0;
       margin: 16px calc(clamp(14px, 2vw, 22px) * -1) calc(clamp(14px, 2vw, 22px) * -1);
       padding: 10px clamp(14px, 2vw, 22px);
       background: rgba(255, 254, 250, .94);
@@ -540,6 +570,10 @@
       font-size: 12px;
     }
     @media (max-width: 420px) {
+      :root {
+        --grid-min: 150px;
+        --grid-gap: 10px;
+      }
       body { padding: 0; background: var(--surface); }
       .app {
         width: 100%;
@@ -548,13 +582,38 @@
         border-radius: 0;
         box-shadow: none;
       }
-      .grid { grid-template-columns: 1fr; }
-      .image-well { aspect-ratio: 4 / 3; }
-      .signals { min-width: 108px; grid-template-columns: 30px 34px 36px; }
+      .image-well { aspect-ratio: 1 / 1; }
+      .list-row {
+        grid-template-columns: 52px minmax(0, 1fr) 94px;
+        gap: 8px;
+      }
+      .list-thumb {
+        width: 52px;
+        height: 52px;
+      }
+      .signals {
+        min-width: 94px;
+        grid-template-columns: 28px 32px 34px;
+      }
       .modal-nav {
         width: 38px;
         height: 50px;
         font-size: 24px;
+      }
+    }
+    @media (min-width: 421px) and (max-width: 767px) {
+      :root { --grid-min: 170px; }
+    }
+    @media (min-width: 768px) and (max-width: 1279px) {
+      :root {
+        --grid-min: 190px;
+        --grid-gap: 14px;
+      }
+    }
+    @media (min-width: 1280px) {
+      :root {
+        --grid-min: 200px;
+        --grid-gap: 14px;
       }
     }
   </style>

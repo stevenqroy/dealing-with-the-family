@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deal Hunter - Elite Front Door</title>
+  <style>
+    :root {
+      --page-bg: #e6e5df;
+      --app-bg: #fffefa;
+      --surface-1: #f7f6f2;
+      --surface-2: #ffffff;
+
+      --ink-primary: #1c1c1a;
+      --ink-secondary: #6e6b63;
+      --ink-tertiary: #a19d93;
+
+      --accent-pink: #993556;
+      --accent-pink-bg: #fdf2f5;
+      --accent-green: #245e0f;
+      --accent-green-bg: #edf5ea;
+
+      --border-light: #eae8e1;
+
+      --shadow-soft: 0 8px 24px rgba(28, 28, 26, 0.06);
+      --shadow-hard: 0 16px 32px rgba(28, 28, 26, 0.12);
+
+      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--page-bg);
+      display: flex;
+      justify-content: center;
+      font-family: var(--font-stack);
+      color: var(--ink-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .device-frame {
+      width: 100%;
+      max-width: 414px;
+      min-height: 100vh;
+      background: var(--app-bg);
+      position: relative;
+      overflow-x: hidden;
+      box-shadow: 0 0 50px rgba(0,0,0,0.15);
+    }
+
+    .concept-tag {
+      position: fixed; left: 8px; bottom: 8px; z-index: 300;
+      background: rgba(28,28,26,.82); color: var(--app-bg);
+      font-size: 10px; font-weight: 600; letter-spacing: .04em;
+      padding: 4px 8px; border-radius: 6px;
+    }
+
+    /* 1. Global Navigation (Sticky & Glass) */
+    .glass-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 254, 250, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(234, 232, 225, 0.6);
+      padding: 16px 0 12px;
+    }
+
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 20px 16px;
+    }
+
+    .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: var(--ink-secondary);
+      background: var(--surface-1); padding: 4px 10px; border-radius: 99px;
+    }
+    .status-pill::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-green);
+    }
+
+    /* Category Engine - Horizontal Scroll */
+    .cat-scroll {
+      display: flex; gap: 8px; overflow-x: auto;
+      padding: 0 20px 4px; scrollbar-width: none;
+    }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+
+    .chip {
+      background: var(--surface-2); border: 1px solid var(--border-light);
+      padding: 8px 16px; border-radius: 99px; font-size: 14px; font-weight: 600;
+      color: var(--ink-secondary); white-space: nowrap; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .chip.active {
+      background: var(--ink-primary); border-color: var(--ink-primary);
+      color: var(--app-bg); box-shadow: var(--shadow-soft);
+    }
+
+    /* Content Typography */
+    .section-title {
+      font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
+      padding: 24px 20px 16px; line-height: 1.1;
+    }
+    .section-title span { display: block; font-size: 14px; font-weight: 500; color: var(--ink-secondary); margin-top: 4px; }
+
+    /* 2. Hero Deals - Horizontal Snap Carousel */
+    .hero-carousel {
+      display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+      gap: 16px; padding: 0 20px 24px; scrollbar-width: none;
+    }
+    .hero-carousel::-webkit-scrollbar { display: none; }
+
+    .hero-card {
+      flex: 0 0 85%;
+      scroll-snap-align: center;
+      background: var(--surface-2); border: 1px solid var(--border-light);
+      border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-soft);
+      display: flex; flex-direction: column;
+    }
+
+    .hero-art {
+      height: 200px; position: relative;
+      background: linear-gradient(135deg, var(--surface-1) 0%, #eef0ea 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .hero-art img {
+      width: 130px; height: 130px; object-fit: contain;
+      filter: drop-shadow(0 20px 24px rgba(0,0,0,0.15));
+    }
+    .hero-art .emoji-fallback {
+      font-size: 80px; filter: drop-shadow(0 20px 24px rgba(0,0,0,0.15));
+    }
+
+    .store-tag {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+      padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 800;
+      color: var(--accent-pink); box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .hero-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+
+    .hero-title { font-size: 20px; font-weight: 800; line-height: 1.1; margin-bottom: 8px; }
+
+    .pricing { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+    .price-new { font-size: 32px; font-weight: 900; color: var(--accent-green); letter-spacing: -1px; }
+    .price-old { font-size: 16px; font-weight: 600; color: var(--ink-tertiary); text-decoration: line-through; }
+    .discount-pill { background: var(--accent-green-bg); color: var(--accent-green); font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 6px; margin-bottom: 4px;}
+
+    .hero-hook { font-size: 14px; color: var(--ink-secondary); line-height: 1.4; margin-bottom: 20px; flex-grow: 1; }
+
+    .hero-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 16px; border-top: 1px solid var(--border-light);
+    }
+
+    .trust-stack { display: flex; flex-direction: column; gap: 4px; }
+    .trust-item { font-size: 11px; font-weight: 700; color: var(--ink-tertiary); display: flex; align-items: center; gap: 4px;}
+    .trust-item.strong { color: var(--ink-primary); }
+
+    .play-btn {
+      background: var(--ink-primary); color: var(--app-bg); border: none;
+      padding: 10px 16px; border-radius: 99px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: transform 0.1s;
+    }
+    .play-btn:active { transform: scale(0.95); }
+
+    /* 3. Retailer List */
+    .store-list { padding: 0 20px 40px; display: flex; flex-direction: column; gap: 12px; }
+
+    .store-row {
+      background: var(--surface-2); border: 1px solid var(--border-light);
+      padding: 16px; border-radius: 16px; display: flex; align-items: center;
+      gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); cursor: pointer;
+    }
+
+    .store-icon {
+      width: 44px; height: 44px; border-radius: 12px; background: var(--surface-1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: var(--accent-pink);
+    }
+
+    .store-info { flex-grow: 1; }
+    .store-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+    .store-desc { font-size: 13px; color: var(--ink-secondary); }
+
+    .store-count {
+      font-size: 14px; font-weight: 700; color: var(--ink-tertiary);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* Bottom Sheet Modal for "The Play" */
+    .sheet-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(28, 28, 26, 0.4); backdrop-filter: blur(4px);
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease; display: flex; align-items: flex-end;
+    }
+    .sheet-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .sheet-content {
+      width: 100%; background: var(--app-bg); border-radius: 24px 24px 0 0;
+      padding: 24px; transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -20px 40px rgba(0,0,0,0.1);
+    }
+    .sheet-overlay.active .sheet-content { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 40px; height: 5px; background: var(--border-light);
+      border-radius: 99px; margin: 0 auto 20px;
+    }
+
+    .sheet-title { font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+    .sheet-body { font-size: 15px; color: var(--ink-secondary); line-height: 1.5; margin-bottom: 24px; }
+
+    .sheet-btn {
+      width: 100%; background: var(--surface-1); border: 1px solid var(--border-light);
+      padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; color: var(--ink-primary);
+      cursor: pointer;
+    }
+
+    /* store grid view (real photos) */
+    .view-layer { position:absolute; inset:0; background:var(--app-bg); z-index:150; transform:translateX(100%); transition:transform .3s cubic-bezier(0.16,1,0.3,1); overflow-y:auto; }
+    .view-layer.active { transform:translateX(0); }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:16px 20px 40px; }
+    .grid-cell { border:1px solid var(--border-light); border-radius:16px; overflow:hidden; background:var(--surface-2); }
+    .grid-cell .gimg { height:120px; background:var(--surface-1); display:flex; align-items:center; justify-content:center; }
+    .grid-cell .gimg img { width:84px; height:84px; object-fit:contain; }
+    .grid-cell .gbody { padding:10px 12px; }
+    .grid-cell .gtitle { font-size:12.5px; font-weight:700; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .grid-cell .gprice { font-size:15px; font-weight:900; color:var(--accent-green); margin-top:3px; }
+  </style>
+</head>
+<body>
+
+  <div class="device-frame">
+    <div class="concept-tag">Gemini · Carousel</div>
+
+    <!-- LEVEL 1: Navigation -->
+    <header class="glass-header">
+      <div class="top-bar">
+        <div class="brand">Deal Hunter</div>
+        <div class="status-pill">Tracking 160 sources</div>
+      </div>
+
+      <div class="cat-scroll" id="cat-nav">
+        <button class="chip active" onclick="filterData('All')">All deals</button>
+        <button class="chip" onclick="filterData('Apparel')">🧦 Apparel</button>
+        <button class="chip" onclick="filterData('Home')">🧴 Home</button>
+        <button class="chip" onclick="filterData('Outdoors')">⛺ Outdoors</button>
+      </div>
+    </header>
+
+    <!-- LEVEL 2: Ad-Agency Hero Carousel -->
+    <h1 class="section-title">
+      The shortlist
+      <span>The best finds worth driving for right now.</span>
+    </h1>
+
+    <div class="hero-carousel" id="hero-injection"></div>
+
+    <!-- LEVEL 3: Retailer Doors -->
+    <h2 class="section-title" style="padding-top: 0;">
+      Shop by store
+      <span>Jump straight into a retailer's full catalog.</span>
+    </h2>
+
+    <div class="store-list" id="stores-injection"></div>
+
+    <!-- Bottom Sheet Modal -->
+    <div class="sheet-overlay" id="play-sheet" onclick="closeSheet(event)">
+      <div class="sheet-content">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">How to get it</div>
+        <div class="sheet-body" id="sheet-text"></div>
+        <button class="sheet-btn" onclick="closeSheet(null, true)">Got it</button>
+      </div>
+    </div>
+
+    <!-- store grid view -->
+    <div class="view-layer" id="store-view">
+      <header class="glass-header" style="display:flex; align-items:center; gap:14px; padding:16px 20px 14px;">
+        <button onclick="closeStore()" style="background:none;border:none;font-size:24px;cursor:pointer;">←</button>
+        <div class="brand" id="sv-title">Dollar Tree</div>
+      </header>
+      <div class="grid2" id="sv-grid"></div>
+    </div>
+
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const IMG = "../deal-hunter-staging/images/";
+    // Real catalog penny items (real on-disk photos). Outdoors has no real
+    // photo yet -> demos the calm empty state.
+    const db = {
+      deals: [
+        { id: 1, cat: 'Apparel', store: 'Dollar Tree', type: 'Penny',
+          title: 'Smurfs Grumpy crew socks', price: '$0.01', was: '$1.25', off: '99% off',
+          hook: '31 shoppers found it today. Licensed apparel drops are fast movers.',
+          signal: 'Fresh 2h ago', trust: 'Verified product', img: '397599.jpg',
+          play: 'Hunt end-caps & clearance shelves. Scan at self-checkout — it rings 1¢. No shelf tag, dusty or discontinued stock is a good sign.' },
+        { id: 2, cat: 'Apparel', store: 'Dollar Tree', type: 'Penny',
+          title: 'Spiderman face crew socks', price: '$0.01', was: '$1.25', off: '99% off',
+          hook: 'Marvel-licensed socks at a penny — these clear quickly.',
+          signal: 'Aging — going fast', trust: 'Verified product', img: '401005.jpg',
+          play: 'Same penny play: check the sock pegs and end-caps, scan at self-checkout to confirm 1¢.' },
+        { id: 3, cat: 'Home', store: 'Dollar Tree', type: 'Penny',
+          title: 'Bathroom cleaner kit', price: '$0.01', was: '$1.25', off: '99% off',
+          hook: 'A household staple ringing up at a single penny.',
+          signal: 'Fresh today', trust: 'Verified product', img: '367385.jpg',
+          play: 'Check the cleaning aisle and overstock end-caps; scan at self-checkout to confirm the penny price.' },
+        { id: 4, cat: 'Beauty', store: 'Dollar Tree', type: 'Penny',
+          title: '24H matte lipstick (assorted)', price: '$0.01', was: '$1.25', off: '99% off',
+          hook: 'A beauty penny — rare and worth the hunt.',
+          signal: 'Fresh today', trust: 'Verified product', img: '412492.jpg',
+          play: 'Beauty pennies hide on the cosmetics pegs and clearance bins; scan to confirm 1¢.' }
+      ],
+      stores: [
+        { id: 'DT', name: 'Dollar Tree', headline: 'Penny list · everything 1¢', count: 98, cats: ['All', 'Apparel', 'Home', 'Beauty'] },
+        { id: 'DG', name: 'Dollar General', headline: '12 fresh penny + coupon finds', count: 13, cats: ['All', 'Home'] },
+        { id: 'TGT', name: 'Target', headline: '70% off camping clearance', count: 8, cats: ['All', 'Outdoors'] },
+        { id: 'WM', name: 'Walmart', headline: 'Hidden clearance, scan to find', count: 9, cats: ['All', 'Apparel'] },
+        { id: 'AMZ', name: 'Amazon', headline: 'Price glitch — act fast', count: 2, cats: ['All', 'Home'] }
+      ]
+    };
+
+    function renderHeroes(category) {
+      const filtered = category === 'All' ? db.deals : db.deals.filter(d => d.cat === category);
+      const container = document.getElementById('hero-injection');
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="hero-card" style="flex:0 0 85%; padding: 40px 20px; text-align: center; justify-content: center;">
+            <div style="font-size: 40px; margin-bottom: 16px;">🔎</div>
+            <h3 style="font-size: 18px; margin-bottom: 8px;">No standout deals in ${category} yet</h3>
+            <p style="font-size: 14px; color: var(--ink-secondary);">We only surface the best here. Check the store lists below for the full inventory.</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = filtered.map(d => `
+        <div class="hero-card">
+          <div class="hero-art">
+            <div class="store-tag">${d.store}</div>
+            <img src="${IMG}${d.img}" alt="${d.title}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'emoji-fallback',textContent:'🛍️'}))">
+          </div>
+          <div class="hero-body">
+            <div class="pricing">
+              <span class="price-new">${d.price}</span>
+              <span class="price-old">${d.was}</span>
+            </div>
+            <h2 class="hero-title">${d.title}</h2>
+            <div class="discount-pill" style="display:inline-block; width: fit-content;">${d.off}</div>
+            <p class="hero-hook">${d.hook}</p>
+            <div class="hero-footer">
+              <div class="trust-stack">
+                <span class="trust-item strong">✓ ${d.trust}</span>
+                <span class="trust-item">ⓘ ${d.signal}</span>
+              </div>
+              <button class="play-btn" onclick="openSheet(${d.id})">How to get it</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderStores(category) {
+      const filtered = db.stores.filter(s => s.cats.includes(category));
+      document.getElementById('stores-injection').innerHTML = filtered.map(s => `
+        <div class="store-row" onclick="openStore('${s.name}')">
+          <div class="store-icon">${s.id}</div>
+          <div class="store-info">
+            <div class="store-name">${s.name}</div>
+            <div class="store-desc">${s.headline}</div>
+          </div>
+          <div class="store-count">${s.count} ›</div>
+        </div>
+      `).join('');
+    }
+
+    function filterData(category) {
+      document.querySelectorAll('.chip').forEach(c => {
+        c.classList.remove('active');
+        if(c.innerText.includes(category)) c.classList.add('active');
+      });
+      renderHeroes(category);
+      renderStores(category);
+    }
+
+    function openSheet(dealId) {
+      const deal = db.deals.find(d => d.id === dealId);
+      document.getElementById('sheet-text').innerText = deal.play;
+      document.getElementById('play-sheet').classList.add('active');
+    }
+    function closeSheet(e, force = false) {
+      if (force || (e && e.target.id === 'play-sheet')) {
+        document.getElementById('play-sheet').classList.remove('active');
+      }
+    }
+
+    function openStore(name) {
+      document.getElementById('sv-title').innerText = name;
+      const all = Array.isArray(window.STAGING_DEALS) ? window.STAGING_DEALS : [];
+      const rows = all.filter(d => d.retailer === name && d.image).slice(0, 24);
+      document.getElementById('sv-grid').innerHTML = rows.length ? rows.map(d => `
+        <div class="grid-cell">
+          <div class="gimg"><img src="${IMG}${d.image.replace('images/','')}" alt="${d.title}" onerror="this.style.display='none'"></div>
+          <div class="gbody"><div class="gtitle">${d.title}</div><div class="gprice">${d.price||''}</div></div>
+        </div>`).join('') : `<div style="grid-column:1/-1;text-align:center;color:var(--ink-secondary);padding:40px 0">No photographed deals here yet.</div>`;
+      document.getElementById('store-view').classList.add('active');
+    }
+    function closeStore() { document.getElementById('store-view').classList.remove('active'); }
+
+    filterData('All');
+  </script>
+</body>
+</html>

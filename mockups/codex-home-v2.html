@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter - Codex v2 photos</title>
+  <style>
+    :root {
+      --paper: #fffefa;
+      --wash: #f4f1eb;
+      --card: #ffffff;
+      --ink: #23231f;
+      --muted: #706d66;
+      --soft: #d9d4c9;
+      --line: #e8e2d7;
+      --penny: #993556;
+      --penny-soft: #f8eaf0;
+      --green: #2f6f12;
+      --green-soft: #ecf5e8;
+      --shadow: 0 18px 48px rgba(35, 35, 31, .12);
+      --radius: 22px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: #ece8df; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at top, #fff 0, var(--paper) 42%, #f6f3ed 100%);
+      min-height: 100vh;
+      letter-spacing: 0;
+    }
+
+    button, input {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+
+    .phone {
+      width: min(100%, 440px);
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .corner-label {
+      position: fixed;
+      z-index: 30;
+      top: 10px;
+      right: 10px;
+      padding: 7px 10px;
+      border: 1px solid rgba(153, 53, 86, .22);
+      border-radius: 999px;
+      background: rgba(255, 254, 250, .9);
+      color: var(--penny);
+      font-size: 11px;
+      font-weight: 750;
+      box-shadow: 0 8px 24px rgba(35, 35, 31, .08);
+      backdrop-filter: blur(10px);
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 18px 16px 28px;
+    }
+
+    .screen.active { display: block; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0 14px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 2px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.04;
+      letter-spacing: 0;
+      max-width: 280px;
+    }
+
+    .updated {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .68);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      margin: 4px 0 15px;
+    }
+
+    .search {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 13px 15px;
+      min-width: 0;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
+    }
+
+    .search:focus {
+      border-color: rgba(153, 53, 86, .55);
+      box-shadow: 0 0 0 4px rgba(153, 53, 86, .09);
+    }
+
+    .ghost-btn,
+    .back-btn,
+    .share-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-weight: 760;
+      font-size: 13px;
+    }
+
+    .hero {
+      position: relative;
+      border: 1px solid rgba(153, 53, 86, .17);
+      background: linear-gradient(150deg, #fff 0%, #fbf3f6 58%, #f4ede5 100%);
+      border-radius: 30px;
+      overflow: hidden;
+      min-height: 464px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero button {
+      display: block;
+      width: 100%;
+      min-height: 464px;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      padding: 0;
+    }
+
+    .hero-photo {
+      height: 292px;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 18px;
+      mix-blend-mode: multiply;
+    }
+
+    .hero-copy {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      max-width: 100%;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: var(--penny-soft);
+      color: var(--penny);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .trust {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .hero h2 {
+      font-size: 28px;
+      line-height: 1.02;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .price-stack {
+      display: grid;
+      gap: 2px;
+      justify-items: end;
+      flex: 0 0 auto;
+    }
+
+    .price {
+      color: var(--green);
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 860;
+    }
+
+    .was {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .was s {
+      color: #8a877e;
+      text-decoration-thickness: 1px;
+    }
+
+    .social-proof {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .supporting {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-card,
+    .grid-card,
+    .scroll-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      text-align: left;
+      box-shadow: 0 10px 28px rgba(35, 35, 31, .07);
+    }
+
+    .mini-card {
+      min-height: 215px;
+      padding: 0;
+    }
+
+    .mini-photo {
+      height: 126px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+    }
+
+    .mini-photo img,
+    .grid-photo img,
+    .scroll-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      mix-blend-mode: multiply;
+    }
+
+    .mini-copy {
+      padding: 10px 11px 12px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .mini-title,
+    .grid-title,
+    .scroll-title {
+      font-size: 14px;
+      line-height: 1.15;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .mini-meta,
+    .grid-meta,
+    .store-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    section {
+      margin-top: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 11px;
+    }
+
+    .section-head h2 {
+      font-size: 19px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .chips,
+    .store-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 9px;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar,
+    .photo-scroll::-webkit-scrollbar,
+    .store-chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 13px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+      scroll-snap-align: start;
+    }
+
+    .chip.active {
+      border-color: rgba(153, 53, 86, .35);
+      background: var(--penny-soft);
+      color: var(--penny);
+    }
+
+    .photo-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 2px 2px 10px;
+      scrollbar-width: none;
+    }
+
+    .scroll-card {
+      flex: 0 0 74%;
+      max-width: 290px;
+      scroll-snap-align: center;
+      padding: 0;
+    }
+
+    .scroll-photo {
+      height: 216px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+    }
+
+    .scroll-copy {
+      padding: 12px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .stores {
+      display: grid;
+      gap: 10px;
+    }
+
+    .store-row {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      text-align: left;
+      box-shadow: 0 9px 24px rgba(35, 35, 31, .055);
+    }
+
+    .store-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #f1e5ea;
+      color: var(--penny);
+      font-weight: 860;
+      font-size: 14px;
+    }
+
+    .store-name {
+      font-weight: 820;
+      font-size: 15px;
+    }
+
+    .store-headline {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+      margin-top: 2px;
+    }
+
+    .store-count {
+      color: var(--green);
+      background: var(--green-soft);
+      border-radius: 999px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .grid-top {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -18px -16px 14px;
+      padding: 16px 16px 12px;
+      background: rgba(255, 254, 250, .92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(232, 226, 215, .72);
+    }
+
+    .grid-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .grid-heading h1 {
+      max-width: none;
+      font-size: 25px;
+    }
+
+    .plan-banner {
+      margin: 12px 0 10px;
+      border: 1px solid rgba(153, 53, 86, .18);
+      border-radius: 22px;
+      background: linear-gradient(145deg, #fff 0%, #fbf0f4 100%);
+      padding: 14px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .plan-banner h2 {
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .plan-banner p {
+      color: #5c5750;
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      padding-bottom: 18px;
+    }
+
+    .grid-card {
+      min-width: 0;
+      padding: 0;
+    }
+
+    .grid-photo {
+      height: 150px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+    }
+
+    .grid-copy {
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .sku {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .empty {
+      border: 1px dashed var(--soft);
+      border-radius: 24px;
+      background: #fff;
+      padding: 22px;
+      text-align: center;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .empty strong {
+      color: var(--ink);
+      font-size: 18px;
+    }
+
+    .sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      background: rgba(35, 35, 31, .28);
+      align-items: end;
+    }
+
+    .sheet.open { display: flex; }
+
+    .sheet-panel {
+      width: min(100%, 440px);
+      max-height: 92vh;
+      overflow: auto;
+      margin: 0 auto;
+      background: var(--paper);
+      border-radius: 30px 30px 0 0;
+      box-shadow: 0 -24px 70px rgba(35, 35, 31, .25);
+      padding: 14px 16px 22px;
+    }
+
+    .grabber {
+      width: 44px;
+      height: 5px;
+      border-radius: 99px;
+      background: #d8d1c6;
+      margin: 0 auto 13px;
+    }
+
+    .detail-photo {
+      height: 300px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .detail-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 18px;
+      mix-blend-mode: multiply;
+    }
+
+    .detail-copy {
+      display: grid;
+      gap: 14px;
+      padding-top: 15px;
+    }
+
+    .detail-title-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-copy h2 {
+      font-size: 24px;
+      line-height: 1.06;
+    }
+
+    .deal-facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+      min-height: 76px;
+    }
+
+    .fact span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    .fact strong {
+      font-size: 16px;
+      line-height: 1.15;
+    }
+
+    .how {
+      border-radius: 22px;
+      border: 1px solid rgba(153, 53, 86, .18);
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .how h3 {
+      font-size: 16px;
+    }
+
+    .how p {
+      color: #5c5750;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .primary-btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      padding: 13px 14px;
+      font-weight: 820;
+    }
+
+    .image-fallback {
+      display: none;
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .photo-failed img { display: none; }
+    .photo-failed .image-fallback { display: block; }
+
+    @media (min-width: 560px) {
+      body { padding: 22px 0; }
+      .phone {
+        border-radius: 34px;
+        min-height: calc(100vh - 44px);
+        box-shadow: 0 28px 90px rgba(35, 35, 31, .16);
+      }
+      .corner-label { position: absolute; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <div class="corner-label">Codex · v2 photos</div>
+
+    <section id="homeScreen" class="screen active" aria-label="Deal Hunter home">
+      <div class="topbar">
+        <div class="brand">
+          <div class="eyebrow">Deal Hunter</div>
+          <h1>Best deals worth checking today.</h1>
+        </div>
+        <div class="updated">Updated 4 min ago</div>
+      </div>
+
+      <div class="search-row">
+        <input id="homeSearch" class="search" type="search" placeholder="Search product, SKU, or category" aria-label="Search deals">
+        <button id="openDollarTree" class="ghost-btn" type="button">Store</button>
+      </div>
+
+      <div id="heroMount"></div>
+
+      <section aria-label="Category filters">
+        <div class="section-head">
+          <div>
+            <h2>Shop by need</h2>
+            <p>Tap once to narrow the photos.</p>
+          </div>
+        </div>
+        <div id="categoryChips" class="chips"></div>
+      </section>
+
+      <section aria-label="Photo scroll">
+        <div class="section-head">
+          <div>
+            <h2>Photo-scroll</h2>
+            <p>Swipe the real finds.</p>
+          </div>
+        </div>
+        <div id="photoScroll" class="photo-scroll"></div>
+      </section>
+
+      <section aria-label="Choose a store">
+        <div class="section-head">
+          <div>
+            <h2>Choose a store</h2>
+            <p>Start where you are going.</p>
+          </div>
+        </div>
+        <div id="stores" class="stores"></div>
+      </section>
+    </section>
+
+    <section id="storeScreen" class="screen" aria-label="Store deal grid">
+      <div class="grid-top">
+        <button id="backHome" class="back-btn" type="button">Back home</button>
+        <div class="grid-heading">
+          <div>
+            <div id="storeKicker" class="eyebrow">Dollar Tree</div>
+            <h1 id="storeTitle">Penny list photos</h1>
+          </div>
+          <div id="storeCount" class="store-count">0 deals</div>
+        </div>
+        <div id="storePlan" class="plan-banner"></div>
+        <div id="storeChips" class="store-chips"></div>
+      </div>
+      <div id="dealGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <div id="detailSheet" class="sheet" role="dialog" aria-modal="true" aria-label="Deal detail">
+    <div class="sheet-panel">
+      <div class="grabber" aria-hidden="true"></div>
+      <div id="detailMount"></div>
+    </div>
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const rawDeals = Array.isArray(window.STAGING_DEALS) ? window.STAGING_DEALS : [];
+    const imageDeals = rawDeals.filter(deal => deal && deal.image);
+    const bySku = new Map();
+    imageDeals.forEach(deal => {
+      const key = deal.sku || deal.id;
+      if (!bySku.has(key)) bySku.set(key, deal);
+    });
+    const deals = Array.from(bySku.values()).map(normalizeDeal);
+
+    const retailers = [
+      { name: "Dollar Tree", headline: "Penny list · everything 1 cent", count: deals.length, accent: "DT" },
+      { name: "Dollar General", headline: "12 fresh penny + coupon finds", count: 13, accent: "DG" },
+      { name: "Target", headline: "70% off camping clearance", count: 8, accent: "T" },
+      { name: "Walmart", headline: "Hidden clearance, scan to find", count: 9, accent: "W" },
+      { name: "Publix", headline: "BOGO laundry event this week", count: 7, accent: "P" },
+      { name: "Walgreens", headline: "Coupon-stack week", count: 7, accent: "Wg" },
+      { name: "Amazon", headline: "Price glitch · unverified at checkout", count: 2, accent: "A" },
+      { name: "CVS", headline: "ExtraBucks deals", count: 3, accent: "C" }
+    ];
+
+    const categoryOrder = ["All", "Socks", "Kids", "Beauty", "Cleaning", "Home", "Grocery", "Crafts", "Health"];
+    const state = {
+      category: "All",
+      storeCategory: "All",
+      query: "",
+      currentStore: "Dollar Tree"
+    };
+
+    const heroSkus = ["397599", "379530", "367385", "412492", "404079", "280018", "392016"];
+
+    function normalizeDeal(deal) {
+      const title = sentenceCase(cleanTitle(deal.title || "Untitled deal"));
+      const category = inferCategory(title);
+      return {
+        ...deal,
+        title,
+        category,
+        retailer: deal.retailer || "Dollar Tree",
+        price: deal.price || "$0.01",
+        was: deal.was || "$1.25",
+        off: deal.off || "99% off",
+        dealType: deal.dealType || "penny",
+        trust: "Verified product",
+        foundText: "31 shoppers found it today",
+        imageSrc: "../deal-hunter-staging/" + deal.image
+      };
+    }
+
+    function cleanTitle(title) {
+      return String(title)
+        .replace(/\bAstd\b/gi, "assorted")
+        .replace(/\bWmn\b/gi, "women's")
+        .replace(/\bGry\b/gi, "gray")
+        .replace(/\bGrn\b/gi, "green")
+        .replace(/\bPnk\b/gi, "pink")
+        .replace(/\bWht\b/gi, "white")
+        .replace(/\bRnd\b/gi, "round")
+        .replace(/\bLrg\b/gi, "large")
+        .replace(/\bLvnd\b/gi, "lavender")
+        .replace(/\bOrig\b/gi, "original")
+        .replace(/\bCT\b/g, "ct")
+        .replace(/\bPCS\b/g, "pieces")
+        .replace(/\bPDQ\b/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function sentenceCase(title) {
+      const small = new Set(["and", "or", "with", "for", "the", "a", "an", "to", "of"]);
+      return title.toLowerCase().split(" ").map((word, index) => {
+        if (!word) return word;
+        if (word.includes(".")) return word.toUpperCase();
+        if (word.includes("-")) return word.split("-").map(part => capitalize(part)).join("-");
+        if (index > 0 && small.has(word)) return word;
+        return capitalize(word);
+      }).join(" ");
+    }
+
+    function capitalize(word) {
+      if (!word) return word;
+      if (/^\d/.test(word)) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    function inferCategory(title) {
+      const t = title.toLowerCase();
+      if (/(sock|crew|legging|cap|wig)/.test(t)) return "Socks";
+      if (/(baby|shark|toy|kids|elmo|smurf|bugs|jurassic|bouncy|crayons)/.test(t)) return "Kids";
+      if (/(lipstick|makeup|hair|scrunchie|beauty|face mask|lotion|shampoo|wash)/.test(t)) return "Beauty";
+      if (/(clean|laundry|detergent|bathroom|scrubbing|denture|spray)/.test(t)) return "Cleaning";
+      if (/(plate|hurricane|basket|crate|candle|wax|lighter|mug|bowl)/.test(t)) return "Home";
+      if (/(soup|mustard|candy|canadian|jello|heinz|cheez)/.test(t)) return "Grocery";
+      if (/(craft|bead|sticker|brush|pen|alpha)/.test(t)) return "Crafts";
+      if (/(bandage|pads|antifungal|carepak|denture)/.test(t)) return "Health";
+      return "Home";
+    }
+
+    function shopperCount(deal) {
+      const sku = Number(String(deal.sku || "0").replace(/\D/g, "").slice(-2)) || 17;
+      return Math.max(12, Math.min(49, sku));
+    }
+
+    function getHeroDeals() {
+      const chosen = heroSkus.map(sku => deals.find(deal => deal.sku === sku)).filter(Boolean);
+      const fill = deals.filter(deal => !chosen.includes(deal)).slice(0, 7 - chosen.length);
+      return chosen.concat(fill);
+    }
+
+    function filterDeals(source = deals, category = state.category, query = state.query) {
+      const q = query.trim().toLowerCase();
+      return source.filter(deal => {
+        const categoryOk = category === "All" || deal.category === category;
+        const queryOk = !q || [deal.title, deal.sku, deal.category, deal.retailer].some(value => String(value || "").toLowerCase().includes(q));
+        return categoryOk && queryOk;
+      });
+    }
+
+    function imageMarkup(deal, className) {
+      return `
+        <div class="${className}">
+          <img src="${deal.imageSrc}" alt="${escapeHtml(deal.title)}" loading="lazy" onerror="this.parentElement.classList.add('photo-failed')">
+          <div class="image-fallback">Photo unavailable</div>
+        </div>
+      `;
+    }
+
+    function renderHome() {
+      const heroDeals = getHeroDeals();
+      const featured = filterDeals(heroDeals, state.category, state.query)[0] || heroDeals[0] || deals[0];
+      const supporting = filterDeals(heroDeals, state.category, state.query).filter(deal => deal !== featured).slice(0, 2);
+      const fallbackSupport = heroDeals.filter(deal => deal !== featured).slice(0, 2);
+      const supportDeals = supporting.length ? supporting : fallbackSupport;
+
+      document.getElementById("heroMount").innerHTML = featured ? `
+        <article class="hero">
+          <button type="button" data-open-detail="${featured.id}">
+            ${imageMarkup(featured, "hero-photo")}
+            <div class="hero-copy">
+              <div class="hero-row">
+                <span class="badge">${featured.retailer} · ${featured.dealType}</span>
+                <div class="price-stack">
+                  <div class="price">${featured.price}</div>
+                  <div class="was">was <s>${featured.was}</s></div>
+                </div>
+              </div>
+              <h2>${escapeHtml(featured.title)}</h2>
+              <div class="hero-row">
+                <span class="badge trust">${featured.trust}</span>
+                <span class="social-proof">${featured.foundText}</span>
+              </div>
+            </div>
+          </button>
+        </article>
+        <div class="supporting">
+          ${supportDeals.map(miniCard).join("")}
+        </div>
+      ` : emptyState("Nothing amazing today", "No staged deals with photos were found.");
+
+      renderCategoryChips("categoryChips", state.category, category => {
+        state.category = category;
+        renderHome();
+      });
+
+      const scrollDeals = filterDeals(deals, state.category, state.query).slice(0, 12);
+      document.getElementById("photoScroll").innerHTML = scrollDeals.length
+        ? scrollDeals.map(scrollCard).join("")
+        : emptyState("No photos in this filter", "Try another category or clear search.");
+
+      document.getElementById("stores").innerHTML = retailers.map(store => `
+        <button class="store-row" type="button" data-open-store="${store.name}">
+          <div class="store-mark">${store.accent}</div>
+          <div>
+            <div class="store-name">${store.name}</div>
+            <div class="store-headline">${store.headline}</div>
+          </div>
+          <div class="store-count">${store.count}</div>
+        </button>
+      `).join("");
+
+      bindDealButtons(document);
+    }
+
+    function miniCard(deal) {
+      return `
+        <button class="mini-card" type="button" data-open-detail="${deal.id}">
+          ${imageMarkup(deal, "mini-photo")}
+          <div class="mini-copy">
+            <div class="mini-title">${escapeHtml(deal.title)}</div>
+            <div class="mini-meta"><strong>${deal.price}</strong><span>${deal.category}</span></div>
+          </div>
+        </button>
+      `;
+    }
+
+    function scrollCard(deal) {
+      return `
+        <button class="scroll-card" type="button" data-open-detail="${deal.id}">
+          ${imageMarkup(deal, "scroll-photo")}
+          <div class="scroll-copy">
+            <div class="scroll-title">${escapeHtml(deal.title)}</div>
+            <div class="mini-meta">
+              <strong>${deal.price} · ${deal.off}</strong>
+              <span>${deal.category}</span>
+            </div>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderCategoryChips(targetId, active, onClick) {
+      const target = document.getElementById(targetId);
+      target.innerHTML = categoryOrder.map(category => `
+        <button class="chip ${category === active ? "active" : ""}" type="button" data-category="${category}">
+          ${category}
+        </button>
+      `).join("");
+      target.querySelectorAll("[data-category]").forEach(button => {
+        button.addEventListener("click", () => onClick(button.dataset.category));
+      });
+    }
+
+    function openStore(storeName) {
+      state.currentStore = storeName;
+      state.storeCategory = "All";
+      document.getElementById("homeScreen").classList.remove("active");
+      document.getElementById("storeScreen").classList.add("active");
+      renderStore();
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    function renderStore() {
+      const store = retailers.find(item => item.name === state.currentStore) || retailers[0];
+      const realStoreDeals = store.name === "Dollar Tree" ? deals : [];
+      const visible = filterDeals(realStoreDeals, state.storeCategory, "");
+      document.getElementById("storeKicker").textContent = store.name;
+      document.getElementById("storeTitle").textContent = store.name === "Dollar Tree" ? "Penny list photos" : store.headline;
+      document.getElementById("storeCount").textContent = store.name === "Dollar Tree" ? `${visible.length} deals` : "Preview";
+      document.getElementById("storePlan").innerHTML = store.name === "Dollar Tree"
+        ? `<h2>How to get it</h2><p>Hunt end-caps, clearance shelves, and last-one-on-the-peg spots. Scan the item to confirm the price; penny items may not have a shelf tag and there is no live stock signal.</p>`
+        : `<h2>How to get it</h2><p>This retailer is in the direction model, but the staged photo data here is Dollar Tree-heavy. Use this row as the future store entry, not a live inventory claim.</p>`;
+
+      renderCategoryChips("storeChips", state.storeCategory, category => {
+        state.storeCategory = category;
+        renderStore();
+      });
+
+      document.getElementById("dealGrid").innerHTML = visible.length
+        ? visible.map(gridCard).join("")
+        : emptyState("No real photos staged for this store", "Dollar Tree is the populated photo-rich store in this mockup.");
+      bindDealButtons(document.getElementById("dealGrid"));
+    }
+
+    function gridCard(deal) {
+      return `
+        <button class="grid-card" type="button" data-open-detail="${deal.id}">
+          ${imageMarkup(deal, "grid-photo")}
+          <div class="grid-copy">
+            <div class="grid-title">${escapeHtml(deal.title)}</div>
+            <div class="grid-meta"><strong>${deal.price}</strong><span>${deal.category}</span></div>
+            <div class="sku">SKU ${escapeHtml(deal.sku || "unknown")} · ${deal.trust}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    function openDetail(dealId) {
+      const deal = deals.find(item => item.id === dealId) || deals[0];
+      if (!deal) return;
+      const shareText = `${deal.title} at ${deal.retailer}: ${deal.price}. Scan to confirm in store.`;
+      document.getElementById("detailMount").innerHTML = `
+        ${imageMarkup(deal, "detail-photo")}
+        <div class="detail-copy">
+          <div class="detail-title-row">
+            <h2>${escapeHtml(deal.title)}</h2>
+            <button class="share-btn" type="button" id="shareDeal">Share</button>
+          </div>
+          <div class="hero-row">
+            <span class="badge">${deal.retailer} · ${deal.dealType}</span>
+            <span class="badge trust">${deal.trust}</span>
+          </div>
+          <div class="deal-facts">
+            <div class="fact"><span>Price story</span><strong>${deal.price} today<br>was ${deal.was}</strong></div>
+            <div class="fact"><span>Recency</span><strong>${deal.foundText}</strong></div>
+            <div class="fact"><span>Confirm</span><strong>Scan to confirm</strong></div>
+            <div class="fact"><span>Identifier</span><strong>SKU ${escapeHtml(deal.sku || "unknown")}</strong></div>
+          </div>
+          <div class="how">
+            <h3>How to get it</h3>
+            <p>Hunt end-caps, clearance shelves, top stock, and discontinued spots. Scan the item to confirm the price at checkout. Do not count on live stock; this is a fresh reference photo and price lead.</p>
+            <p>In-store signs: no shelf tag, dusty packaging, last-one-on-the-peg, or older licensed designs.</p>
+          </div>
+          <div class="sheet-actions">
+            <button class="primary-btn" type="button" data-open-store="${deal.retailer}">Open store grid</button>
+            <button class="ghost-btn" type="button" id="closeDetail">Close</button>
+          </div>
+        </div>
+      `;
+      document.getElementById("detailSheet").classList.add("open");
+      document.getElementById("shareDeal").addEventListener("click", async () => {
+        if (navigator.share) {
+          await navigator.share({ title: deal.title, text: shareText }).catch(() => {});
+        } else if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareText).catch(() => {});
+          document.getElementById("shareDeal").textContent = "Copied";
+        } else {
+          document.getElementById("shareDeal").textContent = "Ready to share";
+        }
+      });
+      document.getElementById("closeDetail").addEventListener("click", closeDetail);
+      document.querySelector("#detailMount [data-open-store]").addEventListener("click", () => {
+        closeDetail();
+        openStore(deal.retailer);
+      });
+    }
+
+    function closeDetail() {
+      document.getElementById("detailSheet").classList.remove("open");
+    }
+
+    function bindDealButtons(root) {
+      root.querySelectorAll("[data-open-detail]").forEach(button => {
+        button.addEventListener("click", () => openDetail(button.dataset.openDetail));
+      });
+      root.querySelectorAll("[data-open-store]").forEach(button => {
+        button.addEventListener("click", () => openStore(button.dataset.openStore));
+      });
+    }
+
+    function emptyState(title, body) {
+      return `<div class="empty"><strong>${title}</strong><span>${body}</span></div>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    document.getElementById("homeSearch").addEventListener("input", event => {
+      state.query = event.target.value;
+      renderHome();
+    });
+    document.getElementById("openDollarTree").addEventListener("click", () => openStore("Dollar Tree"));
+    document.getElementById("backHome").addEventListener("click", () => {
+      document.getElementById("storeScreen").classList.remove("active");
+      document.getElementById("homeScreen").classList.add("active");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+    document.getElementById("detailSheet").addEventListener("click", event => {
+      if (event.target.id === "detailSheet") closeDetail();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeDetail();
+    });
+
+    renderHome();
+  </script>
+</body>
+</html>

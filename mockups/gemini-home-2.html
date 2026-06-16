@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter - Premium Front Door</title>
+  <style>
+    :root {
+      /* Refined Brand Palette */
+      --bg-creme: #fffefa;
+      --bg-wash: #f5f4f0;
+      --ink-main: #23231f;
+      --ink-muted: #6f6b63;
+      --accent-magenta: #993556;
+      --accent-green: #2f6f12;
+      --border-soft: #e8e6e1;
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-float: 0 12px 32px rgba(35, 35, 31, 0.08);
+      --shadow-press: 0 4px 12px rgba(35, 35, 31, 0.04);
+
+      --font-sys: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e0dfd9;
+      display: flex;
+      justify-content: center;
+      font-family: var(--font-sys);
+      color: var(--ink-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Mobile Constraint Container */
+    .app-frame {
+      width: 100%;
+      max-width: 400px;
+      min-height: 100vh;
+      background: var(--bg-creme);
+      position: relative;
+      overflow-x: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.1);
+    }
+
+    .concept-tag {
+      position: fixed; left: 8px; bottom: 8px; z-index: 300;
+      background: rgba(35,35,31,.82); color: var(--bg-creme);
+      font-size: 10px; font-weight: 600; letter-spacing: .04em;
+      padding: 4px 8px; border-radius: 6px;
+    }
+
+    /* 1. Global Navigation & Categories (Always Top) */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 254, 250, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 16px 20px 12px;
+    }
+
+    .nav-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--ink-main);
+      color: var(--bg-creme);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 12px;
+    }
+
+    .greeting {
+      font-size: 18px; font-weight: 800; line-height: 1;
+    }
+
+    .sub-greeting {
+      font-size: 12px; color: var(--ink-muted); margin-top: 4px;
+    }
+
+    /* Category Engine */
+    .category-scroll {
+      display: flex; gap: 8px; overflow-x: auto;
+      scrollbar-width: none; padding-bottom: 4px;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+
+    .cat-chip {
+      background: var(--bg-wash);
+      border: 1px solid transparent;
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 13px; font-weight: 700; color: var(--ink-muted);
+      white-space: nowrap; cursor: pointer; transition: all 0.2s;
+    }
+
+    .cat-chip.active {
+      background: var(--ink-main);
+      color: var(--bg-creme);
+    }
+
+    .main-content { padding: 20px; }
+
+    .section-label {
+      font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+      font-weight: 800; color: var(--ink-muted); margin-bottom: 16px;
+    }
+
+    /* 2. Ad-Agency Hero Card */
+    .hero-editorial {
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-float);
+      margin-bottom: 32px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .hero-editorial:active { transform: scale(0.98); }
+
+    .hero-image-zone {
+      height: 220px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.03) 100%), var(--bg-wash);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+
+    .hero-image-zone img {
+      width: 150px; height: 150px; object-fit: contain;
+      filter: drop-shadow(0 20px 20px rgba(0,0,0,0.15));
+    }
+
+    .store-badge-abs {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--bg-creme); border: 1px solid var(--border-soft);
+      padding: 6px 12px; border-radius: 99px;
+      font-size: 11px; font-weight: 800; color: var(--accent-magenta);
+      box-shadow: var(--shadow-press);
+    }
+
+    .hero-copy-zone { padding: 20px; }
+
+    .hero-title {
+      font-size: 22px; font-weight: 800; line-height: 1.1; margin-bottom: 8px;
+    }
+
+    .price-lockup {
+      display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px;
+    }
+
+    .price-now { font-size: 32px; font-weight: 900; color: var(--accent-green); }
+    .price-was { font-size: 16px; font-weight: 600; color: var(--ink-muted); text-decoration: line-through; }
+
+    .ad-copy {
+      font-size: 14px; color: var(--ink-main); font-style: italic;
+      line-height: 1.4; margin-bottom: 16px;
+    }
+
+    .trust-ribbon {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding-top: 16px; border-top: 1px solid var(--border-soft);
+    }
+
+    .trust-tag {
+      font-size: 11px; font-weight: 700; padding: 4px 8px;
+      border-radius: 4px; background: var(--bg-wash); color: var(--ink-muted);
+    }
+    .trust-tag.signal { background: rgba(47, 111, 18, 0.1); color: var(--accent-green); }
+
+    /* 3. Retailer Storefront Doors */
+    .storefront-grid {
+      display: grid; gap: 12px;
+    }
+
+    .door-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; background: #ffffff; border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-press);
+      cursor: pointer;
+    }
+
+    .door-info { display: flex; flex-direction: column; gap: 4px; }
+    .door-name { font-size: 16px; font-weight: 800; }
+    .door-hook { font-size: 13px; color: var(--ink-muted); }
+
+    .door-action {
+      background: var(--bg-wash); color: var(--ink-main);
+      height: 36px; padding: 0 16px; border-radius: 99px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; border: none;
+    }
+
+    /* Modals & Views */
+    .view-layer {
+      position: absolute; top: 0; left: 0; right: 0; min-height: 100vh;
+      background: var(--bg-creme); z-index: 200; transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .view-layer.active { transform: translateX(0); }
+
+    /* store grid view (real photos) */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px 20px 40px; }
+    .grid-cell { border: 1px solid var(--border-soft); border-radius: var(--radius-md); overflow: hidden; background:#fff; }
+    .grid-cell .gimg { height: 120px; background: var(--bg-wash); display:flex; align-items:center; justify-content:center; }
+    .grid-cell .gimg img { width: 84px; height: 84px; object-fit: contain; }
+    .grid-cell .gbody { padding: 10px 12px; }
+    .grid-cell .gtitle { font-size: 12.5px; font-weight: 700; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .grid-cell .gprice { font-size: 15px; font-weight: 900; color: var(--accent-green); margin-top: 3px; }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame">
+    <div class="concept-tag">Gemini · Front Door</div>
+
+    <header class="sticky-header">
+      <div class="nav-top">
+        <div class="brand-lockup">
+          <div class="avatar">DH</div>
+          <div>
+            <div class="greeting">Deal Hunter</div>
+            <div class="sub-greeting">Today's best finds.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-scroll" id="cat-nav">
+        <button class="cat-chip active" onclick="filterData('All')">All</button>
+        <button class="cat-chip" onclick="filterData('Apparel')">🧦 Apparel</button>
+        <button class="cat-chip" onclick="filterData('Home')">🧴 Home</button>
+        <button class="cat-chip" onclick="filterData('Outdoors')">⛺ Outdoors</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <div class="section-label">Top pick right now</div>
+      <div id="hero-injection"></div>
+
+      <div class="section-label" style="margin-top: 16px;">Pick a store</div>
+      <div class="storefront-grid" id="stores-injection"></div>
+
+    </main>
+
+    <div class="view-layer" id="store-view">
+      <header class="sticky-header" style="display: flex; align-items: center; gap: 16px;">
+        <button onclick="closeStore()" style="background: none; border: none; font-size: 24px; cursor: pointer;">←</button>
+        <div>
+          <div class="greeting" id="sv-title">Dollar Tree</div>
+          <div class="sub-greeting">Browse the full list</div>
+        </div>
+      </header>
+      <div class="grid2" id="sv-grid"></div>
+    </div>
+
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const IMG = "../deal-hunter-staging/images/";
+    // Real catalog penny items (real on-disk photos). Honest current data is
+    // Dollar Tree penny; Outdoors has no real photo yet -> demos the empty state.
+    const db = {
+      deals: [
+        { id: 1, cat: 'Apparel', store: 'Dollar Tree', type: 'Penny',
+          title: 'Smurfs Grumpy crew socks', price: '$0.01', was: '$1.25',
+          hook: '"31 shoppers found it today. Licensed apparel drops move fast."',
+          signal: 'Fresh today', trust: 'Verified product', img: '397599.jpg' },
+        { id: 2, cat: 'Home', store: 'Dollar Tree', type: 'Penny',
+          title: 'Bathroom cleaner kit', price: '$0.01', was: '$1.25',
+          hook: '"A household staple ringing up at a single penny."',
+          signal: 'Fresh today', trust: 'Verified product', img: '367385.jpg' },
+        { id: 3, cat: 'Apparel', store: 'Dollar Tree', type: 'Penny',
+          title: 'Spiderman face crew socks', price: '$0.01', was: '$1.25',
+          hook: '"Marvel-licensed socks — a penny each. Going fast."',
+          signal: 'Aging — going fast', trust: 'Verified product', img: '401005.jpg' }
+      ],
+      stores: [
+        { name: 'Dollar Tree', headline: 'Penny list · everything 1¢', count: 98, cats: ['All', 'Apparel', 'Home'] },
+        { name: 'Target', headline: '70% off camping clearance', count: 8, cats: ['All', 'Outdoors'] },
+        { name: 'Amazon', headline: 'Price glitch — act fast', count: 2, cats: ['All', 'Home'] },
+        { name: 'Dollar General', headline: '12 fresh penny + coupon finds', count: 13, cats: ['All', 'Home'] }
+      ]
+    };
+
+    function heroImg(deal) {
+      return `<img src="${IMG}${deal.img}" alt="${deal.title}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{textContent:'🛍️',style:'font-size:72px'}))">`;
+    }
+
+    function renderHero(deal) {
+      if(!deal) {
+        document.getElementById('hero-injection').innerHTML = `
+          <div class="hero-editorial" style="padding: 32px 20px; text-align: center;">
+            <div style="font-size: 16px; font-weight: 800; margin-bottom: 8px;">Nothing breathtaking right now.</div>
+            <div style="font-size: 13px; color: var(--ink-muted);">We won't show you filler. Pick a store below to browse standard deals.</div>
+          </div>`;
+        return;
+      }
+      document.getElementById('hero-injection').innerHTML = `
+        <div class="hero-editorial" onclick="openStore('${deal.store}')">
+          <div class="hero-image-zone">
+            <div class="store-badge-abs">${deal.store} · ${deal.type}</div>
+            ${heroImg(deal)}
+          </div>
+          <div class="hero-copy-zone">
+            <h2 class="hero-title">${deal.title}</h2>
+            <div class="price-lockup">
+              <span class="price-now">${deal.price}</span>
+              <span class="price-was">${deal.was}</span>
+            </div>
+            <p class="ad-copy">${deal.hook}</p>
+            <div class="trust-ribbon">
+              <span class="trust-tag signal">${deal.signal}</span>
+              <span class="trust-tag">✓ ${deal.trust}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStores(filterCat) {
+      const filteredStores = db.stores.filter(s => s.cats.includes(filterCat));
+      document.getElementById('stores-injection').innerHTML = filteredStores.map(s => `
+        <div class="door-card" onclick="openStore('${s.name}')">
+          <div class="door-info">
+            <div class="door-name">${s.name}</div>
+            <div class="door-hook">${s.headline}</div>
+          </div>
+          <button class="door-action">${s.count} deals</button>
+        </div>
+      `).join('');
+    }
+
+    function filterData(category) {
+      document.querySelectorAll('.cat-chip').forEach(c => {
+        c.classList.remove('active');
+        if(c.innerText.includes(category)) c.classList.add('active');
+      });
+      const deal = category === 'All' ? db.deals[0] : db.deals.find(d => d.cat === category);
+      renderHero(deal);
+      renderStores(category);
+    }
+
+    // Real store grid view (real photos) from the staging data
+    function openStore(name) {
+      document.getElementById('sv-title').innerText = name;
+      const all = Array.isArray(window.STAGING_DEALS) ? window.STAGING_DEALS : [];
+      const rows = all.filter(d => d.retailer === name && d.image).slice(0, 24);
+      document.getElementById('sv-grid').innerHTML = rows.length ? rows.map(d => `
+        <div class="grid-cell">
+          <div class="gimg"><img src="${IMG}${d.image.replace('images/','')}" alt="${d.title}" onerror="this.style.display='none'"></div>
+          <div class="gbody"><div class="gtitle">${d.title}</div><div class="gprice">${d.price||''}</div></div>
+        </div>`).join('') : `<div style="grid-column:1/-1;text-align:center;color:var(--ink-muted);padding:40px 0">No photographed deals here yet.</div>`;
+      document.getElementById('store-view').classList.add('active');
+    }
+    function closeStore() { document.getElementById('store-view').classList.remove('active'); }
+
+    filterData('All');
+  </script>
+</body>
+</html>

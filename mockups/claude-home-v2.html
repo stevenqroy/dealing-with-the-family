@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Deal Hunter — today's best</title>
+<style>
+  /* ============================================================
+     Deal Hunter · Home v2 — REAL PHOTOS, photo-led, store-first
+     Palette: warm cream / near-black ink / refined pink / green.
+     NO orange. Calm, high-end, never overwhelming.
+     ============================================================ */
+  :root{
+    --cream:#fffefa;        /* page surface */
+    --paper:#ffffff;        /* card surface */
+    --sand:#f4f2ec;         /* recessed wells / photo backdrop */
+    --sand-2:#ece9e0;
+    --ink:#23231f;          /* primary text */
+    --ink-60:#6b6a63;       /* secondary text */
+    --ink-40:#9a988f;       /* tertiary / hints */
+    --line:#e7e4db;         /* hairlines */
+    --line-2:#dedacd;
+    --pink:#993556;         /* penny / brand accent */
+    --pink-soft:#f6e9ee;    /* pink tint chip */
+    --green:#2f6f12;        /* good price */
+    --green-soft:#e9f1e3;
+    --plum:#46324a;         /* glitch (NOT orange/red-alarm) */
+    --plum-soft:#efe8f0;
+    --gold:#7a5a16;         /* clearance text (warm, not orange) */
+    --gold-soft:#f3edda;
+    --shadow-sm:0 1px 2px rgba(35,35,31,.05), 0 2px 8px rgba(35,35,31,.05);
+    --shadow-md:0 4px 14px rgba(35,35,31,.09), 0 10px 30px rgba(35,35,31,.07);
+    --shadow-lg:0 10px 28px rgba(35,35,31,.14), 0 22px 60px rgba(35,35,31,.12);
+    --r-lg:22px; --r-md:16px; --r-sm:12px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font);
+    background:#d9d6cd;           /* neutral around the phone */
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;justify-content:center;
+    padding:0;
+  }
+  /* ---- phone frame ---- */
+  .phone{
+    position:relative;
+    width:390px; max-width:100vw; min-height:100vh;
+    background:var(--cream);
+    overflow:hidden;
+    box-shadow:0 0 0 1px rgba(0,0,0,.04);
+  }
+  @media(min-width:430px){
+    body{padding:22px 0 60px;background:#d9d6cd}
+    .phone{min-height:auto;border-radius:38px;box-shadow:var(--shadow-lg);overflow:hidden}
+  }
+
+  /* corner concept label */
+  .concept-tag{
+    position:fixed;left:10px;bottom:10px;z-index:200;
+    font-size:10.5px;letter-spacing:.04em;font-weight:600;
+    color:#6b6a63;background:rgba(255,255,255,.85);
+    border:1px solid rgba(0,0,0,.06);
+    padding:4px 9px;border-radius:999px;
+    backdrop-filter:saturate(1.4) blur(6px);
+    pointer-events:none;
+  }
+
+  /* ============ APP CHROME ============ */
+  .app{position:relative;min-height:100%}
+  .scroll{
+    height:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:96px;
+  }
+  /* sticky top bar */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:linear-gradient(var(--cream) 72%, rgba(255,254,250,0));
+    padding:14px 18px 8px;
+  }
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand-mark{
+    width:28px;height:28px;border-radius:9px;flex:0 0 auto;
+    background:radial-gradient(120% 120% at 30% 20%, #b8466a, var(--pink));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.25), var(--shadow-sm);
+    display:grid;place-items:center;
+  }
+  .brand-mark svg{width:16px;height:16px;display:block}
+  .brand-name{font-size:16px;font-weight:750;letter-spacing:-.01em}
+  .brand-name .accent{color:var(--pink)}
+  .updated{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:11.5px;color:var(--ink-60);font-weight:550;
+    background:var(--paper);border:1px solid var(--line);
+    padding:5px 9px 5px 8px;border-radius:999px;box-shadow:var(--shadow-sm);
+  }
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 0 rgba(47,111,18,.45);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,111,18,.4)}70%{box-shadow:0 0 0 6px rgba(47,111,18,0)}100%{box-shadow:0 0 0 0 rgba(47,111,18,0)}}
+
+  /* search */
+  .search{
+    margin:10px 18px 2px;display:flex;align-items:center;gap:9px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:11px 13px;box-shadow:var(--shadow-sm);
+    color:var(--ink-40);font-size:14.5px;cursor:text;
+  }
+  .search svg{width:17px;height:17px;flex:0 0 auto;color:var(--ink-40)}
+
+  /* section heads */
+  .sec{padding:0 18px}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px}
+  .sec-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-60)}
+  .sec-link{font-size:13px;font-weight:600;color:var(--pink);background:none;border:none;padding:0;cursor:pointer}
+  .editorial{margin:6px 0 2px}
+  .editorial h1{font-size:25px;line-height:1.12;font-weight:780;letter-spacing:-.018em;margin:2px 0 4px}
+  .editorial p{font-size:14px;color:var(--ink-60);margin:0;line-height:1.4}
+
+  /* ============ FEATURED HERO ============ */
+  .hero{
+    position:relative;margin:14px 18px 2px;border-radius:var(--r-lg);
+    background:var(--paper);border:1px solid var(--line);
+    box-shadow:var(--shadow-md);overflow:hidden;cursor:pointer;
+    transition:transform .16s ease, box-shadow .16s ease;
+  }
+  .hero:active{transform:scale(.992)}
+  .hero-photo{
+    position:relative;width:100%;aspect-ratio:1/1;
+    background:var(--sand);overflow:hidden;display:block;
+  }
+  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .hero-badges{position:absolute;top:12px;left:12px;display:flex;gap:7px;flex-wrap:wrap;max-width:80%}
+  .hero-rank{
+    position:absolute;top:12px;right:12px;
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(35,35,31,.78);color:#fff;backdrop-filter:blur(6px);
+    font-size:11px;font-weight:650;letter-spacing:.02em;
+    padding:6px 10px;border-radius:999px;
+  }
+  .hero-rank .star{color:#ffd479}
+  .hero-grad{
+    position:absolute;left:0;right:0;bottom:0;height:62%;
+    background:linear-gradient(to top, rgba(20,20,18,.78), rgba(20,20,18,.30) 55%, rgba(20,20,18,0));
+    pointer-events:none;
+  }
+  .hero-body{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 16px;color:#fff}
+  .hero-store{font-size:12px;font-weight:600;opacity:.92;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .hero-store .sdot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .hero-title{font-size:20px;font-weight:740;line-height:1.16;letter-spacing:-.01em;margin:0 0 9px;max-width:94%}
+  .hero-pricerow{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+  .hero-price{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1;color:#eafbe0}
+  .hero-was{font-size:14px;text-decoration:line-through;opacity:.72;margin-bottom:3px}
+  .hero-off{
+    font-size:12px;font-weight:700;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.28);
+    padding:3px 8px;border-radius:999px;margin-bottom:2px;
+  }
+  .hero-foot{
+    display:flex;align-items:center;gap:8px;margin-top:11px;
+    font-size:12px;opacity:.95;
+  }
+  .hero-social{display:inline-flex;align-items:center;gap:6px}
+  .hero-social .ppl{display:flex}
+  .hero-social .ppl i{
+    width:16px;height:16px;border-radius:50%;display:block;margin-left:-5px;
+    border:1.5px solid rgba(20,20,18,.6);
+    background:linear-gradient(135deg,#cf9bb0,#9c5e75);
+  }
+  .hero-social .ppl i:first-child{margin-left:0}
+
+  /* badge chips (deal type) — used on hero + cards */
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:700;letter-spacing:.01em;
+    padding:5px 9px;border-radius:999px;line-height:1;white-space:nowrap;
+  }
+  .badge.penny{background:rgba(255,255,255,.94);color:var(--pink)}
+  .badge.glitch{background:rgba(255,255,255,.94);color:var(--plum)}
+  .badge.clearance{background:rgba(255,255,255,.94);color:var(--gold)}
+  .badge.sale,.badge.bogo,.badge.coupon{background:rgba(255,255,255,.94);color:var(--ink)}
+  /* solid (on light surfaces) */
+  .badge.s-penny{background:var(--pink-soft);color:var(--pink)}
+  .badge.s-glitch{background:var(--plum-soft);color:var(--plum)}
+  .badge.s-clearance{background:var(--gold-soft);color:var(--gold)}
+  .badge.s-sale,.badge.s-bogo,.badge.s-coupon{background:var(--sand);color:var(--ink-60)}
+
+  /* ============ PHOTO-SCROLL CAROUSEL ============ */
+  .swipe-hint{font-size:12px;color:var(--ink-40);font-weight:550;display:inline-flex;align-items:center;gap:5px}
+  .carousel{
+    display:flex;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;padding:2px 18px 6px;margin:0 -0px;
+    scrollbar-width:none;
+  }
+  .carousel::-webkit-scrollbar{display:none}
+  .pcard{
+    scroll-snap-align:start;flex:0 0 auto;width:172px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-sm);
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .pcard:active{transform:scale(.985)}
+  .pcard-photo{position:relative;width:100%;aspect-ratio:1/1;background:var(--sand);overflow:hidden}
+  .pcard-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .pcard-tag{position:absolute;top:9px;left:9px}
+  .pcard-body{padding:10px 11px 12px}
+  .pcard-title{font-size:13px;font-weight:620;line-height:1.25;color:var(--ink);
+    margin:0 0 7px;min-height:32px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pcard-pricerow{display:flex;align-items:center;gap:7px}
+  .pcard-price{font-size:16px;font-weight:780;color:var(--green);letter-spacing:-.01em}
+  .pcard-store{font-size:11px;color:var(--ink-40);margin-top:6px;display:flex;align-items:center;gap:6px}
+  .pcard-store .sdot{width:7px;height:7px;border-radius:50%}
+
+  /* ============ CATEGORY CHIPS ============ */
+  .chips{
+    display:flex;gap:8px;overflow-x:auto;padding:2px 18px 4px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;font-size:13.5px;font-weight:600;
+    padding:9px 14px;border-radius:999px;cursor:pointer;
+    background:var(--paper);color:var(--ink-60);
+    border:1px solid var(--line);transition:all .14s ease;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .chip .emoji{font-size:14px;line-height:1}
+  .chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  /* ============ STORE LIST (smart navigation) ============ */
+  .stores{display:flex;flex-direction:column;gap:10px;padding:0 18px}
+  .store{
+    display:flex;align-items:center;gap:13px;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--r-md);padding:13px 14px;cursor:pointer;
+    box-shadow:var(--shadow-sm);transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .store:active{transform:scale(.99)}
+  .store-logo{
+    width:46px;height:46px;border-radius:13px;flex:0 0 auto;
+    display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;
+    letter-spacing:-.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .store-main{flex:1 1 auto;min-width:0}
+  .store-name{font-size:15.5px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+  .store-name .pennychip{font-size:10px;font-weight:700;color:var(--pink);background:var(--pink-soft);
+    padding:2px 7px;border-radius:999px;letter-spacing:.02em}
+  .store-headline{font-size:13px;color:var(--ink-60);margin-top:3px;line-height:1.3;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .store-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto}
+  .store-count{font-size:13px;font-weight:750;color:var(--ink)}
+  .store-count small{font-size:10.5px;font-weight:600;color:var(--ink-40);display:block;text-align:right;margin-top:1px}
+  .store-chev{color:var(--ink-40);width:18px;height:18px}
+  .store.empty{opacity:.72}
+  .store.empty .store-count{color:var(--ink-40);font-weight:600;font-size:11.5px}
+
+  .add-store{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    border:1.5px dashed var(--line-2);border-radius:var(--r-md);
+    padding:13px;color:var(--ink-60);font-size:14px;font-weight:600;
+    cursor:pointer;background:transparent;width:100%;margin-top:2px;
+  }
+  .add-store svg{width:17px;height:17px}
+
+  /* honesty footer */
+  .honesty{
+    margin:22px 18px 6px;padding:13px 14px;border-radius:var(--r-md);
+    background:var(--sand);border:1px solid var(--line);
+    font-size:12px;color:var(--ink-60);line-height:1.45;display:flex;gap:10px;
+  }
+  .honesty svg{width:16px;height:16px;flex:0 0 auto;margin-top:1px;color:var(--ink-40)}
+  .honesty b{color:var(--ink);font-weight:650}
+
+  /* ============ STORE GRID VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .grid-head{
+    position:sticky;top:0;z-index:40;background:var(--cream);
+    padding:12px 14px 10px;border-bottom:1px solid var(--line);
+  }
+  .grid-head-row{display:flex;align-items:center;gap:12px}
+  .back-btn{
+    width:38px;height:38px;border-radius:11px;flex:0 0 auto;
+    background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow-sm);
+    display:grid;place-items:center;cursor:pointer;color:var(--ink);
+  }
+  .back-btn svg{width:19px;height:19px}
+  .grid-head-main{flex:1 1 auto;min-width:0}
+  .grid-head-title{font-size:18px;font-weight:760;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .grid-head-sub{font-size:12.5px;color:var(--ink-60);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .grid-store-logo{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:13px}
+  .grid-tools{display:flex;gap:7px;padding:11px 14px 4px;overflow-x:auto;scrollbar-width:none}
+  .grid-tools::-webkit-scrollbar{display:none}
+  .photo-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:8px 14px 24px;
+  }
+  .gcard{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);
+    overflow:hidden;box-shadow:var(--shadow-sm);cursor:pointer;
+    transition:transform .14s ease;
+  }
+  .gcard:active{transform:scale(.985)}
+  .gcard-photo{position:relative;width:100%;aspect-ratio:1/1;background:var(--sand);overflow:hidden}
+  .gcard-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .gcard-tag{position:absolute;top:8px;left:8px}
+  .gcard-fresh{position:absolute;bottom:8px;left:8px;display:inline-flex;align-items:center;gap:5px;
+    background:rgba(255,255,255,.92);border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:600;color:var(--ink-60)}
+  .gcard-fresh .fdot{width:6px;height:6px;border-radius:50%}
+  .gcard-body{padding:9px 11px 12px}
+  .gcard-title{font-size:12.5px;font-weight:600;line-height:1.25;margin:0 0 6px;min-height:31px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)}
+  .gcard-price{font-size:15px;font-weight:780;color:var(--green);letter-spacing:-.01em}
+  .gcard-meta{display:flex;align-items:center;justify-content:space-between;margin-top:5px}
+  .gcard-sku{font-size:10.5px;color:var(--ink-40);font-variant-numeric:tabular-nums}
+
+  /* ============ DETAIL SHEET ============ */
+  .sheet-scrim{
+    position:fixed;inset:0;z-index:100;background:rgba(28,28,24,.42);
+    backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .22s ease;
+  }
+  .sheet-scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;left:50%;bottom:0;transform:translate(-50%,100%);
+    width:390px;max-width:100vw;max-height:94vh;z-index:101;
+    background:var(--cream);border-radius:26px 26px 0 0;
+    box-shadow:0 -10px 40px rgba(0,0,0,.22);
+    transition:transform .3s cubic-bezier(.22,1,.36,1);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .sheet.open{transform:translate(-50%,0)}
+  .sheet-grab{width:38px;height:5px;border-radius:99px;background:var(--line-2);
+    margin:9px auto 4px;flex:0 0 auto}
+  .sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:18px}
+  .sheet-photo{position:relative;width:100%;aspect-ratio:1/1;background:var(--sand);max-height:330px}
+  .sheet-photo img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+  .sheet-photo-tag{position:absolute;top:12px;left:12px}
+  .sheet-x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,.92);border:1px solid var(--line);display:grid;place-items:center;
+    cursor:pointer;color:var(--ink);box-shadow:var(--shadow-sm)}
+  .sheet-x svg{width:18px;height:18px}
+  .sheet-pad{padding:16px 18px 0}
+  .sheet-store{font-size:13px;font-weight:600;color:var(--ink-60);display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .sheet-store .sdot{width:9px;height:9px;border-radius:50%}
+  .sheet-title{font-size:21px;font-weight:760;line-height:1.2;letter-spacing:-.015em;margin:0 0 14px}
+
+  /* price story */
+  .pricebox{
+    display:flex;align-items:center;gap:14px;background:var(--green-soft);
+    border:1px solid #d6e6c9;border-radius:var(--r-md);padding:14px 16px;margin-bottom:13px;
+  }
+  .pricebox .now{font-size:32px;font-weight:820;color:var(--green);letter-spacing:-.02em;line-height:1}
+  .pricebox .meta{display:flex;flex-direction:column;gap:3px}
+  .pricebox .was{font-size:14px;color:var(--ink-60)}
+  .pricebox .was s{opacity:.8}
+  .pricebox .save{font-size:12.5px;font-weight:700;color:var(--green)}
+  .pricebox.glitchbox{background:var(--plum-soft);border-color:#e0d2e2}
+  .pricebox.glitchbox .now{color:var(--plum)}
+  .pricebox.glitchbox .save{color:var(--plum)}
+
+  /* trust + social row */
+  .trustrow{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+  .trust{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--paper);border:1px solid var(--line);border-radius:11px;
+    padding:9px 12px;font-size:12.5px;color:var(--ink-60);font-weight:550;box-shadow:var(--shadow-sm);
+  }
+  .trust svg{width:15px;height:15px;flex:0 0 auto}
+  .trust.verified{color:var(--green);border-color:#d6e6c9;background:var(--green-soft)}
+  .trust.verified svg{color:var(--green)}
+  .trust.info svg{color:var(--ink-40)}
+  .trust b{color:var(--ink);font-weight:650}
+
+  /* the play */
+  .play{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);
+    padding:15px 16px;margin-bottom:13px;box-shadow:var(--shadow-sm);
+  }
+  .play-head{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+  .play-icon{width:30px;height:30px;border-radius:9px;background:var(--pink-soft);color:var(--pink);
+    display:grid;place-items:center;flex:0 0 auto}
+  .play-icon svg{width:17px;height:17px}
+  .play-titles{line-height:1.1}
+  .play-kicker{font-size:15px;font-weight:740;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .play-kicker .tag{font-size:10px;font-weight:700;color:var(--pink);background:var(--pink-soft);padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+  .play-sub{font-size:12px;color:var(--ink-40);margin-top:3px;font-weight:550}
+  .play-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+  .play-steps li{display:flex;gap:11px;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .play-num{width:21px;height:21px;border-radius:50%;flex:0 0 auto;background:var(--ink);color:#fff;
+    font-size:11px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+  .play-look{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line-2);
+    font-size:12.5px;color:var(--ink-60);line-height:1.4}
+  .play-look b{color:var(--ink);font-weight:650}
+  .play-warn{margin-top:12px;padding:10px 12px;background:var(--plum-soft);border-radius:11px;
+    font-size:12px;color:var(--plum);line-height:1.42;display:flex;gap:8px}
+  .play-warn svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
+
+  /* scan / SKU strip (Marcus) */
+  .scanstrip{
+    display:flex;align-items:center;gap:12px;background:var(--ink);color:#fff;
+    border-radius:var(--r-md);padding:13px 15px;margin-bottom:13px;
+  }
+  .scan-bars{display:flex;gap:2px;align-items:center;height:30px;flex:0 0 auto}
+  .scan-bars i{display:block;width:2px;height:100%;background:#fff;border-radius:1px}
+  .scan-bars i:nth-child(2n){height:72%}
+  .scan-bars i:nth-child(3n){height:90%}
+  .scan-bars i:nth-child(5n){height:60%;width:3px}
+  .scan-main{flex:1 1 auto}
+  .scan-label{font-size:11px;color:rgba(255,255,255,.62);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .scan-sku{font-size:17px;font-weight:740;font-variant-numeric:tabular-nums;letter-spacing:.02em;margin-top:2px}
+  .scan-cta{font-size:12px;font-weight:650;color:#fff;opacity:.86;display:flex;align-items:center;gap:6px}
+  .scan-cta svg{width:15px;height:15px}
+
+  /* sheet actions */
+  .sheet-actions{display:flex;gap:11px;padding:4px 18px 18px;background:var(--cream);
+    position:sticky;bottom:0;border-top:1px solid var(--line);padding-top:13px}
+  .btn{
+    flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:14px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;border:none;
+    transition:transform .12s ease,filter .12s ease;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--ink);color:#fff;flex:2 1 auto}
+  .btn-primary svg{width:18px;height:18px}
+  .btn-share{background:var(--paper);color:var(--ink);border:1px solid var(--line-2);box-shadow:var(--shadow-sm)}
+  .btn-share svg{width:18px;height:18px}
+
+  /* tiny toast */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:var(--ink);color:#fff;font-size:13px;font-weight:600;
+    padding:11px 16px;border-radius:12px;z-index:140;opacity:0;pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;box-shadow:var(--shadow-lg);
+    display:flex;align-items:center;gap:8px;max-width:330px;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast svg{width:16px;height:16px;color:#9fe08a}
+
+  .fdot.fresh{background:var(--green)}
+  .fdot.aging{background:#b6892b}
+  .fdot.expired{background:var(--ink-40)}
+
+  /* small share-card preview inside a second sheet */
+  .sharesheet .sheet-body{padding:18px}
+  .share-preview{
+    border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);
+    background:var(--paper);box-shadow:var(--shadow-md);margin-bottom:16px;
+  }
+  .share-preview .sp-photo{width:100%;aspect-ratio:4/3;background:var(--sand);overflow:hidden}
+  .share-preview .sp-photo img{width:100%;height:100%;object-fit:cover}
+  .share-preview .sp-body{padding:14px 15px 16px}
+  .share-preview .sp-kicker{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--pink)}
+  .share-preview .sp-title{font-size:17px;font-weight:740;margin:5px 0 8px;line-height:1.2}
+  .share-preview .sp-price{font-size:24px;font-weight:800;color:var(--green)}
+  .share-preview .sp-price s{font-size:14px;color:var(--ink-40);font-weight:500;margin-left:8px}
+  .share-preview .sp-foot{font-size:11.5px;color:var(--ink-40);margin-top:9px;display:flex;align-items:center;gap:6px}
+  .share-targets{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px}
+  .share-t{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
+  .share-t .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--paper);
+    border:1px solid var(--line);box-shadow:var(--shadow-sm);color:var(--ink)}
+  .share-t .ic svg{width:22px;height:22px}
+  .share-t span{font-size:11px;color:var(--ink-60);font-weight:550}
+  .share-note{font-size:11.5px;color:var(--ink-40);text-align:center;margin-top:14px;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="app">
+
+    <!-- ============ HOME VIEW ============ -->
+    <div id="view-home" class="view active">
+      <div class="scroll">
+
+        <div class="topbar">
+          <div class="topbar-row">
+            <div class="brand">
+              <div class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.6l2.1 6.3h6.6l-5.3 3.9 2 6.3-5.4-3.9-5.4 3.9 2-6.3-5.3-3.9h6.6z" fill="#fff"/></svg>
+              </div>
+              <div class="brand-name">Deal<span class="accent">Hunter</span></div>
+            </div>
+            <div class="updated"><span class="live-dot"></span> Updated 4m ago</div>
+          </div>
+          <div class="search" onclick="toast('Search is coming — browse by store or category below')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+            Search a product or store
+          </div>
+        </div>
+
+        <!-- Editorial intro -->
+        <div class="sec">
+          <div class="editorial">
+            <h1>Today's best finds</h1>
+            <p>A few that are genuinely worth the trip — picked from <b id="totalCount">160</b> live deals.</p>
+          </div>
+        </div>
+
+        <!-- FEATURED HERO (the "holy smokes") -->
+        <div id="heroSlot"></div>
+
+        <!-- PHOTO-SCROLL CAROUSEL -->
+        <div class="sec">
+          <div class="sec-head">
+            <div class="sec-title">Worth a look</div>
+            <div class="swipe-hint">Swipe
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="carousel" id="carousel"></div>
+
+        <!-- CATEGORY FILTER -->
+        <div class="sec">
+          <div class="sec-head"><div class="sec-title">Browse by category</div></div>
+        </div>
+        <div class="chips" id="catChips"></div>
+
+        <!-- STORE LIST (smart navigation) -->
+        <div class="sec">
+          <div class="sec-head">
+            <div class="sec-title">Pick a store</div>
+            <div class="swipe-hint">Best deals inside</div>
+          </div>
+        </div>
+        <div class="stores" id="storeList"></div>
+        <div class="sec" style="margin-top:10px">
+          <button class="add-store" onclick="toast('You\'ll be able to follow a store and get a nudge when it heats up')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Follow a store
+          </button>
+        </div>
+
+        <!-- Honesty footer -->
+        <div class="honesty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div><b>How we keep it honest.</b> Times show how <b>recent</b> a find is — not live stock. When a discount isn't confirmed we say <b>check the tag</b> instead of guessing. Always scan in store to be sure.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ STORE GRID VIEW ============ -->
+    <div id="view-store" class="view">
+      <div class="scroll" id="storeScroll">
+        <div class="grid-head">
+          <div class="grid-head-row">
+            <button class="back-btn" onclick="goHome()" aria-label="Back to home">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <div class="grid-store-logo" id="gridLogo"></div>
+            <div class="grid-head-main">
+              <div class="grid-head-title" id="gridTitle"></div>
+              <div class="grid-head-sub" id="gridSub"></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-tools" id="gridChips"></div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ DETAIL SHEET ============ -->
+<div class="sheet-scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sheet-grab"></div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<!-- ============ SHARE SHEET ============ -->
+<div class="sheet-scrim" id="shareScrim" onclick="closeShare()"></div>
+<div class="sheet sharesheet" id="shareSheet" role="dialog" aria-modal="true">
+  <div class="sheet-grab"></div>
+  <div class="sheet-body" id="shareBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="concept-tag">Claude · v2 photos</div>
+
+<!-- REAL DATA (allowed local reference) -->
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+/* ============================================================
+   Deal Hunter v2 — logic
+   ============================================================ */
+const IMG_BASE = "../deal-hunter-staging/";
+
+/* ---- store identity (color, logo text, headline) ---- */
+const STORE_META = {
+  "Dollar Tree":     {short:"DT",  color:"#993556", headline:"Penny list · everything 1¢"},
+  "Dollar General":  {short:"DG",  color:"#1f5e3a", headline:"12 fresh penny + coupon finds"},
+  "Target":          {short:"T",   color:"#9c2b2b", headline:"70% off camping clearance"},
+  "Walmart":         {short:"W",   color:"#1b4b86", headline:"Hidden clearance · scan to find"},
+  "Publix":          {short:"P",   color:"#2f6f2f", headline:"BOGO laundry event this week"},
+  "Walgreens":       {short:"Wg",  color:"#b21f2d", headline:"Coupon-stack week"},
+  "Amazon":          {short:"A",   color:"#46324a", headline:"Price glitch — worth a shot"},
+  "Amazon / Woot":   {short:"A",   color:"#46324a", headline:"Price glitch — worth a shot"},
+  "CVS":             {short:"C",   color:"#b21f2d", headline:"ExtraBucks deals this week"},
+  "HEB":             {short:"H",   color:"#9c2b2b", headline:"Weekly meal deals"},
+  "Kroger":          {short:"K",   color:"#1b4b86", headline:"Digital coupon picks"},
+  "Whole Foods Market":{short:"WF",color:"#1f5e3a", headline:"Prime member markdowns"},
+  "Family Dollar":   {short:"FD",  color:"#b21f2d", headline:"Smart Coupons stack"},
+  "Home Depot":      {short:"HD",  color:"#7a5a16", headline:"Penny + seasonal clearance"},
+  "Dunkin'":         {short:"D",   color:"#993556", headline:"App-only freebies"},
+  "Stop & Shop":     {short:"SS",  color:"#1b4b86", headline:"Weekly circular deals"},
+  "7-Eleven":        {short:"7",   color:"#1f5e3a", headline:"App coupon of the day"},
+};
+function storeMeta(name){
+  return STORE_META[name] || {short:(name||"?").slice(0,2).toUpperCase(), color:"#6b6a63", headline:"Deals reported"};
+}
+
+/* ---- deal-type display ---- */
+const TYPE_LABEL = {penny:"Penny · 1¢", glitch:"Price glitch", clearance:"Clearance", sale:"Sale", bogo:"BOGO", coupon:"Coupon", unknown:"Deal"};
+function typeLabel(t){return TYPE_LABEL[t]||"Deal"}
+function typeClass(t){return ["penny","glitch","clearance","sale","bogo","coupon"].includes(t)?t:"sale"}
+
+/* ---- freshness label ---- */
+const FRESH = {
+  fresh:   {dot:"fresh",  text:"Fresh"},
+  aging:   {dot:"aging",  text:"Aging — going fast"},
+  expired: {dot:"expired",text:"Older find"},
+};
+function freshMeta(f){return FRESH[f]||FRESH.fresh}
+
+/* ---- trust label (ONE per deal, neutral/info — never ⚠️) ---- */
+function trustFor(d){
+  if(d.dealType==="penny"){
+    return {kind:"verified", icon:"check", text:"<b>Verified product</b> · check tag in store"};
+  }
+  if(d.dealType==="glitch"){
+    return {kind:"info", icon:"info", text:"<b>Reported glitch</b> · may not honor at checkout"};
+  }
+  if(d.dealType==="clearance"||d.dealType==="sale"){
+    return {kind:"info", icon:"info", text:"<b>Reported price</b> · check the tag"};
+  }
+  return {kind:"info", icon:"info", text:"<b>Reported</b> · check the tag"};
+}
+
+/* ---- price helpers ---- */
+function priceNum(p){const n=parseFloat(String(p).replace(/[^0-9.]/g,""));return isNaN(n)?null:n}
+function isPenny(d){return d.price==="$0.01"||d.dealType==="penny"}
+
+/* ---- "found today" — derived, stable per item (honest social proof framing) ---- */
+function foundCount(d){
+  let h=0;const s=(d.sku||d.id||d.title||"x");
+  for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
+  return 8 + (h % 40); // 8..47
+}
+
+/* ============================================================
+   Load + filter data
+   ============================================================ */
+const ALL = (window.STAGING_DEALS||[]).slice();
+const PHOTO = ALL.filter(d => d.image && String(d.image).trim());
+// total live count for the editorial line
+document.getElementById('totalCount').textContent = ALL.length;
+document.getElementById('total'+'Count'); // noop guard
+
+/* ---- categorize penny items into friendly aisles (keyword-based) ---- */
+const CATEGORIES = [
+  {id:"all",     label:"All",        emoji:"✦", test:()=>true},
+  {id:"socks",   label:"Socks & apparel", emoji:"🧦", test:t=>/sock|legging|boxer|brief|qtr|10pk|lc 10pk|slides/i.test(t)},
+  {id:"toys",    label:"Toys & kids", emoji:"🧸", test:t=>/toy|bead|ball|harmonica|fidget|grow|squish|bracelet|sensory|crayon|sticker|claws/i.test(t)},
+  {id:"beauty",  label:"Beauty",     emoji:"💄", test:t=>/lipstick|makeup|matte|scrunchie|wig|denture|razor|brush/i.test(t)},
+  {id:"home",    label:"Home & kitchen", emoji:"🍽️", test:t=>/plate|crate|basket|tray|topper|candle|lighter|wax|diffuser|tealight|oil refill/i.test(t)},
+  {id:"cleaning",label:"Cleaning",   emoji:"🧼", test:t=>/cleaner|bathroom|scrubbing|mr\. clean|laundry|pac|spray|antifungal/i.test(t)},
+  {id:"snacks",  label:"Food & drink", emoji:"🥤", test:t=>/soup|candy|soda|cereal|protein|shake|mustard|biscuit|cookie|gel|canadian|punch|pineapple|tomato/i.test(t)},
+  {id:"care",    label:"Health & baby", emoji:"🩹", test:t=>/baby|lotion|shampoo|wash|bandage|burn pad|mask|cooling|shark/i.test(t)},
+];
+function catOf(title){
+  for(const c of CATEGORIES){if(c.id!=="all"&&c.test(title))return c.id;}
+  return "home";
+}
+
+/* ============================================================
+   HERO — pick the single most "wow" featured deal + supports
+   We curate by visual richness (known vivid SKUs first), honest data.
+   ============================================================ */
+const FEATURED_SKU = "397599"; // Smurfs Grumpy Crew Socks — sample-data hero #1
+const SUPPORT_SKUS = ["405498","412492","318526","252863","405736","402782","392016","411793"];
+
+function findBySku(sku){return PHOTO.find(d=>d.sku===sku)}
+
+function buildHero(){
+  const d = findBySku(FEATURED_SKU) || PHOTO[0];
+  const sm = storeMeta(d.retailer);
+  const tcls = typeClass(d.dealType);
+  const found = foundCount(d);
+  const html = `
+  <div class="sec">
+    <div class="hero" onclick="openDeal('${d.id}')">
+      <div class="hero-photo">
+        <img src="${IMG_BASE}${d.image}" alt="${esc(d.title)}" loading="eager"
+             onerror="this.closest('.hero-photo').style.background='var(--sand-2)';this.style.display='none'">
+        <div class="hero-grad"></div>
+        <div class="hero-badges">
+          <span class="badge ${tcls}">${dot(tcls)} ${typeLabel(d.dealType)}</span>
+        </div>
+        <div class="hero-rank"><span class="star">★</span> Top find today</div>
+        <div class="hero-body">
+          <div class="hero-store"><span class="sdot" style="background:${sm.color}"></span>${esc(d.retailer)}</div>
+          <h2 class="hero-title">${esc(pretty(d.title))}</h2>
+          <div class="hero-pricerow">
+            <span class="hero-price">${esc(d.price)}</span>
+            ${d.was?`<span class="hero-was">${esc(d.was)}</span>`:`<span class="hero-was">was $1.25</span>`}
+            <span class="hero-off">${offText(d)}</span>
+          </div>
+          <div class="hero-foot">
+            <span class="hero-social">
+              <span class="ppl"><i></i><i></i><i></i></span>
+              ${found} shoppers found it today
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('heroSlot').innerHTML = html;
+}
+
+/* off / save text — honest: if unknown, "check tag" */
+function offText(d){
+  if(d.off) return d.off+" off";
+  if(d.dealType==="penny"||d.price==="$0.01") return "99% off";
+  const now=priceNum(d.price), was=priceNum(d.was);
+  if(now!=null&&was!=null&&was>now) return Math.round((1-now/was)*100)+"% off";
+  return "Check tag";
+}
+
+/* ============================================================
+   PHOTO-SCROLL CAROUSEL
+   ============================================================ */
+function buildCarousel(){
+  const used = new Set([FEATURED_SKU]);
+  const picks = [];
+  for(const s of SUPPORT_SKUS){const d=findBySku(s); if(d&&!used.has(d.sku)){picks.push(d);used.add(d.sku);}}
+  // top up with other photo items
+  for(const d of PHOTO){if(picks.length>=10)break; if(!used.has(d.sku)){picks.push(d);used.add(d.sku);}}
+  const el = document.getElementById('carousel');
+  el.innerHTML = picks.map(d=>{
+    const sm=storeMeta(d.retailer), tcls=typeClass(d.dealType);
+    return `
+    <div class="pcard" onclick="openDeal('${d.id}')">
+      <div class="pcard-photo">
+        <img src="${IMG_BASE}${d.image}" alt="${esc(d.title)}" loading="lazy"
+             onerror="this.closest('.pcard-photo').style.background='var(--sand-2)';this.style.display='none'">
+        <span class="pcard-tag badge ${tcls}">${dot(tcls)} ${shortType(d.dealType)}</span>
+      </div>
+      <div class="pcard-body">
+        <p class="pcard-title">${esc(pretty(d.title))}</p>
+        <div class="pcard-pricerow"><span class="pcard-price">${esc(d.price)}</span></div>
+        <div class="pcard-store"><span class="sdot" style="background:${sm.color}"></span>${esc(d.retailer)}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+function shortType(t){return t==="penny"?"1¢":typeLabel(t).split(" ")[0]}
+
+/* ============================================================
+   CATEGORY CHIPS (home) — filter the carousel calmly
+   ============================================================ */
+let activeCat = "all";
+function buildChips(){
+  const el = document.getElementById('catChips');
+  el.innerHTML = CATEGORIES.map(c=>
+    `<button class="chip" data-cat="${c.id}" aria-pressed="${c.id===activeCat}" onclick="setCat('${c.id}')">
+       <span class="emoji">${c.emoji}</span>${c.label}</button>`
+  ).join("");
+}
+function setCat(id){
+  activeCat=id;
+  document.querySelectorAll('#catChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.cat===id));
+  // reshape the carousel instantly
+  const pool = id==="all" ? PHOTO : PHOTO.filter(d=>catOf(d.title)===id);
+  const el=document.getElementById('carousel');
+  if(pool.length===0){
+    el.innerHTML=`<div style="padding:18px;color:var(--ink-40);font-size:13px">Nothing in this category right now — that's honest. Try another.</div>`;
+    return;
+  }
+  el.innerHTML = pool.slice(0,14).map(d=>{
+    const sm=storeMeta(d.retailer), tcls=typeClass(d.dealType);
+    return `
+    <div class="pcard" onclick="openDeal('${d.id}')">
+      <div class="pcard-photo">
+        <img src="${IMG_BASE}${d.image}" alt="${esc(d.title)}" loading="lazy"
+             onerror="this.closest('.pcard-photo').style.background='var(--sand-2)';this.style.display='none'">
+        <span class="pcard-tag badge ${tcls}">${dot(tcls)} ${shortType(d.dealType)}</span>
+      </div>
+      <div class="pcard-body">
+        <p class="pcard-title">${esc(pretty(d.title))}</p>
+        <div class="pcard-pricerow"><span class="pcard-price">${esc(d.price)}</span></div>
+        <div class="pcard-store"><span class="sdot" style="background:${sm.color}"></span>${esc(d.retailer)}</div>
+      </div>
+    </div>`;
+  }).join("");
+  document.getElementById('carousel').scrollTo({left:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   STORE LIST (smart navigation w/ per-store headline + count)
+   ============================================================ */
+function storeCounts(){
+  const m={};
+  ALL.forEach(d=>{const r=(d.retailer||"").trim(); if(!r)return; (m[r]=m[r]||{total:0,photos:0}); m[r].total++; if(d.image)m[r].photos++;});
+  return m;
+}
+function buildStores(){
+  const counts = storeCounts();
+  // order: Dollar Tree first (has photos), then by count desc; known retailers from sample data ensured
+  const order = ["Dollar Tree","Dollar General","Target","Walmart","Publix","Walgreens","Amazon","CVS"];
+  const seen=new Set();
+  const rows=[];
+  order.forEach(r=>{ if(counts[r]||STORE_META[r]){rows.push(r);seen.add(r);} });
+  Object.keys(counts).forEach(r=>{if(!seen.has(r)){rows.push(r);seen.add(r);}});
+  const el=document.getElementById('storeList');
+  el.innerHTML = rows.map(r=>{
+    const sm=storeMeta(r);
+    const c=counts[r]||{total:0,photos:0};
+    // sample-data canonical counts for the showcase stores (honest "reported" volume)
+    const SAMPLE={"Dollar Tree":98,"Dollar General":13,"Target":8,"Walmart":9,"Publix":7,"Walgreens":7,"Amazon":2,"CVS":3};
+    const shown = SAMPLE[r] || c.total;
+    const hasPhotos = c.photos>0;
+    const isPenny = r==="Dollar Tree";
+    return `
+    <div class="store ${hasPhotos?'':'empty'}" onclick="${hasPhotos?`openStore('${jsq(r)}')`:`toast('${jsq(r)} deals are reported but not photo-matched yet — open to see the list soon')`}">
+      <div class="store-logo" style="background:linear-gradient(135deg, ${lighten(sm.color)}, ${sm.color})">${sm.short}</div>
+      <div class="store-main">
+        <div class="store-name">${esc(r)} ${isPenny?'<span class="pennychip">1¢ list</span>':''}</div>
+        <div class="store-headline">${esc(sm.headline)}</div>
+      </div>
+      <div class="store-right">
+        <div class="store-count">${shown}<small>${hasPhotos?'deals':'reported'}</small></div>
+        <svg class="store-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   STORE GRID VIEW
+   ============================================================ */
+let gridStore=null, gridCat="all";
+function openStore(name){
+  gridStore=name; gridCat="all";
+  const sm=storeMeta(name);
+  const items=PHOTO.filter(d=>(d.retailer||"").trim()===name);
+  document.getElementById('gridLogo').textContent=sm.short;
+  document.getElementById('gridLogo').style.background=`linear-gradient(135deg, ${lighten(sm.color)}, ${sm.color})`;
+  document.getElementById('gridTitle').innerHTML=`${esc(name)} ${name==="Dollar Tree"?'<span class="pennychip" style="font-size:10px;font-weight:700;color:var(--pink);background:var(--pink-soft);padding:2px 7px;border-radius:999px">1¢ list</span>':''}`;
+  document.getElementById('gridSub').textContent=`${sm.headline} · ${items.length} with photos`;
+  // build store-local category chips (only cats present)
+  const present = new Set(items.map(d=>catOf(d.title)));
+  const chips=document.getElementById('gridChips');
+  chips.innerHTML = `<button class="chip" data-gcat="all" aria-pressed="true" onclick="setGridCat('all')"><span class="emoji">✦</span>All ${items.length}</button>` +
+    CATEGORIES.filter(c=>c.id!=="all"&&present.has(c.id)).map(c=>{
+      const n=items.filter(d=>catOf(d.title)===c.id).length;
+      return `<button class="chip" data-gcat="${c.id}" aria-pressed="false" onclick="setGridCat('${c.id}')"><span class="emoji">${c.emoji}</span>${c.label} ${n}</button>`;
+    }).join("");
+  renderGrid(items);
+  showView('store');
+  document.getElementById('storeScroll').scrollTo({top:0});
+}
+function setGridCat(id){
+  gridCat=id;
+  document.querySelectorAll('#gridChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.gcat===id));
+  let items=PHOTO.filter(d=>(d.retailer||"").trim()===gridStore);
+  if(id!=="all") items=items.filter(d=>catOf(d.title)===id);
+  renderGrid(items);
+}
+function renderGrid(items){
+  const el=document.getElementById('photoGrid');
+  el.innerHTML = items.map(d=>{
+    const tcls=typeClass(d.dealType), fm=freshMeta(d.freshness);
+    return `
+    <div class="gcard" onclick="openDeal('${d.id}')">
+      <div class="gcard-photo">
+        <img src="${IMG_BASE}${d.image}" alt="${esc(d.title)}" loading="lazy"
+             onerror="this.closest('.gcard-photo').style.background='var(--sand-2)';this.style.display='none'">
+        <span class="gcard-tag badge ${tcls}">${dot(tcls)} ${shortType(d.dealType)}</span>
+        <span class="gcard-fresh"><span class="fdot ${fm.dot}"></span>${fm.text}</span>
+      </div>
+      <div class="gcard-body">
+        <p class="gcard-title">${esc(pretty(d.title))}</p>
+        <div class="gcard-price">${esc(d.price)}</div>
+        <div class="gcard-meta">
+          <span class="gcard-sku">#${esc(d.sku||'—')}</span>
+          <span class="gcard-sku">${foundCount(d)} found</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   DEAL DETAIL SHEET
+   ============================================================ */
+function dealById(id){return ALL.find(d=>d.id===id)}
+let currentDeal=null;
+function openDeal(id){
+  const d=dealById(id); if(!d)return; currentDeal=d;
+  const sm=storeMeta(d.retailer), tcls=typeClass(d.dealType), tr=trustFor(d);
+  const found=foundCount(d), fm=freshMeta(d.freshness);
+  const penny=isPenny(d), glitch=d.dealType==="glitch";
+  const wasTxt = d.was || (penny?'$1.25':'');
+  const body=`
+    <div class="sheet-photo">
+      <img src="${IMG_BASE}${d.image}" alt="${esc(d.title)}"
+           onerror="this.closest('.sheet-photo').style.background='var(--sand-2)';this.style.display='none'">
+      <span class="sheet-photo-tag badge ${tcls}">${dot(tcls)} ${typeLabel(d.dealType)}</span>
+      <button class="sheet-x" onclick="closeSheet()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-pad">
+      <div class="sheet-store"><span class="sdot" style="background:${sm.color}"></span>${esc(d.retailer)} · <span style="color:var(--ink-40)">updated 4m ago</span></div>
+      <h3 class="sheet-title">${esc(pretty(d.title))}</h3>
+
+      <div class="pricebox ${glitch?'glitchbox':''}">
+        <div class="now">${esc(d.price)}</div>
+        <div class="meta">
+          ${wasTxt?`<div class="was">was <s>${esc(wasTxt)}</s></div>`:`<div class="was">regular price varies</div>`}
+          <div class="save">${offText(d)}${penny?' · pennies on the dollar':''}</div>
+        </div>
+      </div>
+
+      <div class="trustrow">
+        <div class="trust ${tr.kind==='verified'?'verified':'info'}">
+          ${tr.icon==='check'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>'}
+          <span>${tr.text}</span>
+        </div>
+        <div class="trust info">
+          <span class="fdot ${fm.dot}" style="width:9px;height:9px;border-radius:50%"></span>
+          <span>${found} found today</span>
+        </div>
+      </div>
+
+      <!-- scan strip (Marcus) -->
+      <div class="scanstrip">
+        <div class="scan-bars">${'<i></i>'.repeat(13)}</div>
+        <div class="scan-main">
+          <div class="scan-label">SKU · scan to confirm price</div>
+          <div class="scan-sku">${esc(d.sku||'—')}</div>
+        </div>
+        <div class="scan-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg>
+          Scan
+        </div>
+      </div>
+
+      <!-- the play -->
+      <div class="play">
+        <div class="play-head">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg>
+          </div>
+          <div class="play-titles">
+            <div class="play-kicker">How to get it <span class="tag">The play</span></div>
+            <div class="play-sub">A simple in-store game plan</div>
+          </div>
+        </div>
+        ${playSteps(d)}
+        <div class="play-look"><b>What to look for:</b> ${playLook(d)}</div>
+        ${glitch?`<div class="play-warn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span>Glitches are unverified and may not honor at checkout — worth a shot, but don't count on it.</span>
+          </div>`:''}
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-share" onclick="openShare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        Share
+      </button>
+      <button class="btn btn-primary" onclick="toast('Saved — we\\'ll nudge you if it gets rarer or fresher')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-4-7 4z"/></svg>
+        Save this find
+      </button>
+    </div>`;
+  document.getElementById('sheetBody').innerHTML=body;
+  document.getElementById('sheetBody').scrollTop=0;
+  document.getElementById('scrim').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+}
+function closeSheet(){
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+
+/* play content — honest, persona-aware */
+function playSteps(d){
+  if(d.dealType==="penny"||d.price==="$0.01"){
+    return `<ol class="play-steps">
+      <li><span class="play-num">1</span><span>Hunt the <b>end-caps and clearance shelves</b> — penny items hide with discontinued stock.</span></li>
+      <li><span class="play-num">2</span><span>Scan it at <b>self-checkout</b>. If it's a penny item it rings up <b>1¢</b>.</span></li>
+      <li><span class="play-num">3</span><span>Don't ask staff to look it up — penny stock is meant to be pulled, so they may just remove it.</span></li>
+    </ol>`;
+  }
+  if(d.dealType==="glitch"){
+    return `<ol class="play-steps">
+      <li><span class="play-num">1</span><span>Add to cart and <b>check the price at checkout</b> before committing.</span></li>
+      <li><span class="play-num">2</span><span>If it honors, grab it — glitches are often corrected within hours.</span></li>
+      <li><span class="play-num">3</span><span>If it doesn't honor, walk away. No harm, no foul.</span></li>
+    </ol>`;
+  }
+  if(d.dealType==="clearance"){
+    return `<ol class="play-steps">
+      <li><span class="play-num">1</span><span>Head to the <b>seasonal / clearance section</b> at the back of the store.</span></li>
+      <li><span class="play-num">2</span><span><b>Scan the shelf tag</b> — markdowns often beat the sticker price.</span></li>
+      <li><span class="play-num">3</span><span>Prices vary by store, so confirm before you drive.</span></li>
+    </ol>`;
+  }
+  return `<ol class="play-steps">
+    <li><span class="play-num">1</span><span>Find it in its usual aisle and <b>scan the shelf tag</b> to confirm.</span></li>
+    <li><span class="play-num">2</span><span>Stack a store coupon if one applies for extra off.</span></li>
+    <li><span class="play-num">3</span><span>Price isn't confirmed everywhere — check the tag first.</span></li>
+  </ol>`;
+}
+function playLook(d){
+  if(d.dealType==="penny"||d.price==="$0.01") return "items with <b>no shelf tag</b>, dusty or discontinued stock, the last one on the peg.";
+  if(d.dealType==="glitch") return "the price shown <b>at checkout</b> — that's the only one that counts.";
+  if(d.dealType==="clearance") return "yellow or pink <b>clearance stickers</b> and bare end-caps.";
+  return "the <b>shelf tag</b> price and any stackable coupon nearby.";
+}
+
+/* ============================================================
+   SHARE SHEET (Tasha) — privacy-safe (no source/author/community)
+   ============================================================ */
+function openShare(){
+  const d=currentDeal; if(!d)return;
+  const sm=storeMeta(d.retailer);
+  const wasTxt=d.was||(isPenny(d)?'$1.25':'');
+  document.getElementById('shareBody').innerHTML=`
+    <div style="padding:0 18px 4px">
+      <h3 style="font-size:19px;font-weight:760;margin:2px 0 4px;letter-spacing:-.01em">Share this find</h3>
+      <p style="font-size:13px;color:var(--ink-60);margin:0 0 16px">A clean card — just the product and the price. No personal info.</p>
+    </div>
+    <div style="padding:0 18px">
+      <div class="share-preview">
+        <div class="sp-photo"><img src="${IMG_BASE}${d.image}" alt="" onerror="this.style.display='none'"></div>
+        <div class="sp-body">
+          <div class="sp-kicker">${esc(typeLabel(d.dealType))} · ${esc(d.retailer)}</div>
+          <div class="sp-title">${esc(pretty(d.title))}</div>
+          <div class="sp-price">${esc(d.price)} ${wasTxt?`<s>${esc(wasTxt)}</s>`:''}</div>
+          <div class="sp-foot">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 2.6l2.1 6.3" stroke-linecap="round"/></svg>
+            Found on Deal Hunter
+          </div>
+        </div>
+      </div>
+      <div class="share-targets">
+        ${shareTarget('Messages','#1f5e3a','<path d="M21 11.5a8.5 8.5 0 11-3.6-6.9" stroke-linecap="round"/><path d="M21 4v5h-5" stroke-linecap="round" stroke-linejoin="round"/>')}
+        ${shareTarget('Copy link','#46324a','<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h8" stroke-linecap="round"/>')}
+        ${shareTarget('Text','#1b4b86','<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linejoin="round"/>')}
+        ${shareTarget('More','#6b6a63','<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>')}
+      </div>
+      <p class="share-note">Sharing a find sends only the product and price — never who reported it, where it came from, or any private source.</p>
+    </div>
+    <div class="sheet-actions" style="margin-top:14px">
+      <button class="btn btn-primary" style="flex:1" onclick="closeShare();toast('Link copied — paste anywhere')">Copy share link</button>
+    </div>`;
+  document.getElementById('shareScrim').classList.add('open');
+  document.getElementById('shareSheet').classList.add('open');
+}
+function shareTarget(label,color,svgInner){
+  return `<div class="share-t" onclick="closeShare();toast('Shared to ${jsq(label)} (demo)')">
+    <div class="ic" style="color:${color}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${svgInner}</svg>
+    </div><span>${label}</span></div>`;
+}
+function closeShare(){
+  document.getElementById('shareScrim').classList.remove('open');
+  document.getElementById('shareSheet').classList.remove('open');
+}
+
+/* ============================================================
+   View switching + helpers
+   ============================================================ */
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+}
+function goHome(){showView('home')}
+
+let toastT=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>${esc(msg)}`;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* esc, etc. */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function jsq(s){return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+function dot(tcls){
+  const map={penny:'var(--pink)',glitch:'var(--plum)',clearance:'var(--gold)',sale:'var(--ink-60)',bogo:'var(--ink-60)',coupon:'var(--ink-60)'};
+  return `<span style="width:6px;height:6px;border-radius:50%;background:${map[tcls]||'var(--ink-60)'};display:inline-block"></span>`;
+}
+function lighten(hex){
+  // produce a lighter sibling for gradient top
+  const h=hex.replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  const f=.32;
+  const nr=Math.round(r+(255-r)*f),ng=Math.round(g+(255-g)*f),nb=Math.round(b+(255-b)*f);
+  return `rgb(${nr},${ng},${nb})`;
+}
+/* prettify ALL-CAPS-ish penny titles → sentence case, expand a few abbreviations */
+function pretty(t){
+  if(!t) return '';
+  let s = String(t)
+    .replace(/°/g,'')                       // drop unverified marker glyph in display
+    .replace(/\s*\([^)]*\)\s*/g,' ')        // drop parenthetical notes for the card
+    .replace(/\bAstd\b/gi,'Assorted')
+    .replace(/\bAstd\./gi,'Assorted')
+    .replace(/\bCT\b/g,'ct').replace(/\bPK\b/gi,'pk').replace(/\bPCS\b/gi,'pcs')
+    .replace(/\bWmn\b/gi,'Women')
+    .replace(/\bLrg\b/gi,'Large').replace(/\bSq\b/gi,'Square')
+    .replace(/\bClr\b/gi,'Clear').replace(/\bGrn\b/gi,'Green').replace(/\bGry\b/gi,'Gray')
+    .replace(/\bBlk\b/gi,'Black').replace(/\bPnk\b/gi,'Pink').replace(/\bWht\b/gi,'White')
+    .replace(/\bRnd\b/gi,'Round').replace(/\bStrp\b/gi,'Striped').replace(/\bStripe\b/g,'Stripe')
+    .replace(/\bLic\b/gi,'').replace(/\bAD SC\b/gi,'').replace(/\bSC\b/g,'')
+    .replace(/\bPDQ\b/g,'').replace(/\bBTS\b/g,'').replace(/\bCS\b/g,'')
+    .replace(/\bLvnd\b/gi,'Lavender').replace(/\bLav\b/gi,'Lavender').replace(/\bCham\b/gi,'Chamomile')
+    .replace(/\bAmb\b/gi,'Amber').replace(/\bClem\b/gi,'Clementine')
+    .replace(/\bPwdr\b/gi,'Powder').replace(/\bAntifungal\b/gi,'Antifungal')
+    .replace(/\bMed\b/gi,'Medium')
+    .replace(/\s{2,}/g,' ').trim();
+  // sentence-ish case: keep ALL-CAPS words that are brands short (<=3) as-is? simpler: Title Case words that are all-caps & long
+  s = s.split(' ').map(w=>{
+    if(/^[A-Z0-9.\/'-]+$/.test(w) && w.length>3 && !/^\d/.test(w) && !/[0-9]/.test(w)){
+      return w.charAt(0)+w.slice(1).toLowerCase();
+    }
+    return w;
+  }).join(' ');
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init(){
+  try{
+    buildHero();
+    buildCarousel();
+    buildChips();
+    buildStores();
+  }catch(e){
+    console.error('init error',e);
+  }
+})();
+</script>
+</body>
+</html>

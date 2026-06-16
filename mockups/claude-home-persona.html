@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Deal Hunter — persona-led home</title>
+<style>
+  :root{
+    --cream:#fffefa; --surface:#f6f5f1; --surface2:#efeee9; --card:#ffffff;
+    --ink:#23231f; --ink2:#56554e; --ink3:#8a8980; --hair:#e7e6df;
+    --pink:#993556; --pink-soft:#fbeaf0; --pink-ink:#72243e;
+    --green:#2f6f12; --green-soft:#eef4e6;
+    --blue:#185fa5; --blue-soft:#e9f1fb;
+    --gold:#7a5a12; --gold-soft:#f5efdf;
+    --shadow:0 1px 2px rgba(31,30,26,.05), 0 8px 24px rgba(31,30,26,.07);
+    --shadow-lg:0 2px 6px rgba(31,30,26,.07), 0 18px 50px rgba(31,30,26,.14);
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --r:18px; --r-sm:12px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:#181712;
+    display:flex; justify-content:center; align-items:flex-start;
+    min-height:100vh; padding:22px 0 40px;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{
+    position:relative; width:390px; min-height:844px;
+    background:var(--cream); border-radius:42px;
+    box-shadow:0 0 0 11px #0d0c0a, 0 0 0 12px #2a2924, 0 40px 90px rgba(0,0,0,.55);
+    overflow:hidden;
+  }
+  .concept-tag{
+    position:absolute; top:14px; right:16px; z-index:90;
+    font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    color:rgba(35,35,31,.42); background:rgba(255,255,255,.7);
+    padding:4px 9px; border-radius:20px; backdrop-filter:blur(6px);
+    pointer-events:none;
+  }
+  .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:30px; background:#0d0c0a; border-bottom-left-radius:16px; border-bottom-right-radius:16px; z-index:80}
+  .status{position:relative; z-index:60; height:44px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 24px 6px; font-size:13px; font-weight:600; color:var(--ink)}
+  .status .dots{display:flex; gap:5px; align-items:center}
+  .status .bars{display:flex; gap:2px; align-items:flex-end; height:11px}
+  .status .bars i{display:block; width:3px; background:var(--ink); border-radius:1px}
+  .status .bars i:nth-child(1){height:4px}.status .bars i:nth-child(2){height:6px}.status .bars i:nth-child(3){height:8px}.status .bars i:nth-child(4){height:11px}
+  .batt{width:22px; height:11px; border:1.4px solid var(--ink); border-radius:3px; position:relative; opacity:.9}
+  .batt::after{content:""; position:absolute; right:-3px; top:3px; width:2px; height:5px; background:var(--ink); border-radius:0 1px 1px 0}
+  .batt::before{content:""; position:absolute; left:1.4px; top:1.4px; bottom:1.4px; width:13px; background:var(--ink); border-radius:1px}
+
+  /* ---------- scroll viewport ---------- */
+  .screen{position:relative; height:756px; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scroll-behavior:smooth}
+  .screen::-webkit-scrollbar{display:none}
+  .pad{padding:0 18px}
+
+  /* ---------- top app bar ---------- */
+  .appbar{display:flex; align-items:center; justify-content:space-between; padding:2px 18px 8px}
+  .brand{display:flex; align-items:center; gap:9px}
+  .brand .mark{width:30px; height:30px; border-radius:9px; background:var(--ink); color:var(--cream); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; letter-spacing:-.02em}
+  .brand .wm{font-size:18px; font-weight:800; letter-spacing:-.02em}
+  .brand .wm span{color:var(--pink)}
+  .updated{font-size:11.5px; color:var(--ink3); display:flex; align-items:center; gap:5px; font-weight:500}
+  .updated .live{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(47,111,18,.5); animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,111,18,.45)}70%{box-shadow:0 0 0 7px rgba(47,111,18,0)}100%{box-shadow:0 0 0 0 rgba(47,111,18,0)}}
+
+  /* ---------- the lens picker (persona spine) ---------- */
+  .lens-intro{padding:4px 18px 0}
+  .lens-q{font-size:24px; font-weight:800; letter-spacing:-.025em; line-height:1.15; margin:6px 0 2px}
+  .lens-sub{font-size:13.5px; color:var(--ink2); margin:0 0 14px; line-height:1.45}
+  .lenses{display:flex; gap:9px; padding:0 18px 6px; overflow-x:auto; scroll-snap-type:x mandatory}
+  .lenses::-webkit-scrollbar{display:none}
+  .lens{
+    scroll-snap-align:start; flex:0 0 auto; width:150px; min-height:118px;
+    background:var(--card); border:1.5px solid var(--hair); border-radius:var(--r);
+    padding:13px 13px 12px; cursor:pointer; transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    display:flex; flex-direction:column; gap:7px; text-align:left; position:relative; box-shadow:var(--shadow);
+  }
+  .lens:active{transform:scale(.97)}
+  .lens .ic{width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center}
+  .lens .ic svg{width:19px; height:19px}
+  .lens h3{margin:0; font-size:15.5px; font-weight:800; letter-spacing:-.01em}
+  .lens p{margin:0; font-size:11.5px; color:var(--ink2); line-height:1.35}
+  .lens .who{margin-top:auto; font-size:10.5px; font-weight:700; color:var(--ink3); letter-spacing:.02em}
+  .lens[data-mode="hunt"] .ic{background:var(--gold-soft); color:var(--gold)}
+  .lens[data-mode="stock"] .ic{background:var(--blue-soft); color:var(--blue)}
+  .lens[data-mode="browse"] .ic{background:var(--pink-soft); color:var(--pink)}
+  .lens.active{border-color:var(--ink); box-shadow:0 2px 8px rgba(31,30,26,.1), 0 14px 34px rgba(31,30,26,.16); transform:translateY(-2px)}
+  .lens.active::after{content:""; position:absolute; top:11px; right:11px; width:18px; height:18px; border-radius:50%; background:var(--ink); background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23fffefa' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center}
+
+  /* the segmented "mode" control once you've chosen — sticky, teaches modes in one glance */
+  .modebar{position:sticky; top:0; z-index:55; background:linear-gradient(var(--cream) 72%, rgba(255,254,250,0)); padding:8px 18px 10px; margin-top:2px}
+  .seg{display:flex; background:var(--surface); border-radius:14px; padding:4px; gap:3px; border:1px solid var(--hair)}
+  .seg button{flex:1; border:0; background:transparent; padding:8px 4px 7px; border-radius:11px; font-family:var(--font); font-size:12.5px; font-weight:700; color:var(--ink2); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; transition:all .16s ease; letter-spacing:-.01em}
+  .seg button svg{width:16px; height:16px}
+  .seg button small{font-size:9.5px; font-weight:600; color:var(--ink3); letter-spacing:0}
+  .seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(31,30,26,.08), 0 4px 12px rgba(31,30,26,.07)}
+  .seg button.on small{color:var(--ink2)}
+
+  /* ---------- section heads ---------- */
+  .sec-head{display:flex; align-items:baseline; justify-content:space-between; padding:18px 18px 9px}
+  .sec-head h2{margin:0; font-size:17px; font-weight:800; letter-spacing:-.02em}
+  .sec-head .meta{font-size:11.5px; color:var(--ink3); font-weight:600}
+  .sec-note{padding:0 18px 4px; margin:-4px 0 0; font-size:12.5px; color:var(--ink2); line-height:1.45}
+
+  /* ---------- chips (categories) ---------- */
+  .chips{display:flex; gap:7px; padding:2px 18px 6px; overflow-x:auto; scroll-snap-type:x proximity}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto; border:1px solid var(--hair); background:var(--card); color:var(--ink2); padding:7px 13px; border-radius:20px; font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s; white-space:nowrap}
+  .chip:active{transform:scale(.96)}
+  .chip.on{background:var(--ink); color:var(--cream); border-color:var(--ink)}
+
+  /* ---------- shared price + trust atoms ---------- */
+  .price{font-weight:800; color:var(--green); letter-spacing:-.02em}
+  .was{color:var(--ink3); text-decoration:line-through; font-weight:600}
+  .pill{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:7px; letter-spacing:.01em; white-space:nowrap}
+  .pill.penny{background:var(--pink-soft); color:var(--pink-ink)}
+  .pill.clear{background:var(--blue-soft); color:var(--blue)}
+  .pill.glitch{background:var(--gold-soft); color:var(--gold)}
+  .pill.bogo{background:var(--green-soft); color:var(--green)}
+  .trust{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--ink2)}
+  .trust svg{width:12px; height:12px; flex:none; opacity:.85}
+  .fresh{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--ink2)}
+  .fresh .dot{width:6px; height:6px; border-radius:50%; background:var(--green)}
+  .fresh.aging .dot{background:var(--gold)}
+
+  /* ---------- HUNT mode (Marcus) ---------- */
+  .newtray{margin:2px 18px 4px; background:var(--ink); color:var(--cream); border-radius:var(--r); padding:13px 15px; box-shadow:var(--shadow)}
+  .newtray .t{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; letter-spacing:-.01em}
+  .newtray .t .b{background:var(--pink); color:#fff; font-size:11px; font-weight:800; padding:2px 8px; border-radius:20px}
+  .newtray .s{margin:5px 0 0; font-size:11.5px; color:rgba(255,254,250,.66); line-height:1.4}
+  .huntrow{display:flex; gap:13px; padding:13px 14px; margin:0 18px 10px; background:var(--card); border:1px solid var(--hair); border-radius:var(--r); cursor:pointer; transition:transform .14s, box-shadow .14s; box-shadow:var(--shadow); align-items:stretch}
+  .huntrow:active{transform:scale(.99)}
+  .huntrow .ph{flex:0 0 84px; width:84px; height:84px; border-radius:13px; overflow:hidden; background:var(--surface2); position:relative}
+  .huntrow .ph img{width:100%; height:100%; object-fit:cover; display:block}
+  .huntrow .rank{position:absolute; top:6px; left:6px; width:22px; height:22px; border-radius:8px; background:rgba(13,12,10,.82); color:#fff; font-size:11.5px; font-weight:800; display:flex; align-items:center; justify-content:center}
+  .huntrow .body{flex:1; min-width:0; display:flex; flex-direction:column}
+  .huntrow .ttl{font-size:14px; font-weight:700; letter-spacing:-.01em; line-height:1.25; margin:1px 0 4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  .huntrow .meta-line{display:flex; align-items:center; gap:7px; margin-bottom:5px; flex-wrap:wrap}
+  .huntrow .sku{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px; font-weight:600; color:var(--ink2); background:var(--surface); padding:2px 7px; border-radius:6px; letter-spacing:.02em}
+  .huntrow .stat{display:flex; align-items:center; gap:13px; margin-top:auto; padding-top:4px}
+  .huntrow .stat .k{font-size:10px; color:var(--ink3); font-weight:700; letter-spacing:.03em; text-transform:uppercase}
+  .huntrow .stat .v{font-size:12.5px; font-weight:800; letter-spacing:-.01em}
+  .huntrow .stat .v.rare{color:var(--pink)}
+  .scanbtn{flex:0 0 auto; align-self:center; display:flex; flex-direction:column; align-items:center; gap:3px; background:var(--ink); color:var(--cream); border:0; border-radius:13px; padding:11px 12px; font-family:var(--font); font-weight:700; font-size:10.5px; cursor:pointer; transition:transform .14s}
+  .scanbtn:active{transform:scale(.93)}
+  .scanbtn svg{width:18px; height:18px}
+  .worthbar{height:4px; border-radius:3px; background:var(--surface2); overflow:hidden; margin-top:7px}
+  .worthbar i{display:block; height:100%; background:var(--pink); border-radius:3px}
+
+  /* ---------- STOCK UP mode (Dana) ---------- */
+  .needsec{margin:0 0 6px}
+  .needhd{display:flex; align-items:center; gap:9px; padding:14px 18px 8px}
+  .needhd .ic{width:30px; height:30px; border-radius:9px; background:var(--blue-soft); color:var(--blue); display:flex; align-items:center; justify-content:center}
+  .needhd .ic svg{width:17px; height:17px}
+  .needhd h3{margin:0; font-size:15.5px; font-weight:800; letter-spacing:-.015em}
+  .needhd .cnt{margin-left:auto; font-size:11.5px; color:var(--ink3); font-weight:600}
+  .trip{margin:0 18px 12px; background:var(--card); border:1px solid var(--hair); border-radius:var(--r); overflow:hidden; box-shadow:var(--shadow)}
+  .trip .banner{display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--green-soft); border-bottom:1px solid var(--hair)}
+  .trip .banner svg{width:15px; height:15px; color:var(--green); flex:none}
+  .trip .banner b{font-size:12.5px; font-weight:800; color:var(--green); letter-spacing:-.01em}
+  .trip .banner span{font-size:11.5px; color:var(--ink2); font-weight:600}
+  .trip .lead{display:flex; gap:13px; padding:13px 14px; cursor:pointer}
+  .trip .lead .ph{flex:0 0 76px; width:76px; height:76px; border-radius:12px; overflow:hidden; background:var(--surface2)}
+  .trip .lead .ph img{width:100%; height:100%; object-fit:cover; display:block}
+  .trip .lead .info{flex:1; min-width:0}
+  .trip .lead .info .t{font-size:14.5px; font-weight:700; letter-spacing:-.01em; line-height:1.25; margin:0 0 5px}
+  .trip .lead .info .pr{display:flex; align-items:baseline; gap:8px; margin-bottom:6px}
+  .trip .lead .info .pr .price{font-size:19px}
+  .trip .lead .info .where{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink2); font-weight:600}
+  .trip .lead .info .where svg{width:13px; height:13px; color:var(--ink3)}
+  .trip .more{display:flex; gap:9px; padding:0 14px 13px; overflow-x:auto}
+  .trip .more::-webkit-scrollbar{display:none}
+  .mini{flex:0 0 92px; width:92px; cursor:pointer}
+  .mini .ph{width:92px; height:92px; border-radius:11px; overflow:hidden; background:var(--surface2); margin-bottom:6px}
+  .mini .ph img{width:100%; height:100%; object-fit:cover; display:block}
+  .mini .t{font-size:11px; font-weight:600; line-height:1.25; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:2px}
+  .mini .price{font-size:12.5px}
+
+  /* ---------- BROWSE mode (Tasha) ---------- */
+  .hero{margin:2px 18px 14px; border-radius:24px; overflow:hidden; position:relative; box-shadow:var(--shadow-lg); cursor:pointer; aspect-ratio:4/5; background:var(--surface2)}
+  .hero img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block}
+  .hero .scrim{position:absolute; inset:0; background:linear-gradient(to top, rgba(13,12,10,.82) 0%, rgba(13,12,10,.34) 38%, rgba(13,12,10,0) 64%)}
+  .hero .top{position:absolute; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; align-items:flex-start}
+  .hero .badge{background:rgba(255,255,255,.95); color:var(--pink-ink); font-size:11px; font-weight:800; padding:6px 11px; border-radius:20px; display:inline-flex; align-items:center; gap:5px; letter-spacing:.01em; box-shadow:0 4px 14px rgba(0,0,0,.2)}
+  .hero .badge svg{width:13px; height:13px}
+  .hero .sharef{width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.92); border:0; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2)}
+  .hero .sharef svg{width:17px; height:17px; color:var(--ink)}
+  .hero .cap{position:absolute; left:18px; right:18px; bottom:16px; color:#fff}
+  .hero .cap .story{font-size:12px; font-weight:700; color:rgba(255,255,255,.92); margin:0 0 6px; display:inline-flex; align-items:center; gap:6px}
+  .hero .cap .story .dot{width:6px; height:6px; border-radius:50%; background:#7ed957}
+  .hero .cap h2{margin:0 0 8px; font-size:25px; font-weight:800; letter-spacing:-.03em; line-height:1.08; text-shadow:0 2px 18px rgba(0,0,0,.4)}
+  .hero .cap .pr{display:flex; align-items:baseline; gap:10px}
+  .hero .cap .pr .price{color:#fff; font-size:28px; -webkit-text-fill-color:#fff}
+  .hero .cap .pr .was{color:rgba(255,255,255,.7)}
+  .hero .cap .pr .off{background:#fff; color:var(--green); font-size:12px; font-weight:800; padding:3px 9px; border-radius:8px; align-self:center}
+
+  .ps-head{display:flex; align-items:baseline; justify-content:space-between; padding:6px 18px 10px}
+  .ps-head h2{margin:0; font-size:17px; font-weight:800; letter-spacing:-.02em}
+  .ps-head .meta{font-size:11.5px; color:var(--ink3); font-weight:600; display:flex; align-items:center; gap:5px}
+  .photoscroll{display:flex; gap:13px; padding:0 18px 6px; overflow-x:auto; scroll-snap-type:x mandatory}
+  .photoscroll::-webkit-scrollbar{display:none}
+  .pcard{flex:0 0 200px; width:200px; scroll-snap-align:center; cursor:pointer}
+  .pcard .ph{width:200px; height:250px; border-radius:20px; overflow:hidden; position:relative; background:var(--surface2); box-shadow:var(--shadow)}
+  .pcard .ph img{width:100%; height:100%; object-fit:cover; display:block}
+  .pcard .ph .ov{position:absolute; inset:0; background:linear-gradient(to top, rgba(13,12,10,.62), rgba(13,12,10,0) 52%)}
+  .pcard .ph .pp{position:absolute; left:12px; bottom:11px; right:12px; color:#fff}
+  .pcard .ph .pp .price{color:#fff; -webkit-text-fill-color:#fff; font-size:19px}
+  .pcard .ph .pp .nm{font-size:12.5px; font-weight:700; line-height:1.2; margin-top:2px; text-shadow:0 1px 8px rgba(0,0,0,.5); display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden}
+  .pcard .ph .tag{position:absolute; top:11px; left:11px}
+  .pcard .ph .tag .pill{background:rgba(255,255,255,.94)}
+  .pcard .sh{display:flex; align-items:center; justify-content:space-between; padding:9px 4px 2px}
+  .pcard .sh .f{font-size:11px; color:var(--ink2); font-weight:600; display:flex; align-items:center; gap:5px}
+  .pcard .sh .f .dot{width:6px; height:6px; border-radius:50%; background:var(--green)}
+  .pcard .sh button{border:0; background:transparent; color:var(--ink2); font-size:11px; font-weight:700; display:flex; align-items:center; gap:4px; cursor:pointer; padding:2px}
+  .pcard .sh button svg{width:14px; height:14px}
+
+  /* ---------- store grid (shared) ---------- */
+  .storelist{padding:2px 18px 8px}
+  .store{display:flex; align-items:center; gap:12px; padding:13px 14px; background:var(--card); border:1px solid var(--hair); border-radius:var(--r); margin-bottom:9px; cursor:pointer; transition:transform .14s; box-shadow:var(--shadow)}
+  .store:active{transform:scale(.99)}
+  .store .logo{flex:0 0 46px; width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:17px; color:#fff; letter-spacing:-.02em}
+  .store .sb{flex:1; min-width:0}
+  .store .sn{font-size:14.5px; font-weight:800; letter-spacing:-.01em; margin-bottom:2px}
+  .store .sh{font-size:12px; color:var(--ink2); font-weight:600; line-height:1.3}
+  .store .arr{color:var(--ink3); flex:none}
+  .store .arr svg{width:18px; height:18px}
+  .store .ct{flex:none; text-align:right; margin-right:2px}
+  .store .ct b{display:block; font-size:16px; font-weight:800; color:var(--ink); letter-spacing:-.02em; line-height:1}
+  .store .ct span{font-size:9.5px; color:var(--ink3); font-weight:700; text-transform:uppercase; letter-spacing:.03em}
+
+  /* ---------- pages (store grid view + scan) ---------- */
+  .page{position:absolute; inset:0; background:var(--cream); z-index:70; transform:translateX(100%); transition:transform .32s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column}
+  .page.show{transform:translateX(0)}
+  .pagebar{display:flex; align-items:center; gap:12px; padding:12px 16px 12px; border-bottom:1px solid var(--hair); background:var(--cream); position:sticky; top:0; z-index:5}
+  .pagebar .back{width:38px; height:38px; border-radius:50%; background:var(--surface); border:0; display:flex; align-items:center; justify-content:center; cursor:pointer}
+  .pagebar .back svg{width:19px; height:19px; color:var(--ink)}
+  .pagebar .pt{flex:1; min-width:0}
+  .pagebar .pt h2{margin:0; font-size:16.5px; font-weight:800; letter-spacing:-.02em; line-height:1.1}
+  .pagebar .pt p{margin:1px 0 0; font-size:11.5px; color:var(--ink2); font-weight:600}
+  .page .body{flex:1; overflow-y:auto; overflow-x:hidden}
+  .page .body::-webkit-scrollbar{display:none}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:11px; padding:13px 16px 30px}
+  .gcard{background:var(--card); border:1px solid var(--hair); border-radius:16px; overflow:hidden; cursor:pointer; transition:transform .14s; box-shadow:var(--shadow)}
+  .gcard:active{transform:scale(.98)}
+  .gcard .ph{width:100%; aspect-ratio:1; background:var(--surface2); overflow:hidden; position:relative}
+  .gcard .ph img{width:100%; height:100%; object-fit:cover; display:block}
+  .gcard .ph .tag{position:absolute; top:8px; left:8px}
+  .gcard .gb{padding:9px 10px 11px}
+  .gcard .gt{font-size:12px; font-weight:600; line-height:1.25; margin:0 0 5px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:30px}
+  .gcard .gp{display:flex; align-items:center; justify-content:space-between}
+  .gcard .gp .price{font-size:14.5px}
+  .gcard .gp .fresh{font-size:10px}
+
+  /* ---------- detail sheet ---------- */
+  .sheet-bg{position:absolute; inset:0; background:rgba(13,12,10,.46); z-index:85; opacity:0; pointer-events:none; transition:opacity .28s}
+  .sheet-bg.show{opacity:1; pointer-events:auto}
+  .sheet{position:absolute; left:0; right:0; bottom:0; z-index:86; background:var(--cream); border-radius:26px 26px 0 0; transform:translateY(100%); transition:transform .34s cubic-bezier(.32,.72,0,1); max-height:90%; overflow-y:auto; box-shadow:0 -10px 50px rgba(0,0,0,.3)}
+  .sheet::-webkit-scrollbar{display:none}
+  .sheet.show{transform:translateY(0)}
+  .sheet .grab{width:38px; height:4px; border-radius:3px; background:var(--hair); margin:9px auto 2px}
+  .sheet .shero{margin:6px 16px 0; border-radius:20px; overflow:hidden; aspect-ratio:5/4; background:var(--surface2); position:relative}
+  .sheet .shero img{width:100%; height:100%; object-fit:cover; display:block}
+  .sheet .shero .closex{position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.92); border:0; display:flex; align-items:center; justify-content:center; cursor:pointer}
+  .sheet .shero .closex svg{width:17px; height:17px; color:var(--ink)}
+  .sheet .sbody{padding:14px 20px 26px}
+  .sheet .srow1{display:flex; align-items:center; gap:8px; margin-bottom:9px; flex-wrap:wrap}
+  .sheet h2.stitle{margin:0 0 12px; font-size:21px; font-weight:800; letter-spacing:-.025em; line-height:1.18}
+  .pricestory{background:var(--card); border:1px solid var(--hair); border-radius:16px; padding:15px 16px; display:flex; align-items:center; gap:14px; margin-bottom:12px; box-shadow:var(--shadow)}
+  .pricestory .now{font-size:30px; font-weight:800; color:var(--green); letter-spacing:-.03em; line-height:1}
+  .pricestory .ctx{flex:1}
+  .pricestory .ctx .l1{font-size:12px; color:var(--ink2); font-weight:600; margin-bottom:2px}
+  .pricestory .ctx .l2{font-size:13px; font-weight:700}
+  .pricestory .ctx .l2 .was{font-size:14px; margin-right:7px}
+  .pricestory .ctx .l2 .off{color:var(--green)}
+  .trustcard{display:flex; align-items:flex-start; gap:10px; background:var(--surface); border-radius:14px; padding:12px 14px; margin-bottom:14px; border:1px solid var(--hair)}
+  .trustcard .ti{width:20px; height:20px; flex:none; color:var(--ink2); margin-top:1px}
+  .trustcard .ti svg{width:20px; height:20px}
+  .trustcard .tt b{font-size:12.5px; font-weight:800; display:block; margin-bottom:2px}
+  .trustcard .tt p{margin:0; font-size:11.5px; color:var(--ink2); line-height:1.4}
+  .play{margin-bottom:14px}
+  .play .ph{display:flex; align-items:center; gap:8px; margin-bottom:9px}
+  .play .ph .ic{width:26px; height:26px; border-radius:8px; background:var(--ink); color:var(--cream); display:flex; align-items:center; justify-content:center}
+  .play .ph .ic svg{width:15px; height:15px}
+  .play .ph b{font-size:15px; font-weight:800; letter-spacing:-.01em}
+  .play .ph small{font-size:11.5px; color:var(--ink3); font-weight:600; margin-left:auto}
+  .steps{list-style:none; margin:0; padding:0; counter-reset:s}
+  .steps li{position:relative; padding:0 0 11px 32px; font-size:13px; color:var(--ink); line-height:1.4; counter-increment:s}
+  .steps li::before{content:counter(s); position:absolute; left:0; top:-1px; width:22px; height:22px; border-radius:7px; background:var(--pink-soft); color:var(--pink-ink); font-size:11.5px; font-weight:800; display:flex; align-items:center; justify-content:center}
+  .steps li:last-child{padding-bottom:0}
+  .steps li b{font-weight:800}
+  .signs{background:var(--surface); border-radius:13px; padding:11px 14px; margin-bottom:16px; font-size:12px; color:var(--ink2); line-height:1.45}
+  .signs b{color:var(--ink); font-weight:800}
+  .actions{display:flex; gap:10px}
+  .actions .primary{flex:1; background:var(--ink); color:var(--cream); border:0; border-radius:14px; padding:15px; font-family:var(--font); font-size:14.5px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .14s}
+  .actions .primary:active{transform:scale(.98)}
+  .actions .primary svg{width:18px; height:18px}
+  .actions .share{flex:0 0 52px; width:52px; background:var(--card); border:1px solid var(--hair); border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .14s; box-shadow:var(--shadow)}
+  .actions .share:active{transform:scale(.95)}
+  .actions .share svg{width:19px; height:19px; color:var(--ink)}
+
+  /* scan toast */
+  .scantoast{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.9); z-index:95; background:var(--ink); color:var(--cream); border-radius:20px; padding:24px 26px; width:240px; text-align:center; opacity:0; pointer-events:none; transition:all .26s; box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  .scantoast.show{opacity:1; transform:translate(-50%,-50%) scale(1)}
+  .scantoast .ring{width:54px; height:54px; margin:0 auto 12px; border-radius:50%; border:2.5px solid rgba(255,254,250,.25); border-top-color:var(--cream); animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .scantoast.done .ring{border-color:var(--green); border-top-color:var(--green); animation:none; display:flex; align-items:center; justify-content:center}
+  .scantoast .pricebig{font-size:30px; font-weight:800; letter-spacing:-.02em; margin:4px 0 2px}
+  .scantoast .lbl{font-size:12px; color:rgba(255,254,250,.7); font-weight:600}
+
+  .fadein{animation:fade .35s ease both}
+  @keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+  .endcap{text-align:center; padding:8px 30px 26px; color:var(--ink3); font-size:11.5px; line-height:1.5}
+  .endcap b{color:var(--ink2); font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="concept-tag">Claude · Persona-led</div>
+
+  <div class="status">
+    <span>9:41</span>
+    <span class="dots">
+      <span class="bars"><i></i><i></i><i></i><i></i></span>
+      <span style="font-size:11px">5G</span>
+      <span class="batt"></span>
+    </span>
+  </div>
+
+  <div class="screen" id="screen">
+    <div class="appbar">
+      <div class="brand">
+        <div class="mark">D</div>
+        <div class="wm">Deal<span>Hunter</span></div>
+      </div>
+      <div class="updated"><span class="live"></span>Updated 4 min ago</div>
+    </div>
+
+    <!-- ===== THE LENS PICKER — persona spine, teaches the app in one glance ===== -->
+    <div class="lens-intro">
+      <h1 class="lens-q">What are you here to do?</h1>
+      <p class="lens-sub">Same real deals, shown the way that helps you most. Pick one — switch any time.</p>
+    </div>
+    <div class="lenses" id="lenses">
+      <button class="lens" data-mode="hunt">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></div>
+        <h3>Hunt</h3>
+        <p>Rarest first. SKU, scan to confirm, the play.</p>
+        <span class="who">For resellers</span>
+      </button>
+      <button class="lens" data-mode="stock">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1 13H6L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg></div>
+        <h3>Stock up</h3>
+        <p>By what you need. Worth the trip, one store.</p>
+        <span class="who">For everyday savers</span>
+      </button>
+      <button class="lens" data-mode="browse">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.6"/><path d="m21 15-5-5L5 21"/></svg></div>
+        <h3>Browse</h3>
+        <p>Big photos of today's best finds. Share them.</p>
+        <span class="who">Just looking</span>
+      </button>
+    </div>
+
+    <!-- sticky segmented mode control (appears the same on every mode, so the modes teach themselves) -->
+    <div class="modebar">
+      <div class="seg" id="seg">
+        <button data-mode="hunt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Hunt<small>rarest</small></button>
+        <button class="on" data-mode="stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1 13H6L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Stock up<small>by need</small></button>
+        <button data-mode="browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m21 15-5-5L5 21"/></svg>Browse<small>photos</small></button>
+      </div>
+    </div>
+
+    <!-- ===== MODE CONTENT renders here ===== -->
+    <div id="modecontent"></div>
+
+    <!-- ===== STORE SELECTION (shared across modes) ===== -->
+    <div class="sec-head">
+      <h2>Or pick a store</h2>
+      <span class="meta">8 stores nearby</span>
+    </div>
+    <p class="sec-note">Each line tells you what's good there right now.</p>
+    <div class="storelist" id="storelist"></div>
+
+    <div class="endcap">
+      Prices are <b>recency, not live stock</b> — we show when a deal was last seen, never a guarantee it's on the shelf.<br>No accounts, no tracking. Your hunt stays yours.
+    </div>
+  </div>
+
+  <!-- store grid page -->
+  <div class="page" id="storepage">
+    <div class="pagebar">
+      <button class="back" onclick="closeStore()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="pt"><h2 id="storeTitle">Dollar Tree</h2><p id="storeSub">Penny list · everything 1¢</p></div>
+    </div>
+    <div class="body">
+      <div class="chips" id="gridchips"></div>
+      <div class="grid" id="storegrid"></div>
+    </div>
+  </div>
+
+  <!-- detail sheet -->
+  <div class="sheet-bg" id="sheetbg" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet"><div id="sheetinner"></div></div>
+
+  <!-- scan toast -->
+  <div class="scantoast" id="scantoast">
+    <div class="ring" id="scanring"></div>
+    <div class="pricebig" id="scanprice">Scanning…</div>
+    <div class="lbl" id="scanlbl">Hold near the barcode</div>
+  </div>
+</div>
+
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var IMG = "../deal-hunter-staging/";
+  var RAW = (window.STAGING_DEALS || []).slice();
+
+  // keep only items with a real image; honest current data = Dollar Tree penny
+  var DEALS = RAW.filter(function(d){ return d.image && /\.(jpe?g|png|webp)$/i.test(d.image); });
+
+  // ---- helpers: clean up the rough catalog titles into human, sentence-case ----
+  function titleCase(t){
+    if(!t) return "";
+    t = t.replace(/\s+/g," ").trim();
+    var fix = {
+      "Astd":"assorted","Lic":"licensed","Wmn":"women's","Pwdr":"powder","Lvnd":"lavender",
+      "Lav":"lavender","Cham":"chamomile","Clr":"clear","Grn":"green","Gry":"gray","Blk":"black",
+      "Strp":"striped","Rnd":"round","Sq":"square","Pnk":"pink","Wht":"white","CS":"","PDQ":"",
+      "BTS":"","Qtr":"quarter","LC":"low-cut","Astd.":"assorted","2-Tone":"two-tone","3CT":"3-pack",
+      "2CT":"2-pack","80CT":"80-pack","25CT":"25-pack","30CT":"30-pack","360PCS":"360-pack","10PK":"10-pack",
+      "10CT":"10-pack","Med":"medium","4N1":"4-in-1","Orig":"original","Sort":"","Clem":"clementine"
+    };
+    var words = t.split(" ").map(function(w){
+      var bare = w.replace(/[^A-Za-z0-9.\-/']/g,"");
+      if(fix.hasOwnProperty(bare)) return fix[bare];
+      // collapse ALL-CAPS shouty words but keep short brand-ish acronyms intact-ish
+      if(/^[A-Z0-9.\-]{2,}$/.test(w) && !/^\d/.test(w) && w.length>3) return w.charAt(0)+w.slice(1).toLowerCase();
+      return w;
+    }).filter(Boolean);
+    var s = words.join(" ").replace(/\s+/g," ").trim();
+    s = s.charAt(0).toUpperCase()+s.slice(1);
+    return s;
+  }
+
+  // ---- enrich each deal with synthetic-but-plausible signal (UI demo only) ----
+  // deterministic from sku so it's stable across renders
+  function seed(sku){ var n=0; for(var i=0;i<sku.length;i++) n=(n*31+sku.charCodeAt(i))>>>0; return n; }
+  var CATS = [
+    {key:"socks", label:"Kids & character", match:/sock|boxer|legging|brief|slide|qtr|lc |10pk|monroe|poker/i, need:"Kids & clothes", needIc:"shirt"},
+    {key:"beauty", label:"Beauty & care", match:/lipstick|makeup|matte|razor|wig|scrunchie|mask|burn|bandage|denture|antifungal|lotion|shampoo|wash|protein|diffuser|oil|sense/i, need:"Health & beauty", needIc:"sparkles"},
+    {key:"clean", label:"Home & cleaning", match:/clean|scrub|wax|koze|hurricane|lighter|candle|tealight|wizard|air|crate|basket|tray|topper|plate|harmonica/i, need:"Household", needIc:"home"},
+    {key:"snacks", label:"Snacks & pantry", match:/soup|soda|candy|cookie|cereal|krispies|protein|shake|canadian|gel|sour|mustard|jello|biscuit|puptart|squeeze/i, need:"Snacks & pantry", needIc:"snack"},
+    {key:"toys", label:"Toys & craft", match:/toy|bead|grow|sticker|brush pen|ball|fidget|pen|bracelet|sensory|claw|squish|boba|eraser/i, need:"Kids & toys", needIc:"toy"}
+  ];
+  function catOf(d){
+    for(var i=0;i<CATS.length;i++){ if(CATS[i].match.test(d.title)) return CATS[i]; }
+    return CATS[2];
+  }
+  DEALS.forEach(function(d){
+    var s = seed(d.sku);
+    d.nice = titleCase(d.title);
+    d.cat = catOf(d);
+    d.rarity = 55 + (s % 45);                 // 55–99 "worth/rarity" score
+    d.found = 7 + (s % 46);                    // shoppers found today
+    d.left = ["Going fast","Often pegged","Last seen full peg","Spotty stock"][s%4];
+    d.velo = (s%3===0)?"hot":((s%3===1)?"steady":"new");
+    d.mins = 2 + (s % 57);                     // minutes ago seen
+  });
+
+  // rank by rarity for hunt; pick distinct heroes
+  function byRarity(a,b){ return b.rarity - a.rarity; }
+  var RANKED = DEALS.slice().sort(byRarity);
+
+  // pick visually-strong, recognizable heroes if present (named in the brief)
+  function find(sku){ return DEALS.filter(function(d){return d.sku===sku;})[0]; }
+  var heroPref = ["397599","403094","412492","390887","396424","402718"]; // smurfs, ET bike, lipstick, elmo, x-men, bugs
+  var HEROES = [];
+  heroPref.forEach(function(sk){ var d=find(sk); if(d && HEROES.indexOf(d)<0) HEROES.push(d); });
+  RANKED.forEach(function(d){ if(HEROES.length<8 && HEROES.indexOf(d)<0) HEROES.push(d); });
+
+  function el(html){ var t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstChild; }
+  function imgTag(d, cls){
+    return '<img src="'+IMG+d.image+'" alt="'+d.nice+'" loading="lazy" '+
+           'onerror="this.style.display=\'none\';this.parentNode.classList.add(\'noimg\')" class="'+(cls||"")+'">';
+  }
+  function pennyPill(){ return '<span class="pill penny">Penny · 1¢</span>'; }
+  function freshLabel(d){
+    var cls = d.mins>40 ? "fresh aging" : "fresh";
+    return '<span class="'+cls+'"><span class="dot"></span>Seen '+d.mins+'m ago</span>';
+  }
+  function trustInline(){
+    return '<span class="trust">'+infoSvg(12)+'Verified product</span>';
+  }
+  function infoSvg(sz){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:'+sz+'px;height:'+sz+'px"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>'; }
+  function shareSvg(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.7 7.6-4.4M8.2 13.3l7.6 4.4"/></svg>'; }
+  function scanSvg(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7 8v8M10 8v8M13 8v8M16 8v8"/></svg>'; }
+
+  // =====================================================================
+  //  MODE RENDERERS
+  // =====================================================================
+  var CONTENT = document.getElementById("modecontent");
+
+  // ---------- HUNT (Marcus): rarity-ranked dense rows, SKU + scan + signal ----------
+  function renderHunt(){
+    var rows = RANKED.slice(0,7);
+    var newCount = DEALS.filter(function(d){return d.mins<15;}).length;
+    var h = '';
+    h += '<div class="newtray fadein">'+
+           '<div class="t"><span class="b">'+newCount+' new</span> since you last checked, 9:14am</div>'+
+           '<div class="s">Fresh penny finds added this morning — ranked by how rare and worth-it they are.</div>'+
+         '</div>';
+    h += '<div class="sec-head"><h2>Ranked by worth</h2><span class="meta">Rarest first</span></div>';
+    h += '<p class="sec-note">Top finds across your stores. Tap to scan-confirm the 1¢ price in-store.</p>';
+    rows.forEach(function(d,i){
+      h += '<div class="huntrow fadein" onclick="openDeal(\''+d.sku+'\')" style="animation-delay:'+(i*0.03)+'s">'+
+             '<div class="ph">'+imgTag(d)+'<span class="rank">'+(i+1)+'</span></div>'+
+             '<div class="body">'+
+               '<div class="ttl">'+d.nice+'</div>'+
+               '<div class="meta-line"><span class="sku">SKU '+d.sku+'</span>'+pennyPill()+'</div>'+
+               '<div class="stat">'+
+                 '<div><div class="k">Worth</div><div class="v rare">'+d.rarity+'</div></div>'+
+                 '<div><div class="k">Found</div><div class="v">'+d.found+'</div></div>'+
+                 '<div><div class="k">Peg</div><div class="v" style="font-size:11px;font-weight:700;color:var(--ink2)">'+d.left+'</div></div>'+
+               '</div>'+
+               '<div class="worthbar"><i style="width:'+d.rarity+'%"></i></div>'+
+             '</div>'+
+             '<button class="scanbtn" onclick="event.stopPropagation();runScan(\''+d.sku+'\')" aria-label="Scan to confirm">'+scanSvg()+'Scan</button>'+
+           '</div>';
+    });
+    CONTENT.innerHTML = h;
+  }
+
+  // ---------- STOCK UP (Dana): organized by NEED, worth-the-trip, which store ----------
+  function needIcSvg(name){
+    var p = {
+      shirt:'<path d="M6 4 9 6a3 3 0 0 0 6 0l3-2 3 4-3 2v8H6v-8L3 8Z"/>',
+      sparkles:'<path d="M12 3v4M12 17v4M5 12H1M23 12h-4M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>',
+      home:'<path d="M3 11 12 4l9 7M5 10v10h14V10"/>',
+      snack:'<path d="M4 11h16l-1.5 8.5h-13L4 11Z"/><path d="M7 11a5 5 0 0 1 10 0"/>',
+      toy:'<circle cx="12" cy="9" r="5"/><path d="M9 14v6M15 14v6M9 18h6"/>'
+    };
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(p[name]||p.home)+'</svg>';
+  }
+  function renderStock(){
+    var h = '';
+    h += '<div class="sec-head"><h2>Worth a trip today?</h2><span class="meta">Dollar Tree</span></div>';
+    h += '<p class="sec-note">All penny (1¢) right now. Grouped by what you came for — one store, one stop.</p>';
+    // chips for HER categories
+    h += '<div class="chips" id="stockchips">';
+    var order = ["Kids & clothes","Household","Health & beauty","Snacks & pantry","Kids & toys"];
+    // build need groups
+    var groups = {};
+    DEALS.forEach(function(d){ var k=d.cat.need; (groups[k]=groups[k]||[]).push(d); });
+    h += '</div>';
+
+    order.forEach(function(needName, gi){
+      var items = (groups[needName]||[]).slice().sort(byRarity);
+      if(!items.length) return;
+      var lead = items[0];
+      var rest = items.slice(1,6);
+      var ic = lead.cat.needIc;
+      h += '<div class="needsec fadein" style="animation-delay:'+(gi*0.04)+'s">';
+      h += '<div class="needhd"><div class="ic">'+needIcSvg(ic)+'</div><h3>'+needName+'</h3><span class="cnt">'+items.length+' finds</span></div>';
+      h += '<div class="trip">';
+      h +=   '<div class="banner">'+
+               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
+               '<b>Worth it</b><span>· '+items.length+' penny items in this aisle</span>'+
+             '</div>';
+      h +=   '<div class="lead" onclick="openDeal(\''+lead.sku+'\')">'+
+               '<div class="ph">'+imgTag(lead)+'</div>'+
+               '<div class="info">'+
+                 '<div class="t">'+lead.nice+'</div>'+
+                 '<div class="pr"><span class="price">$0.01</span><span class="was">~$1.25</span></div>'+
+                 '<div class="where"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.6"/></svg>Dollar Tree · 1.2 mi · check the tag</div>'+
+               '</div>'+
+             '</div>';
+      h +=   '<div class="more">';
+      rest.forEach(function(d){
+        h += '<div class="mini" onclick="openDeal(\''+d.sku+'\')">'+
+               '<div class="ph">'+imgTag(d)+'</div>'+
+               '<div class="t">'+d.nice+'</div>'+
+               '<div class="price">$0.01</div>'+
+             '</div>';
+      });
+      h +=   '</div>';
+      h += '</div></div>';
+    });
+    CONTENT.innerHTML = h;
+
+    // fill the chips after (so they reflect groups present)
+    var chipWrap = document.getElementById("stockchips");
+    if(chipWrap){
+      var labels = ["All needs"].concat(order.filter(function(n){return (groups[n]||[]).length;}));
+      chipWrap.innerHTML = labels.map(function(l,i){ return '<button class="chip'+(i===0?" on":"")+'">'+l+'</button>'; }).join("");
+      chipWrap.querySelectorAll(".chip").forEach(function(c){
+        c.onclick=function(){ chipWrap.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");}); c.classList.add("on"); };
+      });
+    }
+  }
+
+  // ---------- BROWSE (Tasha): full-bleed photo hero + photo-scroll + share ----------
+  function renderBrowse(){
+    var hero = HEROES[0];
+    var scroll = HEROES.slice(1,8);
+    var grid2 = RANKED.slice(8,14);
+    var h = '';
+    // big featured hero
+    h += '<div class="hero fadein" onclick="openDeal(\''+hero.sku+'\')">'+
+           imgTag(hero)+
+           '<div class="scrim"></div>'+
+           '<div class="top">'+
+             '<span class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2Z"/></svg>Find of the day</span>'+
+             '<button class="sharef" onclick="event.stopPropagation();shareDeal(\''+hero.sku+'\')" aria-label="Share">'+shareSvg()+'</button>'+
+           '</div>'+
+           '<div class="cap">'+
+             '<p class="story"><span class="dot"></span>'+hero.found+' shoppers found it today · rare penny pull</p>'+
+             '<h2>'+hero.nice+'</h2>'+
+             '<div class="pr"><span class="price">$0.01</span><span class="was">$1.25</span><span class="off">99% off</span></div>'+
+           '</div>'+
+         '</div>';
+    // photo-scroll
+    h += '<div class="ps-head"><h2>Swipe today\'s finds</h2><span class="meta"><span class="fresh"><span class="dot"></span></span>All fresh</span></div>';
+    h += '<div class="photoscroll" id="photoscroll">';
+    scroll.forEach(function(d){
+      h += '<div class="pcard" onclick="openDeal(\''+d.sku+'\')">'+
+             '<div class="ph">'+imgTag(d)+'<div class="ov"></div>'+
+               '<div class="tag">'+pennyPill()+'</div>'+
+               '<div class="pp"><div class="price">$0.01</div><div class="nm">'+d.nice+'</div></div>'+
+             '</div>'+
+             '<div class="sh">'+
+               '<span class="f"><span class="dot"></span>'+d.found+' found today</span>'+
+               '<button onclick="event.stopPropagation();shareDeal(\''+d.sku+'\')">'+shareSvg()+'Share</button>'+
+             '</div>'+
+           '</div>';
+    });
+    h += '</div>';
+    // a calm 2-up of more, to keep scrolling pretty
+    h += '<div class="sec-head"><h2>More worth a look</h2><span class="meta">Tap to open</span></div>';
+    h += '<div class="grid" style="padding:2px 18px 6px">';
+    grid2.forEach(function(d){
+      h += '<div class="gcard" onclick="openDeal(\''+d.sku+'\')">'+
+             '<div class="ph">'+imgTag(d)+'<div class="tag">'+pennyPill()+'</div></div>'+
+             '<div class="gb"><div class="gt">'+d.nice+'</div>'+
+               '<div class="gp"><span class="price">$0.01</span>'+freshLabelMini(d)+'</div></div>'+
+           '</div>';
+    });
+    h += '</div>';
+    CONTENT.innerHTML = h;
+  }
+  function freshLabelMini(d){ var cls=d.mins>40?"fresh aging":"fresh"; return '<span class="'+cls+'" style="font-size:10px"><span class="dot"></span>'+d.mins+'m</span>'; }
+
+  // ---- mode switching ----
+  var MODE = "stock";
+  function setMode(m, fromLens){
+    MODE = m;
+    // segmented
+    document.querySelectorAll("#seg button").forEach(function(b){ b.classList.toggle("on", b.dataset.mode===m); });
+    // lens cards
+    document.querySelectorAll("#lenses .lens").forEach(function(l){ l.classList.toggle("active", l.dataset.mode===m); });
+    if(m==="hunt") renderHunt();
+    else if(m==="browse") renderBrowse();
+    else renderStock();
+    if(fromLens){ // gently scroll the mode content into view so the switch feels intentional
+      setTimeout(function(){ document.querySelector(".modebar").scrollIntoView({behavior:"smooth",block:"start"}); }, 60);
+    }
+  }
+  document.querySelectorAll("#seg button").forEach(function(b){ b.onclick=function(){ setMode(b.dataset.mode); }; });
+  document.querySelectorAll("#lenses .lens").forEach(function(l){ l.onclick=function(){ setMode(l.dataset.mode, true); }; });
+
+  // =====================================================================
+  //  STORE LIST + STORE GRID
+  // =====================================================================
+  var STORES = [
+    {n:"Dollar Tree", h:"Penny list · everything 1¢", c:98, col:"#993556", real:true},
+    {n:"Dollar General", h:"12 fresh penny + coupon finds", c:13, col:"#2f6f12"},
+    {n:"Target", h:"70% off camping clearance", c:8, col:"#b23b3b"},
+    {n:"Walmart", h:"Hidden clearance — scan to find", c:9, col:"#185fa5"},
+    {n:"Publix", h:"BOGO laundry event this week", c:7, col:"#3a7d3a"},
+    {n:"Walgreens", h:"Coupon-stack week", c:7, col:"#9a3a6a"},
+    {n:"Amazon", h:"Price glitch — worth a shot", c:2, col:"#3c3489"},
+    {n:"CVS", h:"ExtraBucks deals", c:3, col:"#a32d2d"}
+  ];
+  function initials(n){ return n.split(" ").map(function(w){return w[0];}).join("").slice(0,2); }
+  var sl = document.getElementById("storelist");
+  sl.innerHTML = STORES.map(function(s){
+    return '<div class="store" onclick="openStore(\''+s.n.replace(/'/g,"")+'\')">'+
+             '<div class="logo" style="background:'+s.col+'">'+initials(s.n)+'</div>'+
+             '<div class="sb"><div class="sn">'+s.n+'</div><div class="sh">'+s.h+'</div></div>'+
+             '<div class="ct"><b>'+s.c+'</b><span>deals</span></div>'+
+             '<div class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>'+
+           '</div>';
+  }).join("");
+
+  var storepage = document.getElementById("storepage");
+  window.openStore = function(name){
+    var s = STORES.filter(function(x){return x.n.replace(/'/g,"")===name;})[0] || STORES[0];
+    document.getElementById("storeTitle").textContent = s.n;
+    document.getElementById("storeSub").textContent = s.h;
+    var grid = document.getElementById("storegrid");
+    if(s.real){
+      // category chips for the grid
+      var gc = document.getElementById("gridchips");
+      var cats = ["All", "Kids & character", "Beauty & care", "Home & cleaning", "Snacks & pantry", "Toys & craft"];
+      gc.innerHTML = cats.map(function(c,i){ return '<button class="chip'+(i===0?" on":"")+'" data-cat="'+c+'">'+c+'</button>'; }).join("");
+      function paint(filter){
+        var list = DEALS.slice().sort(byRarity);
+        if(filter && filter!=="All") list = list.filter(function(d){return d.cat.label===filter;});
+        grid.innerHTML = list.map(function(d){
+          return '<div class="gcard" onclick="openDeal(\''+d.sku+'\')">'+
+                   '<div class="ph">'+imgTag(d)+'<div class="tag">'+pennyPill()+'</div></div>'+
+                   '<div class="gb"><div class="gt">'+d.nice+'</div>'+
+                     '<div class="gp"><span class="price">$0.01</span>'+freshLabelMini(d)+'</div></div>'+
+                 '</div>';
+        }).join("");
+      }
+      gc.querySelectorAll(".chip").forEach(function(c){
+        c.onclick=function(){ gc.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");}); c.classList.add("on"); paint(c.dataset.cat); };
+      });
+      paint("All");
+    } else {
+      document.getElementById("gridchips").innerHTML = "";
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:40px 20px;text-align:center;color:var(--ink3);font-size:13px;line-height:1.6">'+
+        '<div style="font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:6px">'+s.h+'</div>'+
+        'Photo finds for '+s.n+' are still coming in.<br>Today\'s photo-rich store is Dollar Tree.</div>';
+    }
+    storepage.classList.add("show");
+    storepage.querySelector(".body").scrollTop = 0;
+  };
+  window.closeStore = function(){ storepage.classList.remove("show"); };
+
+  // =====================================================================
+  //  DETAIL SHEET — price story + ONE trust label + the play + share
+  // =====================================================================
+  var sheet = document.getElementById("sheet");
+  var sheetbg = document.getElementById("sheetbg");
+  var sheetinner = document.getElementById("sheetinner");
+
+  window.openDeal = function(sku){
+    var d = DEALS.filter(function(x){return x.sku===sku;})[0];
+    if(!d) return;
+    sheetinner.innerHTML =
+      '<div class="grab"></div>'+
+      '<div class="shero">'+imgTag(d)+
+        '<button class="closex" onclick="closeSheet()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>'+
+      '</div>'+
+      '<div class="sbody">'+
+        '<div class="srow1">'+pennyPill()+freshLabel(d)+'<span class="sku" style="font-family:ui-monospace,monospace;font-size:11px;font-weight:600;color:var(--ink2);background:var(--surface);padding:2px 7px;border-radius:6px">SKU '+d.sku+'</span></div>'+
+        '<h2 class="stitle">'+d.nice+'</h2>'+
+
+        '<div class="pricestory">'+
+          '<div class="now">$0.01</div>'+
+          '<div class="ctx">'+
+            '<div class="l1">The price story</div>'+
+            '<div class="l2"><span class="was">$1.25</span><span class="off">99% off · rings 1¢ at register</span></div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="trustcard">'+
+          '<div class="ti">'+infoSvg(20)+'</div>'+
+          '<div class="tt"><b>Verified product · check the tag</b>'+
+            '<p>This exact item is matched to the penny list. The 1¢ price isn\'t guaranteed at every store — scan to confirm. We show when it was last seen, not live stock.</p>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="play">'+
+          '<div class="ph"><div class="ic">'+scanSvg()+'</div><b>How to get it</b><small>the play</small></div>'+
+          '<ol class="steps">'+
+            '<li>Hunt the <b>end-caps and clearance shelves</b> — penny items hide in discontinued stock.</li>'+
+            '<li>Look for <b>no shelf tag</b>, dusty boxes, or the last one on the peg.</li>'+
+            '<li><b>Scan at self-checkout</b> — it rings up <b>1¢</b>. Don\'t ask staff to look it up.</li>'+
+          '</ol>'+
+          '<div class="signs"><b>In-store signs:</b> items with no price tag, last-one-on-the-peg, or boxes pushed to the back. '+d.found+' shoppers found it today.</div>'+
+        '</div>'+
+
+        '<div class="actions">'+
+          '<button class="primary" onclick="runScan(\''+d.sku+'\')">'+scanSvg()+'Scan to confirm price</button>'+
+          '<button class="share" onclick="shareDeal(\''+d.sku+'\')" aria-label="Share">'+shareSvg()+'</button>'+
+        '</div>'+
+      '</div>';
+    sheetbg.classList.add("show");
+    sheet.classList.add("show");
+    sheet.scrollTop = 0;
+  };
+  window.closeSheet = function(){ sheet.classList.remove("show"); sheetbg.classList.remove("show"); };
+
+  // share (privacy-safe; no source/author/community)
+  window.shareDeal = function(sku){
+    var d = DEALS.filter(function(x){return x.sku===sku;})[0];
+    var name = d ? d.nice : "this deal";
+    flash("Shared — clean product card, no source", "share");
+  };
+
+  // =====================================================================
+  //  SCAN-TO-CONFIRM (Marcus) — playful confirm of the 1¢ ring
+  // =====================================================================
+  var toast = document.getElementById("scantoast");
+  var scanring = document.getElementById("scanring");
+  var scanprice = document.getElementById("scanprice");
+  var scanlbl = document.getElementById("scanlbl");
+  window.runScan = function(sku){
+    toast.classList.remove("done");
+    toast.classList.add("show");
+    scanring.style.display="block";
+    scanprice.textContent="Scanning…";
+    scanlbl.textContent="Reading the barcode";
+    scanprice.style.color="var(--cream)";
+    setTimeout(function(){
+      toast.classList.add("done");
+      scanring.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#7ed957" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M20 6 9 17l-5-5"/></svg>';
+      scanprice.textContent="$0.01";
+      scanprice.style.color="#7ed957";
+      scanlbl.textContent="Rings 1¢ — it's a penny item";
+    }, 1100);
+    setTimeout(function(){ toast.classList.remove("show"); setTimeout(function(){scanring.innerHTML="";},300); }, 2600);
+  };
+
+  // lightweight flash toast for share
+  function flash(msg, kind){
+    var t = el('<div style="position:absolute;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);z-index:96;background:var(--ink);color:var(--cream);font-size:12.5px;font-weight:700;padding:11px 18px;border-radius:30px;opacity:0;transition:all .25s;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)"><svg viewBox="0 0 24 24" fill="none" stroke="#7ed957" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M20 6 9 17l-5-5"/></svg>'+msg+'</div>');
+    document.querySelector(".phone").appendChild(t);
+    requestAnimationFrame(function(){ t.style.opacity="1"; t.style.transform="translateX(-50%) translateY(0)"; });
+    setTimeout(function(){ t.style.opacity="0"; t.style.transform="translateX(-50%) translateY(10px)"; setTimeout(function(){t.remove();},300); }, 1900);
+  }
+
+  // ---- boot: default to the calmest, most self-explanatory mode for first-timers (Robert) ----
+  setMode("stock");
+})();
+</script>
+</body>
+</html>

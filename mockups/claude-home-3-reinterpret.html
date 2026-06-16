@@ -1,0 +1,1266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Reinterpretation</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Deal Hunter · SLOT 3 — UX Reinterpretation
+   Concept: ONE adaptive surface that flips posture by physical
+   context (At home ⇄ In store), entered by INTENT not by feed.
+   Palette: warm cream / near-black ink / refined pink / calm green.
+   NO orange. Imagery = emoji + CSS shapes. Self-contained.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --cream:      #fbf9f3;   /* page behind the phone            */
+  --surface:    #fffefa;   /* card / sheet surface             */
+  --surface-2:  #f4f2ea;   /* recessed surface, chips          */
+  --line:       #e9e6db;   /* hairline borders                 */
+  --line-2:     #ddd9cc;
+  --ink:        #23231f;   /* primary text                     */
+  --ink-2:      #595851;   /* secondary text                   */
+  --ink-3:      #908e83;   /* tertiary / hints                 */
+  --penny:      #993556;   /* pink — penny / rare              */
+  --penny-soft: #fbeaf0;
+  --penny-deep: #72243e;
+  --good:       #2f6f12;   /* green — a real price win         */
+  --good-soft:  #eaf3de;
+  --urgent:     #a32d2d;   /* restrained red — going fast      */
+  --urgent-soft:#fceaea;
+  --plum:       #4b3a5a;   /* deep neutral accent for chrome   */
+  --r-lg: 22px; --r-md: 16px; --r-sm: 12px; --r-pill: 999px;
+  --shadow:   0 1px 2px rgba(40,36,28,.05), 0 8px 24px rgba(40,36,28,.07);
+  --shadow-2: 0 12px 40px rgba(40,36,28,.16), 0 2px 8px rgba(40,36,28,.10);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font);
+  background:
+    radial-gradient(120% 90% at 50% -10%, #fff 0%, var(--cream) 46%, #f3efe5 100%);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:22px 0 40px;
+}
+
+/* ── Phone frame ── */
+.phone{
+  position:relative;
+  width:390px;
+  min-height:844px;
+  background:var(--surface);
+  border-radius:42px;
+  box-shadow:0 0 0 11px #14130f, 0 0 0 13px #2a2823, 0 30px 70px rgba(20,18,14,.42);
+  overflow:hidden;
+  isolation:isolate;
+}
+.notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:148px;height:30px;background:#14130f;
+  border-radius:0 0 18px 18px;z-index:60;
+}
+.statusbar{
+  position:relative;z-index:55;height:50px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 26px 8px;font-size:13px;font-weight:700;color:var(--ink);
+  letter-spacing:.02em;
+}
+.statusbar .dots{display:flex;gap:5px;align-items:center;}
+.statusbar .bars{display:flex;gap:2px;align-items:flex-end;height:11px;}
+.statusbar .bars i{width:3px;background:var(--ink);border-radius:1px;display:block;}
+.statusbar .bars i:nth-child(1){height:4px}
+.statusbar .bars i:nth-child(2){height:6px}
+.statusbar .bars i:nth-child(3){height:9px}
+.statusbar .bars i:nth-child(4){height:11px}
+.batt{width:22px;height:11px;border:1.4px solid var(--ink);border-radius:3px;position:relative;}
+.batt::after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;right:6px;background:var(--ink);border-radius:1px;}
+.batt::before{content:"";position:absolute;right:-3px;top:3px;height:5px;width:2px;background:var(--ink);border-radius:0 1px 1px 0;}
+
+/* ── Corner identity label ── */
+.brandtag{
+  position:absolute;z-index:70;bottom:96px;left:14px;
+  font-size:9px;font-weight:700;letter-spacing:.04em;
+  color:var(--ink-3);background:rgba(255,254,250,.82);
+  border:1px solid var(--line);border-radius:var(--r-pill);
+  padding:3px 9px;backdrop-filter:blur(6px);pointer-events:none;
+}
+
+/* ── Scroll viewport ── */
+.screen{
+  position:absolute;inset:0;top:50px;bottom:0;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.screen::-webkit-scrollbar{display:none;}
+.pad{padding:0 18px 132px;}
+
+/* ════════════════════════════════════════════════════════════
+   CONTEXT HEADER  — the heart of the reinterpretation.
+   One toggle that reframes the whole home: At home ⇄ In store.
+   ════════════════════════════════════════════════════════════ */
+.ctx{
+  position:sticky;top:0;z-index:40;
+  background:linear-gradient(180deg,var(--surface) 72%, rgba(255,254,250,0));
+  padding:6px 18px 14px;
+}
+.ctx-greet{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:2px 0 12px;
+}
+.ctx-hello{font-size:15px;font-weight:600;color:var(--ink);}
+.ctx-hello b{color:var(--penny);font-weight:700;}
+.ctx-sub{font-size:12px;color:var(--ink-3);font-weight:500;}
+
+/* the posture switch */
+.posture{
+  position:relative;display:flex;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:var(--r-pill);
+  padding:4px;gap:0;
+}
+.posture .glider{
+  position:absolute;top:4px;left:4px;
+  width:calc(50% - 4px);height:calc(100% - 8px);
+  background:var(--surface);border-radius:var(--r-pill);
+  box-shadow:0 1px 3px rgba(40,36,28,.12);
+  transition:transform .34s cubic-bezier(.4,1.2,.4,1), background .3s;
+  z-index:0;
+}
+.posture.instore .glider{transform:translateX(100%);background:var(--plum);}
+.posture button{
+  position:relative;z-index:1;flex:1;border:0;background:none;
+  font-family:var(--font);cursor:pointer;
+  padding:9px 4px;border-radius:var(--r-pill);
+  font-size:13px;font-weight:700;color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:color .25s;
+}
+.posture button .pi{font-size:14px;line-height:1;}
+.posture button[aria-pressed="true"]{color:var(--ink);}
+.posture.instore button[data-mode="instore"]{color:#fff;}
+.posture.instore button[data-mode="home"]{color:var(--ink-3);}
+
+/* contextual one-liner that changes with posture */
+.ctx-mode{
+  margin-top:10px;font-size:11.5px;line-height:1.4;color:var(--ink-2);
+  display:flex;align-items:center;gap:7px;font-weight:500;
+}
+.ctx-mode .live{
+  width:7px;height:7px;border-radius:50%;background:var(--good);
+  box-shadow:0 0 0 3px var(--good-soft);flex:none;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.ctx-mode.instore .live{background:var(--penny);box-shadow:0 0 0 3px var(--penny-soft);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ════════════════════════════════════════════════════════════
+   INTENT RAIL — "what do you want to do right now?"
+   Entry by intent, not by feed. Honors "don't dump products."
+   ════════════════════════════════════════════════════════════ */
+.intent-q{
+  font-size:12px;font-weight:700;color:var(--ink-3);
+  letter-spacing:.04em;text-transform:uppercase;
+  margin:18px 2px 10px;
+}
+.intents{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.intent{
+  position:relative;text-align:left;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);
+  border-radius:var(--r-md);padding:13px 13px 12px;min-height:98px;
+  font-family:var(--font);overflow:hidden;
+  transition:border-color .2s, transform .12s, box-shadow .2s;
+}
+.intent:active{transform:scale(.975);}
+.intent[aria-pressed="true"]{
+  border-color:var(--penny);
+  box-shadow:0 0 0 3px var(--penny-soft);
+}
+.intent .i-ico{font-size:20px;line-height:1;display:block;margin-bottom:8px;}
+.intent .i-t{display:block;font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.2;}
+.intent .i-d{display:block;font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.3;font-weight:500;}
+.intent .i-count{
+  position:absolute;top:11px;right:11px;
+  font-size:10px;font-weight:800;color:var(--penny);
+  background:var(--penny-soft);border-radius:var(--r-pill);
+  padding:2px 7px;
+}
+/* the fourth intent only really lights up in-store */
+.intent.aisle .i-ico{filter:grayscale(.2);}
+.posture-instore .intent.aisle{border-color:var(--plum);box-shadow:0 0 0 3px rgba(75,58,90,.10);}
+
+/* inline search that the "specific product" intent reveals */
+.searchwrap{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s ease, opacity .25s, margin .3s;}
+.searchwrap.open{max-height:60px;opacity:1;margin-top:10px;}
+.search{
+  display:flex;align-items:center;gap:9px;
+  background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:10px 14px;
+}
+.search input{
+  border:0;background:none;outline:none;flex:1;
+  font-family:var(--font);font-size:14px;color:var(--ink);
+}
+.search input::placeholder{color:var(--ink-3);}
+.search .si{font-size:15px;color:var(--ink-3);}
+
+/* ── Section heading shared ── */
+.sec{margin-top:24px;}
+.sec-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:0 2px 12px;
+}
+.sec-title{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+.sec-title .accent{color:var(--penny);}
+.sec-link{font-size:12px;font-weight:700;color:var(--ink-3);cursor:pointer;}
+.sec-sub{font-size:11.5px;color:var(--ink-3);margin:-8px 2px 12px;font-weight:500;line-height:1.4;}
+
+/* ════════════════════════════════════════════════════════════
+   CATEGORY CHIPS — forgiving, finger-sized, instant.
+   ════════════════════════════════════════════════════════════ */
+.chips{
+  display:flex;gap:8px;overflow-x:auto;padding:2px 18px 4px;
+  margin:0 -18px;scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:none;border:1px solid var(--line);background:var(--surface);
+  border-radius:var(--r-pill);padding:8px 14px;
+  font-family:var(--font);font-size:12.5px;font-weight:600;
+  color:var(--ink-2);cursor:pointer;white-space:nowrap;
+  transition:all .18s;display:flex;align-items:center;gap:6px;
+}
+.chip .ce{font-size:13px;}
+.chip:active{transform:scale(.95);}
+.chip[aria-pressed="true"]{
+  background:var(--ink);color:var(--surface);border-color:var(--ink);
+}
+
+/* ════════════════════════════════════════════════════════════
+   HERO — the "best rare deal". One commanding card, ad-agency.
+   Carries the rarity×value×freshness signal honestly.
+   ════════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;border-radius:var(--r-lg);overflow:hidden;
+  cursor:pointer;border:1px solid var(--line);
+  box-shadow:var(--shadow);background:var(--surface);
+  transition:transform .14s, box-shadow .2s;
+}
+.hero:active{transform:scale(.985);}
+.hero-art{
+  position:relative;height:188px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:78px;overflow:hidden;
+}
+.hero-art .blob{
+  position:absolute;border-radius:50%;filter:blur(2px);opacity:.9;
+}
+.hero-rank{
+  position:absolute;top:13px;left:13px;z-index:3;
+  font-size:10px;font-weight:800;letter-spacing:.06em;
+  color:#fff;background:rgba(35,35,31,.5);
+  border-radius:var(--r-pill);padding:5px 11px;
+  backdrop-filter:blur(8px);text-transform:uppercase;
+}
+.hero-type{
+  position:absolute;top:13px;right:13px;z-index:3;
+  font-size:10.5px;font-weight:800;letter-spacing:.03em;
+  border-radius:var(--r-pill);padding:5px 11px;text-transform:uppercase;
+}
+.hero-body{padding:15px 16px 16px;}
+.hero-where{
+  font-size:11px;font-weight:700;color:var(--ink-3);
+  letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px;
+}
+.hero-name{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.2;color:var(--ink);}
+.hero-price{display:flex;align-items:baseline;gap:9px;margin-top:9px;}
+.hero-now{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1;}
+.hero-now.penny{color:var(--penny);}
+.hero-now.good{color:var(--good);}
+.hero-was{font-size:14px;color:var(--ink-3);text-decoration:line-through;font-weight:600;}
+.hero-off{
+  font-size:11px;font-weight:800;color:var(--good);
+  background:var(--good-soft);border-radius:var(--r-pill);
+  padding:3px 8px;align-self:center;
+}
+.hero-why{font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.45;font-weight:500;}
+
+/* the honest signal strip (rarity / freshness / trust) */
+.signal{
+  display:flex;align-items:stretch;gap:0;margin-top:14px;
+  border:1px solid var(--line);border-radius:var(--r-sm);
+  overflow:hidden;background:var(--surface-2);
+}
+.signal .cell{
+  flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:2px;
+}
+.signal .cell + .cell{border-left:1px solid var(--line);}
+.signal .k{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);}
+.signal .v{font-size:12px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:5px;}
+.signal .v .dot{width:7px;height:7px;border-radius:50%;flex:none;}
+.dot.fresh{background:var(--good);box-shadow:0 0 0 2.5px var(--good-soft);}
+.dot.aging{background:#b78a00;box-shadow:0 0 0 2.5px #faeeda;}
+.dot.live{background:var(--urgent);box-shadow:0 0 0 2.5px var(--urgent-soft);animation:pulse 1.6s infinite;}
+.trustword{color:var(--ink-2);font-weight:700;}
+
+/* ════════════════════════════════════════════════════════════
+   STORE LIST — pick a retailer, each sells itself in one line.
+   ════════════════════════════════════════════════════════════ */
+.stores{display:flex;flex-direction:column;gap:9px;}
+.store{
+  display:flex;align-items:center;gap:13px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:12px 14px;
+  transition:transform .12s, border-color .2s, box-shadow .2s;
+  font-family:var(--font);text-align:left;width:100%;
+}
+.store:active{transform:scale(.985);}
+.store:hover{border-color:var(--line-2);box-shadow:var(--shadow);}
+.store-badge{
+  width:46px;height:46px;border-radius:14px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;letter-spacing:-.02em;color:#fff;
+}
+.store-main{flex:1;min-width:0;}
+.store-name{font-size:14.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.store-head{display:block;font-size:12px;color:var(--ink-2);margin-top:2px;font-weight:500;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.store-r{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none;}
+.store-n{font-size:15px;font-weight:900;color:var(--ink);line-height:1;}
+.store-nl{font-size:9.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.store .chev{color:var(--ink-3);font-size:16px;flex:none;}
+.follow-pill{
+  font-size:9px;font-weight:800;color:var(--penny);background:var(--penny-soft);
+  border-radius:var(--r-pill);padding:2px 6px;text-transform:uppercase;letter-spacing:.03em;
+}
+.add-store{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:1.5px dashed var(--line-2);background:none;width:100%;
+  border-radius:var(--r-md);padding:13px;cursor:pointer;
+  font-family:var(--font);font-size:13px;font-weight:700;color:var(--ink-2);
+  transition:all .18s;
+}
+.add-store:active{transform:scale(.985);}
+.add-store:hover{border-color:var(--penny);color:var(--penny);}
+
+/* compact deal rows used inside store / category / search results */
+.rows{display:flex;flex-direction:column;gap:9px;}
+.row{
+  display:flex;align-items:center;gap:13px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:11px 13px;
+  transition:transform .12s, box-shadow .2s;font-family:var(--font);text-align:left;width:100%;
+}
+.row:active{transform:scale(.985);}
+.row:hover{box-shadow:var(--shadow);}
+.row-art{
+  width:50px;height:50px;border-radius:13px;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:25px;
+}
+.row-main{flex:1;min-width:0;}
+.row-name{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.row-meta{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap;}
+.row-price{font-size:14px;font-weight:900;letter-spacing:-.02em;}
+.row-price.penny{color:var(--penny);}
+.row-price.good{color:var(--good);}
+.row-was{font-size:11px;color:var(--ink-3);text-decoration:line-through;font-weight:600;}
+.pill{
+  font-size:9px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+  border-radius:var(--r-pill);padding:2px 7px;white-space:nowrap;
+}
+.pill.penny{color:var(--penny-deep);background:var(--penny-soft);}
+.pill.glitch{color:var(--urgent);background:var(--urgent-soft);}
+.pill.clear{color:#185fa5;background:#e6f1fb;}
+.pill.bogo{color:#0f6e56;background:#e1f5ee;}
+.pill.coupon{color:#534ab7;background:#eeedfe;}
+.pill.sale{color:var(--good);background:var(--good-soft);}
+.row-trust{font-size:10px;color:var(--ink-3);font-weight:600;display:flex;align-items:center;gap:4px;}
+.row-trust .tdot{width:6px;height:6px;border-radius:50%;flex:none;}
+
+/* empty / calm state */
+.empty{
+  text-align:center;padding:34px 22px;
+  border:1px dashed var(--line-2);border-radius:var(--r-md);
+  background:var(--surface);
+}
+.empty .ee{font-size:34px;display:block;margin-bottom:10px;}
+.empty .et{font-size:15px;font-weight:800;color:var(--ink);}
+.empty .ed{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.5;font-weight:500;}
+
+/* ── Tab bar ── */
+.tabbar{
+  position:absolute;left:0;right:0;bottom:0;z-index:45;height:84px;
+  background:linear-gradient(180deg, rgba(255,254,250,0), var(--surface) 38%);
+  display:flex;align-items:flex-start;justify-content:space-around;
+  padding:14px 22px 0;border-top:1px solid transparent;
+}
+.tab{
+  background:none;border:0;font-family:var(--font);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:9.5px;font-weight:700;color:var(--ink-3);letter-spacing:.02em;
+}
+.tab .tico{font-size:21px;line-height:1;filter:grayscale(1);opacity:.55;transition:.2s;}
+.tab.on{color:var(--ink);}
+.tab.on .tico{filter:none;opacity:1;}
+.tab.scout{position:relative;}
+.tab.scout .tico{filter:none;opacity:1;}
+.tab.scout .badge{
+  position:absolute;top:-3px;right:50%;margin-right:-18px;
+  background:var(--penny);color:#fff;font-size:8px;font-weight:800;
+  border-radius:var(--r-pill);padding:1px 5px;border:2px solid var(--surface);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DETAIL SHEET — price story + honest trust + the play + share
+   ════════════════════════════════════════════════════════════ */
+.scrim{
+  position:absolute;inset:0;z-index:80;background:rgba(28,26,20,.46);
+  opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(2px);
+}
+.scrim.open{opacity:1;pointer-events:auto;}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:81;
+  background:var(--surface);border-radius:26px 26px 0 0;
+  transform:translateY(102%);transition:transform .4s cubic-bezier(.32,.9,.3,1);
+  max-height:90%;display:flex;flex-direction:column;
+  box-shadow:0 -12px 40px rgba(20,18,14,.22);
+}
+.sheet.open{transform:translateY(0);}
+.sheet-grip{padding:11px 0 4px;display:flex;justify-content:center;flex:none;}
+.sheet-grip i{width:38px;height:5px;border-radius:3px;background:var(--line-2);display:block;}
+.sheet-scroll{overflow-y:auto;scrollbar-width:none;padding:6px 20px 20px;}
+.sheet-scroll::-webkit-scrollbar{display:none;}
+.sheet-close{
+  position:absolute;top:14px;right:16px;z-index:3;
+  width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--surface-2);color:var(--ink-2);font-size:16px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.sheet-art{
+  height:158px;border-radius:var(--r-md);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;font-size:66px;position:relative;overflow:hidden;
+}
+.sheet-where{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;}
+.sheet-name{font-size:21px;font-weight:900;letter-spacing:-.02em;line-height:1.18;margin-top:4px;color:var(--ink);}
+
+/* price story block */
+.story{
+  margin-top:14px;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--surface-2);padding:14px;
+}
+.story-row{display:flex;align-items:baseline;gap:10px;}
+.story-now{font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1;}
+.story-now.penny{color:var(--penny);}
+.story-now.good{color:var(--good);}
+.story-was{font-size:15px;color:var(--ink-3);text-decoration:line-through;font-weight:700;}
+.story-off{font-size:12px;font-weight:800;color:var(--good);background:var(--good-soft);border-radius:var(--r-pill);padding:4px 10px;align-self:center;}
+.story-line{font-size:12.5px;color:var(--ink-2);margin-top:9px;line-height:1.45;font-weight:500;}
+
+/* honest trust banner */
+.trust{
+  display:flex;align-items:center;gap:11px;margin-top:12px;
+  border-radius:var(--r-md);padding:12px 14px;
+  border:1px solid;
+}
+.trust.matched{background:var(--good-soft);border-color:#cfe3b0;}
+.trust.reported{background:var(--surface-2);border-color:var(--line-2);}
+.trust.check{background:#faeeda;border-color:#f0d9a8;}
+.trust .ti{font-size:20px;flex:none;}
+.trust .tt{display:block;font-size:12.5px;font-weight:800;color:var(--ink);}
+.trust .td{display:block;font-size:11px;color:var(--ink-2);margin-top:2px;line-height:1.35;font-weight:500;}
+
+/* signal grid in detail */
+.dsignals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:13px;}
+.dsig{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);padding:10px 8px;text-align:center;}
+.dsig .dk{font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);}
+.dsig .dv{font-size:13px;font-weight:900;color:var(--ink);margin-top:4px;}
+.dsig .dv small{font-size:9px;font-weight:700;color:var(--ink-3);display:block;margin-top:1px;}
+
+/* THE PLAY — authored playbook */
+.play{
+  margin-top:16px;border:1.5px solid var(--penny);border-radius:var(--r-md);
+  background:var(--surface);overflow:hidden;
+}
+.play-head{
+  display:flex;align-items:center;gap:9px;padding:12px 14px;
+  background:var(--penny-soft);
+}
+.play-head .ph-ico{font-size:17px;}
+.play-head .ph-t{font-size:13px;font-weight:900;color:var(--penny-deep);letter-spacing:-.01em;}
+.play-head .ph-s{font-size:10.5px;color:var(--penny);font-weight:700;margin-left:auto;}
+.play-steps{padding:12px 14px 6px;}
+.pstep{display:flex;gap:11px;margin-bottom:11px;}
+.pstep .num{
+  width:21px;height:21px;border-radius:50%;flex:none;
+  background:var(--penny);color:#fff;font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.pstep .ptxt{font-size:12.5px;color:var(--ink);line-height:1.45;font-weight:500;}
+.pstep .ptxt b{font-weight:800;color:var(--penny-deep);}
+.signs{
+  margin:4px 14px 14px;padding:11px 12px;border-radius:var(--r-sm);
+  background:var(--surface-2);border:1px solid var(--line);
+}
+.signs .st{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:6px;}
+.signs .sd{font-size:12px;color:var(--ink-2);margin-top:5px;line-height:1.45;font-weight:500;}
+
+/* sheet action bar */
+.sheet-actions{
+  flex:none;display:flex;gap:10px;padding:12px 20px;
+  border-top:1px solid var(--line);background:var(--surface);
+}
+.btn{
+  flex:1;border:0;border-radius:var(--r-pill);cursor:pointer;
+  font-family:var(--font);font-size:14px;font-weight:800;
+  padding:14px;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .12s, filter .15s;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--ink);color:var(--surface);flex:1.5;}
+.btn-primary:hover{filter:brightness(1.12);}
+.btn-ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);}
+.btn .bi{font-size:16px;}
+.watch-on{background:var(--penny-soft);color:var(--penny);border-color:var(--penny);}
+
+/* share popover */
+.sharesheet{
+  position:absolute;left:14px;right:14px;bottom:14px;z-index:90;
+  background:var(--surface);border-radius:22px;
+  box-shadow:var(--shadow-2);border:1px solid var(--line);
+  transform:translateY(160%);transition:transform .38s cubic-bezier(.32,.9,.3,1);
+  padding:16px 16px 12px;
+}
+.sharesheet.open{transform:translateY(0);}
+.share-h{display:flex;align-items:center;gap:10px;margin-bottom:13px;}
+.share-h .sh-t{font-size:14px;font-weight:900;color:var(--ink);}
+.share-h .sh-x{margin-left:auto;border:0;background:var(--surface-2);width:26px;height:26px;border-radius:50%;font-weight:700;color:var(--ink-2);cursor:pointer;}
+.share-card{
+  border:1px solid var(--line);border-radius:var(--r-sm);
+  background:var(--surface-2);padding:11px 13px;margin-bottom:13px;
+  display:flex;align-items:center;gap:11px;
+}
+.share-card .sc-art{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none;}
+.share-card .sc-t{display:block;font-size:12px;font-weight:800;color:var(--ink);line-height:1.2;}
+.share-card .sc-p{display:block;font-size:11px;color:var(--ink-2);margin-top:2px;font-weight:600;}
+.share-grid{display:flex;gap:9px;}
+.share-opt{
+  flex:1;border:1px solid var(--line);background:var(--surface);
+  border-radius:var(--r-sm);padding:11px 4px;cursor:pointer;font-family:var(--font);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:10px;font-weight:700;color:var(--ink-2);transition:transform .12s;
+}
+.share-opt:active{transform:scale(.95);}
+.share-opt .so-i{font-size:19px;}
+.share-ref{
+  margin-top:12px;font-size:10.5px;color:var(--ink-3);text-align:center;
+  line-height:1.4;font-weight:500;
+}
+.share-ref b{color:var(--penny);font-weight:800;}
+
+/* toast */
+.toast{
+  position:absolute;left:50%;bottom:104px;transform:translate(-50%,20px);
+  z-index:95;background:var(--ink);color:var(--surface);
+  font-size:12.5px;font-weight:700;padding:11px 18px;border-radius:var(--r-pill);
+  opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;
+  display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:var(--shadow-2);
+}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* fade-in helper for swapped content */
+.fade{animation:fade .34s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* in-store accent dressing on the whole screen */
+.screen.instore-tint .ctx{background:linear-gradient(180deg,#f7f4fb 72%, rgba(247,244,251,0));}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span>9:41</span>
+    <span class="dots">
+      <span class="bars"><i></i><i></i><i></i><i></i></span>
+      <span style="font-weight:800;font-size:11px;">5G</span>
+      <span class="batt"></span>
+    </span>
+  </div>
+  <div class="brandtag">Claude · Reinterpretation</div>
+
+  <div class="screen" id="screen">
+    <!-- ── CONTEXT HEADER ── -->
+    <div class="ctx" id="ctxHeader">
+      <div class="ctx-greet">
+        <div class="ctx-hello">Afternoon off, <b>Steven</b> 👋</div>
+        <div class="ctx-sub">Sat · 2:14pm</div>
+      </div>
+      <div class="posture" id="posture">
+        <span class="glider"></span>
+        <button data-mode="home" aria-pressed="true"><span class="pi">🏠</span>At home</button>
+        <button data-mode="instore" aria-pressed="false"><span class="pi">🛒</span>In store</button>
+      </div>
+      <div class="ctx-mode" id="ctxMode">
+        <span class="live"></span>
+        <span id="ctxModeText">3 fresh winners worth a trip today. Browse, then beeline to one store.</span>
+      </div>
+    </div>
+
+    <div class="pad">
+      <!-- ── INTENT RAIL ── -->
+      <div class="intent-q" id="intentQ">What do you want to do?</div>
+      <div class="intents" id="intents">
+        <button class="intent best" data-intent="best" aria-pressed="true">
+          <span class="i-count">3</span>
+          <span class="i-ico">💎</span>
+          <span class="i-t">Best rare deal</span>
+          <span class="i-d">Today's top scores</span>
+        </button>
+        <button class="intent find" data-intent="find" aria-pressed="false">
+          <span class="i-ico">🔎</span>
+          <span class="i-t">Find a product</span>
+          <span class="i-d">Search what you need</span>
+        </button>
+        <button class="intent store" data-intent="store" aria-pressed="false">
+          <span class="i-ico">🏬</span>
+          <span class="i-t">Pick a store</span>
+          <span class="i-d">8 stores nearby</span>
+        </button>
+        <button class="intent aisle" data-intent="aisle" aria-pressed="false">
+          <span class="i-ico">📍</span>
+          <span class="i-t">I'm in an aisle</span>
+          <span class="i-d">Scan & match in store</span>
+        </button>
+      </div>
+
+      <!-- inline search revealed by "Find a product" -->
+      <div class="searchwrap" id="searchWrap">
+        <div class="search">
+          <span class="si">🔎</span>
+          <input id="searchInput" placeholder="Try “socks”, “detergent”, “Dove”…" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- ── DYNAMIC BODY (swapped by intent) ── -->
+      <div id="body"></div>
+    </div>
+
+    <!-- ── TAB BAR ── -->
+    <div class="tabbar">
+      <button class="tab on"><span class="tico">🏠</span>Home</button>
+      <button class="tab" onclick="pickIntent('store')"><span class="tico">🏬</span>Stores</button>
+      <button class="tab scout"><span class="tico">🔔</span><span class="badge">2</span>Watching</button>
+      <button class="tab"><span class="tico">👤</span>You</button>
+    </div>
+  </div>
+
+  <!-- ── DETAIL SHEET ── -->
+  <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-grip"><i></i></div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+    <div class="sheet-scroll" id="sheetBody"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" id="watchBtn" onclick="toggleWatch()"><span class="bi">🔔</span><span id="watchLabel">Watch</span></button>
+      <button class="btn btn-ghost" onclick="openShare()"><span class="bi">↗</span>Share</button>
+      <button class="btn btn-primary" onclick="closeSheet()"><span class="bi">🧭</span>Got it</button>
+    </div>
+  </div>
+
+  <!-- ── SHARE SHEET ── -->
+  <div class="sharesheet" id="shareSheet">
+    <div class="share-h">
+      <span class="sh-t">Share this deal</span>
+      <button class="sh-x" onclick="closeShare()">✕</button>
+    </div>
+    <div class="share-card" id="shareCard"></div>
+    <div class="share-grid">
+      <button class="share-opt" onclick="afterShare('Link copied')"><span class="so-i">🔗</span>Copy link</button>
+      <button class="share-opt" onclick="afterShare('Opening messages')"><span class="so-i">💬</span>Message</button>
+      <button class="share-opt" onclick="afterShare('Saved image')"><span class="so-i">🖼️</span>Save card</button>
+      <button class="share-opt" onclick="afterShare('More…')"><span class="so-i">•••</span>More</button>
+    </div>
+    <div class="share-ref">Your shared deals carry a <b>friend invite</b> — they can open it without an account.</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   DATA — grounded in the project's real deal-taxonomy.json
+   (rarity_per_year, value_multiple, decay_hours, actionPlan,
+   inStoreSigns) + the brief's SAMPLE-DATA content.
+   ════════════════════════════════════════════════════════════ */
+const TAX = {
+  penny:   {label:"Penny", pill:"penny", rare:"~40×/yr", window:"~48h", windowNote:"picked over by day 2"},
+  clear:   {label:"Clearance", pill:"clear", rare:"seasonal", window:"~5 days", windowNote:"best picks go fast"},
+  glitch:  {label:"Glitch", pill:"glitch", rare:"~25×/yr", window:"hours", windowNote:"fixed once noticed"},
+  sale:    {label:"Sale", pill:"sale", rare:"steady", window:"~1 wk", windowNote:"while stock lasts"},
+  bogo:    {label:"BOGO", pill:"bogo", rare:"frequent", window:"this week", windowNote:"steady drumbeat"},
+  coupon:  {label:"Coupon", pill:"coupon", rare:"frequent", window:"this week", windowNote:"clip before register"},
+};
+
+/* authored playbooks (condensed from deal-taxonomy.json actionPlan) */
+const PLAYS = {
+  penny: {
+    eta:"~6 min in store",
+    steps:[
+      "Items should already be pulled — hunt <b>end-caps, top stock, clearance bins</b>, back corners.",
+      "Match the shelf item to this reference photo <b>before</b> you scan.",
+      "Use <b>self-checkout</b> and watch for <b>1¢</b> — don't ask staff (they're required to pull penny items)."
+    ],
+    signs:"No signage — that's the point. Old seasonal packaging, single strays mixed into new stock, last-one-on-the-peg."
+  },
+  glitch: {
+    eta:"act now · hours left",
+    steps:[
+      "Hours matter — <b>order online for store pickup</b> to lock the price, or go now.",
+      "Verify quietly at self-checkout; don't announce it.",
+      "<b>Screenshot</b> your cart/price as proof before checkout."
+    ],
+    signs:"Shelf/app price wildly below normal; comments saying 'still working'. No in-store sign — it's a mistake, not a sale."
+  },
+  clear: {
+    eta:"~8 min in store",
+    steps:[
+      "Head to the <b>seasonal back wall / action alley</b> clearance zone.",
+      "Check this week's <b>sticker color</b> for depth (50 → 70 → 90%).",
+      "Scan to confirm — shelf tag may lag the register price."
+    ],
+    signs:"Colored sticker tiers; % signs on end-caps; dusty top stock and discontinued colors."
+  },
+  sale: {
+    eta:"~5 min in store",
+    steps:[
+      "Go straight to the <b>category aisle</b> — this is a shelf markdown.",
+      "Confirm the price <b>scans</b> as posted before you commit.",
+      "Stock varies by store; an early local confirm is the real signal."
+    ],
+    signs:"Shelf sale tag; outdated packaging; gaps in the planogram where it's selling through."
+  },
+  bogo: {
+    eta:"~5 min in store",
+    steps:[
+      "<b>Clip the digital coupon</b> in the app before the register.",
+      "Read the stack rules — <b>one per transaction</b> is common.",
+      "Split transactions if the math requires it."
+    ],
+    signs:"Shelf BOGO tags; app coupon badges on the item."
+  },
+  coupon: {
+    eta:"~5 min in store",
+    steps:[
+      "<b>Clip the digital coupon</b> before you check out.",
+      "Stack with a paper/manufacturer coupon if allowed.",
+      "Watch the register subtotal to confirm it applied."
+    ],
+    signs:"Shelf coupon tags; app coupon badges; weekly-ad callouts."
+  },
+};
+
+/* trust copy keyed to the brief's honest vocabulary */
+const TRUST = {
+  matched: {cls:"matched", ico:"✅", t:"Matched to catalog", d:"Confirmed against our product list — the item & price story are verified. Stock isn't live; freshness is recency.", word:"matched to catalog", dot:"fresh"},
+  reported:{cls:"reported", ico:"📣", t:"Reported", d:"Surfaced from a trusted deal source. The item looks right; we haven't matched it to a catalog entry yet. Verify in store.", word:"reported", dot:"fresh"},
+  check:   {cls:"check", ico:"🏷️", t:"Check the tag", d:"The discount isn't verified — the % off is an estimate. Scan or read the shelf tag to confirm before you buy.", word:"check tag", dot:"aging"},
+};
+
+/* helper to build a soft CSS-shape "art" background per category */
+function art(emoji, c1, c2){
+  return {emoji, bg:`radial-gradient(120% 120% at 28% 22%, ${c1} 0%, ${c2} 100%)`};
+}
+const A = {
+  socks:  art("🧦","#fbeaf0","#f4c8d8"),
+  tent:   art("⛺","#e6f1fb","#cfe0f3"),
+  deterg: art("🧴","#e1f5ee","#cfeadf"),
+  body:   art("🧴","#eef0fb","#dde0f3"),
+  laund:  art("🧺","#eaf3de","#d8ead0"),
+  air:    art("🌸","#fbeaf0","#f3dbe6"),
+  toilet: art("🧼","#e6f1fb","#d8e6f3"),
+  spray:  art("🧽","#f1efe8","#e4e1d6"),
+  slides: art("🩴","#f4f2ea","#e6e3d8"),
+};
+
+/* ── DEALS (SAMPLE-DATA content) ── */
+const DEALS = [
+  {id:"socks",  name:"Smurfs Grumpy Crew Socks", retailer:"Dollar Tree", price:"$0.01", was:"$1.25", off:"99% off",
+   type:"penny", priceClass:"penny", art:A.socks, cat:["apparel"],
+   why:"A licensed penny item — rings up 1¢ and almost never restocks. 31 hunters confirmed it today.",
+   trust:"matched", fresh:"fresh", confirmed:"31 confirmed today", worth:9.4,
+   storyLine:"Penny-list item: rings 1¢ at the register. ~125× the everyday $1.25 — the rarest class we track."},
+
+  {id:"tent",   name:"Coleman 4-Person Tent", retailer:"Target", price:"$23.98", was:"$79.99", off:"70% off",
+   type:"clear", priceClass:"good", art:A.tent, cat:["outdoors"],
+   why:"Deep seasonal clearance — 70% off a tent that resells well. Two people confirmed it 2 hours ago.",
+   trust:"check", fresh:"fresh", confirmed:"fresh 2h ago", worth:8.1,
+   storyLine:"Marked clearance, but the % off isn't verified — scan it to confirm the depth before you commit."},
+
+  {id:"deterg", name:"Gain Liquid Detergent 154oz", retailer:"Amazon", price:"$4.97", was:"~$12", off:"~59% off",
+   type:"glitch", priceClass:"good", art:A.deterg, cat:["laundry"],
+   why:"A live price glitch on a household staple. These usually get fixed within hours — lock it now.",
+   trust:"reported", fresh:"live", confirmed:"⚡ live now", worth:8.8,
+   storyLine:"Looks like a price mistake — about $12 normally. Highest-urgency class; the window is hours, not days."},
+
+  {id:"body",   name:"Dove Deep Moisture Body Wash 22oz", retailer:"Dollar General", price:"$1.50", was:"$7.99", off:"81% off",
+   type:"sale", priceClass:"good", art:A.body, cat:["bath"],
+   why:"81% off a name-brand body wash — a genuine shelf markdown that's moving fast at DG.",
+   trust:"check", fresh:"aging", confirmed:"aging — going fast", worth:7.3,
+   storyLine:"Shelf markdown from $7.99. The discount's a strong estimate — read the tag to confirm $1.50."},
+
+  /* secondary deals for store / category / search */
+  {id:"laund",  name:"Gain Original Plus Laundry Detergent", retailer:"Publix", price:"BOGO", was:"", off:"",
+   type:"bogo", priceClass:"good", art:A.laund, cat:["laundry"],
+   why:"Buy-one-get-one on Gain this week — best value when you stack a coupon.",
+   trust:"reported", fresh:"fresh", confirmed:"this week", worth:6.4,
+   storyLine:"BOGO event this week. Clip the digital coupon before the register to stretch it further."},
+
+  {id:"air",    name:"Air Wick Vibrant Essential Oil Refill", retailer:"Dollar General", price:"Coupon", was:"", off:"",
+   type:"coupon", priceClass:"good", art:A.air, cat:["home"],
+   why:"Digital-coupon deal — a few dollars off the refill twin-pack.",
+   trust:"reported", fresh:"fresh", confirmed:"this week", worth:5.6,
+   storyLine:"Coupon deal — clip it in the app first, then watch the subtotal drop at checkout."},
+
+  {id:"elmo",   name:"Elmo Black Crew Socks", retailer:"Dollar Tree", price:"$0.01", was:"$1.25", off:"99% off",
+   type:"penny", priceClass:"penny", art:A.socks, cat:["apparel"],
+   why:"Another penny-list licensed sock — 1¢ at self-checkout if you can find it.",
+   trust:"matched", fresh:"fresh", confirmed:"matched to catalog", worth:9.0,
+   storyLine:"Penny-list item: rings 1¢. Same rare class as the Smurfs pair — hunt the pegs."},
+
+  {id:"toilet", name:"Scrubbing Bubbles Foaming Toilet Cleaner", retailer:"Dollar General", price:"BOGO", was:"", off:"",
+   type:"bogo", priceClass:"good", art:A.toilet, cat:["cleaning"],
+   why:"BOGO on a bathroom staple — verify the shelf tag and stack a coupon.",
+   trust:"check", fresh:"fresh", confirmed:"check tag", worth:5.9,
+   storyLine:"BOGO, but unverified — read the shelf tag to confirm it's still running at your store."},
+
+  {id:"spray",  name:"Mr. Clean Bathroom Cleaner", retailer:"Walgreens", price:"Coupon", was:"", off:"",
+   type:"coupon", priceClass:"good", art:A.spray, cat:["cleaning"],
+   why:"Coupon-stack week at Walgreens — a tidy markdown when stacked.",
+   trust:"reported", fresh:"fresh", confirmed:"this week", worth:5.4,
+   storyLine:"Coupon-stack week. Clip the digital coupon and pair with a manufacturer coupon."},
+
+  {id:"slides", name:"Hello Kitty Kids Slides", retailer:"Walmart", price:"Clearance", was:"", off:"",
+   type:"clear", priceClass:"good", art:A.slides, cat:["apparel"],
+   why:"Unmarked clearance — the shelf tag may not reflect the real register price. Scan to find.",
+   trust:"check", fresh:"aging", confirmed:"scan to confirm", worth:6.0,
+   storyLine:"Hidden clearance — the shelf price can lie. Scan it with the Walmart app to reveal the real price."},
+];
+
+/* ── RETAILERS (SAMPLE-DATA headlines) ── */
+const STORES = [
+  {id:"dt",  name:"Dollar Tree",    head:"Penny list · everything 1¢",        n:98, color:"#993556", badge:"DT", follow:true,  cat:["apparel","home"]},
+  {id:"dg",  name:"Dollar General", head:"12 fresh penny + coupon finds",       n:13, color:"#2f6f12", badge:"DG", follow:true,  cat:["bath","cleaning","home","laundry"]},
+  {id:"tg",  name:"Target",         head:"70% off camping clearance",          n:8,  color:"#a32d2d", badge:"◎",  follow:false, cat:["outdoors"]},
+  {id:"wm",  name:"Walmart",        head:"Hidden clearance, scan to find",     n:9,  color:"#185fa5", badge:"W",  follow:false, cat:["apparel"]},
+  {id:"pb",  name:"Publix",         head:"BOGO laundry event this week",       n:7,  color:"#2f6f12", badge:"P",  follow:false, cat:["laundry"]},
+  {id:"wg",  name:"Walgreens",      head:"Coupon-stack week",                  n:7,  color:"#993556", badge:"W",  follow:false, cat:["cleaning"]},
+  {id:"az",  name:"Amazon",         head:"⚡ Price glitch — act fast",          n:2,  color:"#23231f", badge:"a",  follow:true,  cat:["laundry"]},
+  {id:"cv",  name:"CVS",            head:"ExtraBucks deals",                   n:3,  color:"#a32d2d", badge:"♥",  follow:false, cat:["bath","cleaning"]},
+];
+
+/* ── CATEGORIES ── */
+const CATS = [
+  {id:"all",      label:"Everything", e:"✨"},
+  {id:"laundry",  label:"Laundry",    e:"🧺"},
+  {id:"cleaning", label:"Cleaning",   e:"🧽"},
+  {id:"bath",     label:"Bath & body",e:"🧴"},
+  {id:"apparel",  label:"Apparel",    e:"🧦"},
+  {id:"outdoors", label:"Outdoors",   e:"⛺"},
+  {id:"home",     label:"Home",       e:"🌸"},
+];
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════════ */
+let state = { posture:"home", intent:"best", cat:"all", store:null, query:"", current:null, watching:new Set() };
+
+const $ = (s,r=document)=>r.querySelector(s);
+const el = (html)=>{const t=document.createElement("template");t.innerHTML=html.trim();return t.content.firstElementChild;};
+
+function dealById(id){return DEALS.find(d=>d.id===id);}
+function priceClass(d){return d.priceClass==="penny"?"penny":(d.priceClass==="good"?"good":"");}
+
+/* render one compact deal row */
+function rowHTML(d){
+  const t = TAX[d.type];
+  const tr = TRUST[d.trust];
+  const dotcls = d.fresh==="live"?"live":(d.fresh==="aging"?"aging":"fresh");
+  return `<button class="row" onclick="openDeal('${d.id}')">
+    <span class="row-art" style="background:${d.art.bg}">${d.art.emoji}</span>
+    <span class="row-main">
+      <span class="row-name">${d.name}</span>
+      <span class="row-meta">
+        <span class="row-price ${priceClass(d)}">${d.price}</span>
+        ${d.was?`<span class="row-was">${d.was}</span>`:''}
+        <span class="pill ${t.pill}">${t.label}</span>
+      </span>
+      <span class="row-meta" style="margin-top:5px">
+        <span class="row-trust"><span class="tdot dot ${dotcls}"></span>${tr.word}</span>
+        <span class="row-trust">· ${d.confirmed}</span>
+      </span>
+    </span>
+    <span class="chev">›</span>
+  </button>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   POSTURE  (At home ⇄ In store) — reframes the whole home
+   ════════════════════════════════════════════════════════════ */
+function setPosture(mode){
+  state.posture = mode;
+  const p = $("#posture");
+  p.classList.toggle("instore", mode==="instore");
+  p.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.mode===mode));
+  $("#screen").classList.toggle("instore-tint", mode==="instore");
+  $("#ctxMode").classList.toggle("instore", mode==="instore");
+
+  if(mode==="instore"){
+    $("#ctxModeText").textContent = "You're near Dollar General. Here's what to grab in these aisles — and the play to get it.";
+    $("#intentQ").textContent = "You're in the store — what now?";
+    // re-label intents toward execution
+    relabelIntent("best","💎","Aisle winners","Worth grabbing here");
+    relabelIntent("find","🔎","Find on shelf","Search to locate");
+    relabelIntent("store","🏬","Switch store","Pick another nearby");
+    relabelIntent("aisle","📷","Scan an item","Confirm the price · 1¢?");
+    // default in-store intent → aisle relevance
+    pickIntent("aisle", true);
+  } else {
+    $("#ctxModeText").textContent = "3 fresh winners worth a trip today. Browse, then beeline to one store.";
+    $("#intentQ").textContent = "What do you want to do?";
+    relabelIntent("best","💎","Best rare deal","Today's top scores");
+    relabelIntent("find","🔎","Find a product","Search what you need");
+    relabelIntent("store","🏬","Pick a store","8 stores nearby");
+    relabelIntent("aisle","📍","I'm in an aisle","Scan & match in store");
+    pickIntent("best", true);
+  }
+}
+function relabelIntent(key, ico, t, d){
+  const b = $(`.intent.${key}`);
+  if(!b) return;
+  b.querySelector(".i-ico").textContent = ico;
+  b.querySelector(".i-t").textContent = t;
+  b.querySelector(".i-d").textContent = d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   INTENT  — entry by intent, reshapes the single surface
+   ════════════════════════════════════════════════════════════ */
+function pickIntent(intent, silent){
+  state.intent = intent;
+  state.store = null;
+  $("#intents").querySelectorAll(".intent").forEach(b=>b.setAttribute("aria-pressed", b.dataset.intent===intent));
+  $("#searchWrap").classList.toggle("open", intent==="find");
+  if(intent==="find"){ setTimeout(()=>$("#searchInput").focus(), 80); }
+  render();
+}
+
+/* ════════════════════════════════════════════════════════════
+   CATEGORY filter
+   ════════════════════════════════════════════════════════════ */
+function setCat(cat){
+  state.cat = cat;
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed", c.dataset.cat===cat));
+  render();
+}
+function inCat(d){return state.cat==="all" || d.cat.includes(state.cat);}
+
+/* the category chip strip */
+function chipsHTML(){
+  return `<div class="chips" id="chips">${CATS.map(c=>
+    `<button class="chip" data-cat="${c.id}" aria-pressed="${c.id===state.cat}" onclick="setCat('${c.id}')">
+       <span class="ce">${c.e}</span>${c.label}</button>`).join("")}</div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER the dynamic body per intent × posture × category
+   ════════════════════════════════════════════════════════════ */
+function render(){
+  const body = $("#body");
+  let html = "";
+
+  /* ── PICK A STORE ── */
+  if(state.intent==="store" && !state.store){
+    html += `<div class="sec" style="margin-top:18px">
+      <div class="sec-head"><div class="sec-title">Pick a <span class="accent">store</span></div>
+      <div class="sec-link">Following 3</div></div>
+      <div class="sec-sub">Each store tells you in one line if it's worth the trip. Tap to see its best deals.</div>
+      <div class="stores">${STORES.map(storeHTML).join("")}</div>
+      <div style="height:10px"></div>
+      <button class="add-store" onclick="toast('Following — we'll watch it for you 🔔')">➕ Add a store you shop</button>
+    </div>`;
+    body.innerHTML = html; flash(body); return;
+  }
+
+  /* ── INSIDE A STORE ── */
+  if(state.store){
+    const s = STORES.find(x=>x.id===state.store);
+    let list = DEALS.filter(d=>d.retailer===s.name && inCat(d));
+    html += `<div class="sec" style="margin-top:16px">
+      <div class="sec-head">
+        <div class="sec-title">${s.name}</div>
+        <div class="sec-link" onclick="pickIntent('store')">‹ All stores</div>
+      </div>
+      <div class="sec-sub">${s.head} · ${s.n} deals tracked${s.follow?' · <b style="color:var(--penny)">following</b>':''}</div>`;
+    html += chipsHTML();
+    html += `<div style="height:14px"></div>`;
+    html += list.length ? `<div class="rows">${list.map(rowHTML).join("")}</div>` : emptyHTML("Nothing in this category here", "Try “Everything”, or check another store.");
+    html += `</div>`;
+    body.innerHTML = html; bindChips(); flash(body); return;
+  }
+
+  /* ── FIND A PRODUCT ── */
+  if(state.intent==="find"){
+    const q = state.query.trim().toLowerCase();
+    html += chipsHTML();
+    html += `<div style="height:14px"></div>`;
+    if(!q && state.cat==="all"){
+      html += `<div class="empty">
+        <span class="ee">🔎</span>
+        <span class="et">What are you after?</span>
+        <span class="ed">Search a product or pick a category. We'll show every store that has it — cheapest first.</span></div>`;
+    } else {
+      let list = DEALS.filter(d=> inCat(d) && (!q || d.name.toLowerCase().includes(q) || d.retailer.toLowerCase().includes(q) || d.type.includes(q)));
+      list.sort((a,b)=>b.worth-a.worth);
+      html += `<div class="sec-sub" style="margin:0 2px 12px">${list.length} match${list.length===1?'':'es'}${q?` for “${state.query.trim()}”`:''} · best value first</div>`;
+      html += list.length ? `<div class="rows">${list.map(rowHTML).join("")}</div>`
+                          : emptyHTML("No matches yet", "We’ll <b>watch for it</b> and ping you when a deal lands.", true);
+    }
+    body.innerHTML = html; bindChips(); flash(body); return;
+  }
+
+  /* ── I'M IN AN AISLE  (in-store posture) ── */
+  if(state.intent==="aisle"){
+    // aisle relevance: things in nearby store, household/cleaning-ish, with a play
+    let list = DEALS.filter(d=> inCat(d) && (d.retailer==="Dollar General" || d.type==="penny"));
+    list.sort((a,b)=>b.worth-a.worth);
+    html += `<div class="sec" style="margin-top:18px">
+      <div class="sec-head"><div class="sec-title">In your <span class="accent">aisles</span> now</div></div>
+      <div class="sec-sub">📍 Near Dollar General · cleaning & bath aisles. Tap any for the play to grab it.</div>`;
+    html += chipsHTML();
+    html += `<div style="height:14px"></div>`;
+    html += `<button class="add-store" style="border-color:var(--plum);color:var(--plum);margin-bottom:12px"
+              onclick="toast('Point at a shelf item to confirm its price 📷')">📷 Scan an item — does it ring up the deal?</button>`;
+    html += list.length ? `<div class="rows">${list.map(rowHTML).join("")}</div>` : emptyHTML("Clear aisles here","No tracked deals in this category nearby — try another store.");
+    html += `</div>`;
+    body.innerHTML = html; bindChips(); flash(body); return;
+  }
+
+  /* ── BEST RARE DEAL  (default, at-home) ── */
+  // hero = top-worth deal that fits category
+  let pool = DEALS.filter(inCat);
+  pool.sort((a,b)=>b.worth-a.worth);
+  html += chipsHTML();
+  html += `<div style="height:16px"></div>`;
+
+  if(pool.length===0){
+    html += `<div class="empty">
+      <span class="ee">🌙</span>
+      <span class="et">Nothing amazing in here right now</span>
+      <span class="ed">That's okay — we only flag the genuinely worth-it. Try another category, or <b>watch this one</b> and we'll ping you the moment something lands.</span></div>`;
+    body.innerHTML = html; bindChips(); flash(body); return;
+  }
+
+  const hero = pool[0];
+  html += heroHTML(hero, "Top score today");
+
+  // runners-up (next best, max 3) as compact rows
+  const rest = pool.slice(1,4);
+  if(rest.length){
+    html += `<div class="sec">
+      <div class="sec-head"><div class="sec-title">Also worth it</div><div class="sec-link" onclick="pickIntent('store')">By store ›</div></div>
+      <div class="rows">${rest.map(rowHTML).join("")}</div></div>`;
+  }
+
+  // gentle nudge into store-pick (honors "choose retailer")
+  html += `<div class="sec">
+     <div class="sec-head"><div class="sec-title">Or <span class="accent">pick a store</span></div></div>
+     <div class="sec-sub">Heading somewhere specific? Jump to one store's best.</div>
+     <div class="stores">${STORES.slice(0,3).map(storeHTML).join("")}</div>
+     <div style="height:9px"></div>
+     <button class="add-store" onclick="pickIntent('store')">See all 8 stores ›</button>
+   </div>`;
+
+  body.innerHTML = html; bindChips(); flash(body);
+}
+
+function heroHTML(d, rank){
+  const t = TAX[d.type];
+  const tr = TRUST[d.trust];
+  const dotcls = d.fresh==="live"?"live":(d.fresh==="aging"?"aging":"fresh");
+  const typeColors = {penny:"color:var(--penny-deep);background:var(--penny-soft)",
+                      clear:"color:#185fa5;background:#e6f1fb",
+                      glitch:"color:#fff;background:var(--urgent)",
+                      sale:"color:var(--good);background:var(--good-soft)",
+                      bogo:"color:#0f6e56;background:#e1f5ee",
+                      coupon:"color:#534ab7;background:#eeedfe"};
+  const freshLabel = d.fresh==="live"?"Live now":(d.fresh==="aging"?"Aging":"Fresh");
+  return `<div class="hero" onclick="openDeal('${d.id}')">
+    <div class="hero-art" style="background:${d.art.bg}">
+      <span class="hero-rank">${rank}</span>
+      <span class="hero-type" style="${typeColors[d.type]}">${t.label}</span>
+      <span style="position:relative;z-index:2">${d.art.emoji}</span>
+    </div>
+    <div class="hero-body">
+      <div class="hero-where">${d.retailer}</div>
+      <div class="hero-name">${d.name}</div>
+      <div class="hero-price">
+        <span class="hero-now ${priceClass(d)}">${d.price}</span>
+        ${d.was?`<span class="hero-was">${d.was}</span>`:''}
+        ${d.off?`<span class="hero-off">${d.off}</span>`:''}
+      </div>
+      <div class="hero-why">${d.why}</div>
+      <div class="signal">
+        <div class="cell"><span class="k">Rarity</span><span class="v">${t.rare}</span></div>
+        <div class="cell"><span class="k">Window</span><span class="v"><span class="dot ${dotcls}"></span>${t.window}</span></div>
+        <div class="cell"><span class="k">Trust</span><span class="v trustword">${tr.word}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function storeHTML(s){
+  return `<button class="store" onclick="openStore('${s.id}')">
+    <span class="store-badge" style="background:${s.color}">${s.badge}</span>
+    <span class="store-main">
+      <span class="store-name">${s.name}${s.follow?'<span class="follow-pill">following</span>':''}</span>
+      <span class="store-head">${s.head}</span>
+    </span>
+    <span class="store-r"><span class="store-n">${s.n}</span><span class="store-nl">deals</span></span>
+    <span class="chev">›</span>
+  </button>`;
+}
+
+function emptyHTML(t, d, watch){
+  return `<div class="empty">
+    <span class="ee">${watch?'🔔':'🗂️'}</span>
+    <span class="et">${t}</span>
+    <span class="ed">${d}</span>
+    ${watch?`<button class="add-store" style="margin-top:14px;max-width:200px;margin-left:auto;margin-right:auto" onclick="toast('Watching — we\\'ll ping you 🔔')">🔔 Watch for it</button>`:''}
+  </div>`;
+}
+
+function openStore(id){ state.store=id; state.cat="all"; render(); $("#screen").scrollTo({top:0,behavior:"smooth"}); }
+
+function bindChips(){
+  document.querySelectorAll(".chip").forEach(c=>{
+    c.onclick = ()=>setCat(c.dataset.cat);
+  });
+}
+function flash(node){ node.classList.remove("fade"); void node.offsetWidth; node.classList.add("fade"); }
+
+/* ════════════════════════════════════════════════════════════
+   DETAIL SHEET — price story + trust + the play + share
+   ════════════════════════════════════════════════════════════ */
+function openDeal(id){
+  const d = dealById(id);
+  state.current = d;
+  const t = TAX[d.type];
+  const tr = TRUST[d.trust];
+  const play = PLAYS[d.type];
+  const dotcls = d.fresh==="live"?"live":(d.fresh==="aging"?"aging":"fresh");
+  const freshLabel = d.fresh==="live"?"Live · hours":(d.fresh==="aging"?"Aging fast":"Fresh");
+
+  // sync watch button to state
+  const watching = state.watching.has(id);
+  $("#watchBtn").classList.toggle("watch-on", watching);
+  $("#watchLabel").textContent = watching ? "Watching" : "Watch";
+
+  $("#sheetBody").innerHTML = `
+    <div class="sheet-art" style="background:${d.art.bg}">${d.art.emoji}</div>
+    <div class="sheet-where">${d.retailer} · ${t.label}</div>
+    <div class="sheet-name">${d.name}</div>
+
+    <div class="story">
+      <div class="story-row">
+        <span class="story-now ${priceClass(d)}">${d.price}</span>
+        ${d.was?`<span class="story-was">${d.was}</span>`:''}
+        ${d.off?`<span class="story-off">${d.off}</span>`:''}
+      </div>
+      <div class="story-line">${d.storyLine}</div>
+    </div>
+
+    <div class="trust ${tr.cls}">
+      <span class="ti">${tr.ico}</span>
+      <span><span class="tt">${tr.t}</span><span class="td">${tr.d}</span></span>
+    </div>
+
+    <div class="dsignals">
+      <div class="dsig"><div class="dk">Rarity</div><div class="dv">${t.rare}<small>how often</small></div></div>
+      <div class="dsig"><div class="dk">Freshness</div><div class="dv" style="display:flex;align-items:center;justify-content:center;gap:5px"><span class="dot ${dotcls}"></span>${freshLabel}</div><div style="font-size:9px;color:var(--ink-3);margin-top:2px">${d.confirmed}</div></div>
+      <div class="dsig"><div class="dk">Window</div><div class="dv">${t.window}<small>${t.windowNote}</small></div></div>
+    </div>
+
+    <div class="play">
+      <div class="play-head">
+        <span class="ph-ico">🧭</span>
+        <span class="ph-t">The play — how to actually get it</span>
+        <span class="ph-s">${play.eta}</span>
+      </div>
+      <div class="play-steps">
+        ${play.steps.map((s,i)=>`<div class="pstep"><span class="num">${i+1}</span><span class="ptxt">${s}</span></div>`).join("")}
+      </div>
+      <div class="signs">
+        <div class="st">👀 What to look for in store</div>
+        <div class="sd">${play.signs}</div>
+      </div>
+    </div>
+
+    <div style="font-size:10.5px;color:var(--ink-3);text-align:center;margin-top:16px;line-height:1.5;font-weight:500">
+      No live stock feed — freshness is how recently this was confirmed, not whether it's on the shelf right now.
+    </div>
+  `;
+  $("#scrim").classList.add("open");
+  $("#sheet").classList.add("open");
+}
+function closeSheet(){ $("#scrim").classList.remove("open"); $("#sheet").classList.remove("open"); closeShare(); }
+
+function toggleWatch(){
+  const d = state.current; if(!d) return;
+  if(state.watching.has(d.id)){ state.watching.delete(d.id); $("#watchBtn").classList.remove("watch-on"); $("#watchLabel").textContent="Watch"; toast("Stopped watching"); }
+  else { state.watching.add(d.id); $("#watchBtn").classList.add("watch-on"); $("#watchLabel").textContent="Watching"; toast("Watching — we'll ping you when it's hot 🔔"); }
+}
+
+/* ── SHARE ── */
+function openShare(){
+  const d = state.current; if(!d) return;
+  $("#shareCard").innerHTML = `
+    <span class="sc-art" style="background:${d.art.bg}">${d.art.emoji}</span>
+    <span><span class="sc-t">${d.name}</span><span class="sc-p">${d.price}${d.was?` · was ${d.was}`:''} · ${d.retailer}</span></span>`;
+  $("#shareSheet").classList.add("open");
+}
+function closeShare(){ $("#shareSheet").classList.remove("open"); }
+function afterShare(msg){ closeShare(); toast(msg); }
+
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2100);
+}
+
+/* ════════════════════════════════════════════════════════════
+   WIRE UP
+   ════════════════════════════════════════════════════════════ */
+$("#posture").querySelectorAll("button").forEach(b=>{
+  b.onclick = ()=>setPosture(b.dataset.mode);
+});
+$("#intents").querySelectorAll(".intent").forEach(b=>{
+  b.onclick = ()=>pickIntent(b.dataset.intent);
+});
+$("#searchInput").addEventListener("input", e=>{ state.query=e.target.value; render(); /* keep focus */ setTimeout(()=>$("#searchInput")&&$("#searchInput").focus(),0); });
+
+/* initial paint */
+render();
+</script>
+</body>
+</html>

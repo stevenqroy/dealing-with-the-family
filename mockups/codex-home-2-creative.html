@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter Home · Codex Creative</title>
+  <style>
+    :root {
+      --paper: #fffefa;
+      --ink: #23231f;
+      --muted: #6d6e66;
+      --line: #e5e0d6;
+      --rose: #993556;
+      --rose-2: #f6e6ee;
+      --green: #2f6f12;
+      --green-2: #e8f2e3;
+      --blue: #263f63;
+      --blue-2: #e7edf4;
+      --lilac: #6f4c7f;
+      --shadow: 0 22px 70px rgba(35, 35, 31, .14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 18px;
+      color: var(--ink);
+      background:
+        linear-gradient(118deg, rgba(153, 53, 86, .1) 0%, transparent 36%),
+        linear-gradient(180deg, #f8f6ef 0%, #e7ebe7 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      border: 0;
+      cursor: pointer;
+      background: none;
+    }
+
+    .phone {
+      position: relative;
+      width: min(100%, 390px);
+      height: 844px;
+      overflow: hidden;
+      border-radius: 30px;
+      border: 1px solid rgba(35, 35, 31, .12);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .corner {
+      position: absolute;
+      z-index: 25;
+      right: 12px;
+      top: 12px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(255, 254, 250, .9);
+      color: var(--muted);
+      border: 1px solid rgba(35, 35, 31, .1);
+      font-size: 11px;
+      font-weight: 800;
+      backdrop-filter: blur(8px);
+    }
+
+    .screen {
+      height: 844px;
+      overflow: auto;
+      scrollbar-width: none;
+      padding-bottom: 26px;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    .cover {
+      position: relative;
+      min-height: 354px;
+      padding: 24px 18px 16px;
+      overflow: hidden;
+      background:
+        linear-gradient(152deg, rgba(153, 53, 86, .13), transparent 44%),
+        linear-gradient(180deg, #fffefa 0%, #f5f1e9 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      right: -58px;
+      bottom: -44px;
+      width: 210px;
+      height: 210px;
+      border: 1px solid rgba(153, 53, 86, .12);
+      border-radius: 50%;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(47, 111, 18, .12);
+    }
+
+    .cover h1 {
+      width: 300px;
+      margin: 14px 0 10px;
+      font-size: 42px;
+      line-height: .95;
+      letter-spacing: 0;
+    }
+
+    .cover-copy {
+      width: 260px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.34;
+    }
+
+    .spotlight {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      gap: 12px;
+      padding: 12px;
+      text-align: left;
+      border-radius: 20px;
+      background: #fff;
+      border: 1px solid rgba(35, 35, 31, .08);
+      box-shadow: 0 16px 36px rgba(35, 35, 31, .1);
+      transition: transform .18s ease;
+    }
+
+    .spotlight:active { transform: scale(.99); }
+
+    .product-stage {
+      min-height: 148px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 68px;
+      background:
+        linear-gradient(142deg, rgba(153, 53, 86, .16), rgba(47, 111, 18, .1)),
+        #f7f3ed;
+      border: 1px solid rgba(35, 35, 31, .08);
+    }
+
+    .feature-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .kicker {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: var(--rose-2);
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tag.green {
+      color: var(--green);
+      background: var(--green-2);
+    }
+
+    .tag.blue {
+      color: var(--blue);
+      background: var(--blue-2);
+    }
+
+    .feature-copy h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.05;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .now {
+      color: var(--green);
+      font-size: 25px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .was {
+      color: #85837b;
+      text-decoration: line-through;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .signal {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .rail {
+      padding: 15px 18px 0;
+    }
+
+    .rail-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .rail-title h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .rail-title span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-heroes {
+      display: grid;
+      grid-template-columns: repeat(3, 118px);
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .mini-heroes::-webkit-scrollbar { display: none; }
+
+    .mini-hero {
+      min-height: 164px;
+      padding: 9px;
+      text-align: left;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fbfaf6;
+    }
+
+    .mini-emoji {
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: #f0eee7;
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .mini-hero b {
+      display: block;
+      font-size: 12px;
+      line-height: 1.14;
+      min-height: 41px;
+    }
+
+    .mini-hero span {
+      display: block;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 950;
+      margin-top: 5px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 16px 18px 0;
+      padding: 4px;
+      border-radius: 999px;
+      background: #f0eee7;
+    }
+
+    .tab {
+      min-height: 38px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #55544d;
+    }
+
+    .tab.active {
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(35, 35, 31, .08);
+      color: var(--ink);
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 13px 18px 0;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #f8f6ef;
+      border: 1px solid var(--line);
+      color: #44433e;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .chip.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .store-picker {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      padding: 14px 18px 0;
+    }
+
+    .store-tile {
+      min-height: 92px;
+      text-align: left;
+      padding: 12px;
+      border-radius: 17px;
+      background: #f8f6ef;
+      border: 1px solid var(--line);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .store-tile:active { transform: scale(.985); }
+
+    .store-tile.active {
+      background: #fff;
+      border-color: rgba(153, 53, 86, .42);
+      box-shadow: 0 12px 26px rgba(35, 35, 31, .07);
+    }
+
+    .store-tile b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .store-tile span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.22;
+    }
+
+    .store-tile em {
+      display: inline-flex;
+      margin-top: 8px;
+      color: var(--rose);
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .results {
+      margin: 16px 18px 0;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-head h2 {
+      margin: 0 0 4px;
+      font-size: 19px;
+    }
+
+    .result-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .follow {
+      flex: 0 0 auto;
+      min-height: 35px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--rose);
+      color: #fff;
+      font-weight: 950;
+      font-size: 12px;
+    }
+
+    .deal-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .row-deal {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      padding: 9px;
+      border-radius: 14px;
+      border: 1px solid rgba(35, 35, 31, .08);
+      background: #fff;
+    }
+
+    .row-art {
+      width: 54px;
+      height: 54px;
+      border-radius: 13px;
+      background: #f0eee7;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+    }
+
+    .row-deal b {
+      display: block;
+      font-size: 13px;
+      line-height: 1.16;
+      margin-bottom: 4px;
+    }
+
+    .row-deal span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .row-price {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .empty {
+      display: none;
+      padding: 16px;
+      border: 1px dashed #d6d0c4;
+      border-radius: 16px;
+      color: var(--muted);
+      background: #fbfaf6;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .empty.show { display: block; }
+
+    .modal {
+      position: absolute;
+      z-index: 50;
+      inset: 0;
+      display: none;
+      align-items: end;
+      padding: 12px;
+      background: rgba(35, 35, 31, .36);
+    }
+
+    .modal.show { display: flex; }
+
+    .sheet {
+      width: 100%;
+      max-height: 88%;
+      overflow: auto;
+      padding: 14px;
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: 0 -24px 60px rgba(35, 35, 31, .25);
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .x {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: #efede6;
+      font-size: 20px;
+    }
+
+    .detail-stage {
+      height: 168px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin: 12px 0;
+      font-size: 78px;
+      background: linear-gradient(142deg, rgba(153, 53, 86, .16), rgba(47, 111, 18, .1)), #f7f3ed;
+      border: 1px solid rgba(35, 35, 31, .08);
+    }
+
+    .detail-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.04;
+    }
+
+    .trust-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .trust {
+      min-height: 78px;
+      padding: 11px;
+      border-radius: 15px;
+      background: #fbfaf6;
+      border: 1px solid var(--line);
+    }
+
+    .trust b {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .trust span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .play {
+      margin-top: 11px;
+      padding: 13px;
+      border-radius: 17px;
+      background: #eef5eb;
+      border: 1px solid rgba(47, 111, 18, .18);
+    }
+
+    .play h3 {
+      margin: 0 0 7px;
+      font-size: 14px;
+    }
+
+    .play p {
+      margin: 0;
+      color: #263820;
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .sheet-actions button {
+      min-height: 46px;
+      border-radius: 15px;
+      font-weight: 950;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .sheet-actions button:nth-child(2) {
+      background: #f0eee7;
+      color: var(--ink);
+    }
+
+    .note {
+      min-height: 18px;
+      margin-top: 8px;
+      text-align: center;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 850;
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <div class="corner">Codex · Creative</div>
+    <div class="screen">
+      <section class="cover">
+        <div class="brand-row"><span class="dot"></span>Deal Hunter daily window</div>
+        <h1>One deal to make the trip make sense.</h1>
+        <p class="cover-copy">A spotlight, three runners-up, and the store doors that matter right now.</p>
+        <button class="spotlight" type="button" id="spotlight">
+          <div class="product-stage" id="spotEmoji">🧦</div>
+          <div class="feature-copy">
+            <div class="kicker"><span class="tag" id="spotType">Penny</span><span id="spotRetailer">Dollar Tree</span></div>
+            <h2 id="spotTitle">Smurfs Grumpy Crew Socks</h2>
+            <div class="price"><span class="now" id="spotPrice">$0.01</span><span class="was" id="spotWas">$1.25</span></div>
+            <div class="signal" id="spotSignal">31 confirmed today · matched to catalog</div>
+          </div>
+        </button>
+      </section>
+
+      <section class="rail">
+        <div class="rail-title">
+          <h2>Also worth a look</h2>
+          <span>Tap for details</span>
+        </div>
+        <div class="mini-heroes" id="miniHeroes"></div>
+      </section>
+
+      <nav class="tabs" aria-label="Home view">
+        <button class="tab active" type="button" data-panel="stores">Stores</button>
+        <button class="tab" type="button" data-panel="deals">Filtered deals</button>
+      </nav>
+
+      <div class="chips" id="chips"></div>
+      <section class="store-picker" id="stores"></section>
+
+      <section class="results">
+        <div class="result-head">
+          <div>
+            <h2 id="resultTitle">Dollar Tree</h2>
+            <p id="resultSub">Penny list · everything 1¢</p>
+          </div>
+          <button class="follow" type="button" id="follow">Follow</button>
+        </div>
+        <div class="deal-list" id="dealList"></div>
+        <div class="empty" id="empty">No clean match here yet. The app keeps watching and shows uncertainty instead of pretending.</div>
+      </section>
+    </div>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Deal detail">
+      <div class="sheet">
+        <div class="sheet-head">
+          <span class="tag" id="detailType">Penny</span>
+          <button class="x" type="button" id="close" aria-label="Close">×</button>
+        </div>
+        <div class="detail-stage" id="detailEmoji">🧦</div>
+        <h2 class="detail-title" id="detailTitle">Smurfs Grumpy Crew Socks</h2>
+        <div class="price"><span class="now" id="detailPrice">$0.01</span><span class="was" id="detailWas">$1.25</span><span class="tag green" id="detailOff">99% off</span></div>
+        <div class="trust-strip">
+          <div class="trust"><b>Trust label</b><span id="detailTrust">matched to catalog</span></div>
+          <div class="trust"><b>What we know</b><span id="detailFresh">31 confirmed today</span></div>
+        </div>
+        <div class="play">
+          <h3>The play</h3>
+          <p>Hunt end-caps & clearance shelves → scan at self-checkout (it rings <b>1¢</b>) → don't ask staff to look it up.</p>
+        </div>
+        <div class="play">
+          <h3>In-store signs</h3>
+          <p>Look for no shelf tag, dusty or discontinued stock, and last-one-on-the-peg items.</p>
+        </div>
+        <div class="sheet-actions">
+          <button type="button" id="share">Share deal</button>
+          <button type="button" id="confirm">Scan to confirm</button>
+        </div>
+        <div class="note" id="note"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const retailers = [
+      { name: "Dollar Tree", headline: "Penny list · everything 1¢", count: 98 },
+      { name: "Dollar General", headline: "12 fresh penny + coupon finds", count: 13 },
+      { name: "Target", headline: "70% off camping clearance", count: 8 },
+      { name: "Walmart", headline: "Hidden clearance, scan to find", count: 9 },
+      { name: "Publix", headline: "BOGO laundry event this week", count: 7 },
+      { name: "Walgreens", headline: "Coupon-stack week", count: 7 },
+      { name: "Amazon", headline: "Price glitch — act fast", count: 2 },
+      { name: "CVS", headline: "ExtraBucks deals", count: 3 }
+    ];
+
+    const deals = [
+      { id: 1, title: "Smurfs Grumpy Crew Socks", price: "$0.01", was: "$1.25", off: "99% off", retailer: "Dollar Tree", type: "Penny", emoji: "🧦", freshness: "31 confirmed today", trust: "matched to catalog", category: "Apparel" },
+      { id: 2, title: "Coleman 4-Person Tent", price: "$23.98", was: "$79.99", off: "70% off", retailer: "Target", type: "Clearance", emoji: "⛺", freshness: "fresh 2h ago", trust: "reported · check tag", category: "Camping" },
+      { id: 3, title: "Gain Liquid Detergent 154oz", price: "$4.97", was: "~$12", off: "glitch", retailer: "Amazon", type: "Glitch", emoji: "🧴", freshness: "live now, usually fixed within hours", trust: "reported", category: "Laundry" },
+      { id: 4, title: "Dove Deep Moisture Body Wash 22oz", price: "$1.50", was: "$7.99", off: "81% off", retailer: "Dollar General", type: "Sale", emoji: "🧴", freshness: "aging — going fast", trust: "check tag", category: "Personal care" },
+      { id: 5, title: "Gain Original Plus Laundry Detergent", price: "BOGO", was: "", off: "BOGO", retailer: "Publix", type: "BOGO", emoji: "🧺", freshness: "this week", trust: "reported", category: "Laundry" },
+      { id: 6, title: "Air Wick Vibrant Essential Oil Refill", price: "Coupon", was: "", off: "coupon", retailer: "Dollar General", type: "Coupon", emoji: "🌸", freshness: "fresh today", trust: "reported", category: "Home" },
+      { id: 7, title: "Elmo Black Crew Socks", price: "$0.01", was: "$1.25", off: "penny", retailer: "Dollar Tree", type: "Penny", emoji: "🧦", freshness: "matched today", trust: "matched to catalog", category: "Apparel" },
+      { id: 8, title: "Scrubbing Bubbles Foaming Toilet Cleaner", price: "BOGO", was: "", off: "BOGO", retailer: "Dollar General", type: "BOGO", emoji: "🧼", freshness: "check shelf tag", trust: "check tag", category: "Cleaning" },
+      { id: 9, title: "Mr. Clean Bathroom Cleaner", price: "Coupon", was: "", off: "coupon", retailer: "Walgreens", type: "Coupon", emoji: "🧽", freshness: "coupon-stack week", trust: "reported", category: "Cleaning" },
+      { id: 10, title: "Hello Kitty Kids Slides", price: "Clearance", was: "", off: "clearance", retailer: "Walmart", type: "Clearance", emoji: "🩴", freshness: "scan to find", trust: "check tag", category: "Apparel" }
+    ];
+
+    const hero = deals.slice(0, 4);
+    const categories = ["All", "Laundry", "Apparel", "Cleaning", "Camping", "Personal care"];
+    let activeDeal = hero[0];
+    let activeRetailer = "Dollar Tree";
+    let activeCategory = "All";
+
+    function byId(id) { return document.getElementById(id); }
+
+    function renderSpotlight(deal) {
+      activeDeal = deal;
+      byId("spotEmoji").textContent = deal.emoji;
+      byId("spotType").textContent = deal.type;
+      byId("spotRetailer").textContent = deal.retailer;
+      byId("spotTitle").textContent = deal.title;
+      byId("spotPrice").textContent = deal.price;
+      byId("spotWas").textContent = deal.was || deal.off;
+      byId("spotWas").style.textDecoration = deal.was ? "line-through" : "none";
+      byId("spotSignal").textContent = `${deal.freshness} · ${deal.trust}`;
+    }
+
+    function renderMiniHeroes() {
+      byId("miniHeroes").innerHTML = hero.slice(1).map(deal => `
+        <button class="mini-hero" type="button" data-id="${deal.id}">
+          <span class="mini-emoji">${deal.emoji}</span>
+          <b>${deal.title}</b>
+          <span>${deal.price}</span>
+          <small>${deal.trust}</small>
+        </button>
+      `).join("");
+      document.querySelectorAll(".mini-hero").forEach(button => {
+        button.addEventListener("click", () => openDeal(Number(button.dataset.id)));
+      });
+    }
+
+    function renderChips() {
+      byId("chips").innerHTML = categories.map(category => `
+        <button class="chip ${category === activeCategory ? "active" : ""}" type="button" data-category="${category}">${category}</button>
+      `).join("");
+      document.querySelectorAll(".chip").forEach(button => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.category;
+          renderChips();
+          renderDeals();
+        });
+      });
+    }
+
+    function renderStores() {
+      byId("stores").innerHTML = retailers.map(store => `
+        <button class="store-tile ${store.name === activeRetailer ? "active" : ""}" type="button" data-store="${store.name}">
+          <b>${store.name}</b>
+          <span>${store.headline}</span>
+          <em>${store.count} deals</em>
+        </button>
+      `).join("");
+      document.querySelectorAll(".store-tile").forEach(button => {
+        button.addEventListener("click", () => {
+          activeRetailer = button.dataset.store;
+          renderStores();
+          renderDeals();
+          byId("resultTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
+    }
+
+    function renderDeals() {
+      const store = retailers.find(item => item.name === activeRetailer);
+      byId("resultTitle").textContent = store.name;
+      byId("resultSub").textContent = store.headline;
+      const filtered = deals.filter(deal => deal.retailer === activeRetailer && (activeCategory === "All" || deal.category === activeCategory));
+      byId("dealList").innerHTML = filtered.map(deal => `
+        <button class="row-deal" type="button" data-id="${deal.id}">
+          <span class="row-art">${deal.emoji}</span>
+          <span><b>${deal.title}</b><span>${deal.type} · ${deal.trust}</span></span>
+          <span class="row-price">${deal.price}</span>
+        </button>
+      `).join("");
+      byId("empty").classList.toggle("show", filtered.length === 0);
+      document.querySelectorAll(".row-deal").forEach(button => {
+        button.addEventListener("click", () => openDeal(Number(button.dataset.id)));
+      });
+    }
+
+    function openDeal(id) {
+      const deal = deals.find(item => item.id === id) || activeDeal;
+      byId("detailType").textContent = deal.type;
+      byId("detailEmoji").textContent = deal.emoji;
+      byId("detailTitle").textContent = deal.title;
+      byId("detailPrice").textContent = deal.price;
+      byId("detailWas").textContent = deal.was || deal.retailer;
+      byId("detailWas").style.textDecoration = deal.was ? "line-through" : "none";
+      byId("detailOff").textContent = deal.off;
+      byId("detailTrust").textContent = deal.trust;
+      byId("detailFresh").textContent = deal.freshness;
+      byId("note").textContent = "";
+      byId("modal").classList.add("show");
+    }
+
+    byId("spotlight").addEventListener("click", () => openDeal(activeDeal.id));
+    byId("close").addEventListener("click", () => byId("modal").classList.remove("show"));
+    byId("modal").addEventListener("click", event => {
+      if (event.target.id === "modal") byId("modal").classList.remove("show");
+    });
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(item => item.classList.remove("active"));
+        tab.classList.add("active");
+        if (tab.dataset.panel === "stores") byId("stores").scrollIntoView({ behavior: "smooth", block: "start" });
+        if (tab.dataset.panel === "deals") byId("resultTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+    byId("follow").addEventListener("click", event => {
+      event.currentTarget.textContent = event.currentTarget.textContent === "Follow" ? "Following" : "Follow";
+    });
+    byId("share").addEventListener("click", () => byId("note").textContent = "Share card ready with price story and trust label.");
+    byId("confirm").addEventListener("click", () => byId("note").textContent = "Use the store scanner. Deal Hunter does not claim live stock.");
+
+    renderSpotlight(hero[0]);
+    renderMiniHeroes();
+    renderChips();
+    renderStores();
+    renderDeals();
+  </script>
+</body>
+</html>

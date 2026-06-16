@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter Home · Codex Reinterpretation</title>
+  <style>
+    :root {
+      --paper: #fffefa;
+      --ink: #23231f;
+      --muted: #6f7068;
+      --line: #e5e0d7;
+      --soft: #f4f1ea;
+      --rose: #993556;
+      --rose-soft: #f6e6ee;
+      --green: #2f6f12;
+      --green-soft: #e8f2e3;
+      --blue: #294d70;
+      --blue-soft: #e7edf4;
+      --shadow: 0 22px 70px rgba(35, 35, 31, .13);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: start center;
+      padding: 18px;
+      color: var(--ink);
+      background:
+        linear-gradient(145deg, rgba(47, 111, 18, .08), transparent 42%),
+        linear-gradient(180deg, #f7f5ef 0%, #e9ece6 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .phone {
+      position: relative;
+      width: min(100%, 390px);
+      height: 844px;
+      overflow: hidden;
+      border: 1px solid rgba(35, 35, 31, .12);
+      border-radius: 30px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .corner {
+      position: absolute;
+      z-index: 30;
+      top: 12px;
+      right: 12px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(255, 254, 250, .9);
+      border: 1px solid rgba(35, 35, 31, .1);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      backdrop-filter: blur(8px);
+    }
+
+    .screen {
+      height: 844px;
+      overflow: auto;
+      padding: 23px 18px 30px;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    header {
+      padding-right: 105px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(47, 111, 18, .12);
+    }
+
+    h1 {
+      margin: 7px 0 8px;
+      max-width: 270px;
+      font-size: 31px;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.34;
+    }
+
+    .intent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .intent {
+      min-height: 86px;
+      padding: 12px;
+      text-align: left;
+      border-radius: 17px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .intent:active { transform: scale(.985); }
+
+    .intent.active {
+      background: #fff;
+      border-color: rgba(153, 53, 86, .42);
+      box-shadow: 0 12px 25px rgba(35, 35, 31, .07);
+    }
+
+    .intent b {
+      display: block;
+      font-size: 14px;
+      line-height: 1.16;
+      margin-bottom: 7px;
+    }
+
+    .intent span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.22;
+    }
+
+    .answer {
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      background: linear-gradient(180deg, #fff 0%, #fbfaf6 100%);
+      box-shadow: 0 14px 38px rgba(35, 35, 31, .08);
+      padding: 13px;
+    }
+
+    .answer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+
+    .answer-head h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .answer-head span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .rare-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 12px;
+      padding: 10px;
+      text-align: left;
+      border-radius: 17px;
+      background: var(--paper);
+      border: 1px solid rgba(35, 35, 31, .08);
+    }
+
+    .rare-art {
+      min-height: 126px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(153, 53, 86, .15), rgba(47, 111, 18, .1)), #f7f3ed;
+      border: 1px solid rgba(35, 35, 31, .08);
+      font-size: 62px;
+    }
+
+    .rare-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tagline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: var(--rose-soft);
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .badge.blue {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .rare-copy h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.07;
+    }
+
+    .price-row {
+      display: flex;
+      gap: 7px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .price {
+      color: var(--green);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .was {
+      color: #85837b;
+      text-decoration: line-through;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .signal {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.24;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 11px;
+    }
+
+    .quick {
+      min-height: 42px;
+      border-radius: 14px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .quick.secondary {
+      color: var(--ink);
+      background: #efede6;
+    }
+
+    .best-bets {
+      margin-top: 16px;
+    }
+
+    .bets-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .bets-head h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .bets-head span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .bet-row {
+      display: grid;
+      grid-template-columns: repeat(3, 118px);
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .bet-row::-webkit-scrollbar { display: none; }
+
+    .bet {
+      min-height: 151px;
+      padding: 9px;
+      border-radius: 16px;
+      background: #fbfaf6;
+      border: 1px solid var(--line);
+      text-align: left;
+    }
+
+    .bet-emoji {
+      height: 58px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 8px;
+      background: #efede6;
+      font-size: 32px;
+    }
+
+    .bet b {
+      display: block;
+      min-height: 39px;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .bet span {
+      display: block;
+      margin-top: 5px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 16px 0 13px;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      min-height: 37px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: #45443e;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+
+    .store-section {
+      margin-top: 15px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .store-stack {
+      display: grid;
+      gap: 9px;
+    }
+
+    .store {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      min-height: 64px;
+      padding: 12px;
+      border-radius: 15px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+
+    .store.active {
+      background: #fff;
+      border-color: rgba(153, 53, 86, .38);
+      box-shadow: 0 10px 25px rgba(35, 35, 31, .06);
+    }
+
+    .store b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .store span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.24;
+    }
+
+    .count {
+      display: grid;
+      place-items: center;
+      min-width: 43px;
+      height: 30px;
+      border-radius: 999px;
+      color: var(--rose);
+      background: #fff;
+      border: 1px solid rgba(153, 53, 86, .2);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .store-result {
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-head h2 {
+      margin: 0 0 4px;
+      font-size: 19px;
+    }
+
+    .result-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .follow {
+      flex: 0 0 auto;
+      min-height: 35px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--rose);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .deal-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .deal-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 10px;
+      align-items: center;
+      text-align: left;
+      padding: 9px;
+      border-radius: 14px;
+      border: 1px solid rgba(35, 35, 31, .08);
+      background: #fff;
+    }
+
+    .deal-art {
+      width: 54px;
+      height: 54px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: #efede6;
+      font-size: 27px;
+    }
+
+    .deal-row b {
+      display: block;
+      font-size: 13px;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .deal-row span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.22;
+    }
+
+    .empty {
+      display: none;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px dashed #d6d0c4;
+      background: #fbfaf6;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.34;
+    }
+
+    .empty.show { display: block; }
+
+    .modal {
+      position: absolute;
+      inset: 0;
+      z-index: 45;
+      display: none;
+      align-items: end;
+      padding: 12px;
+      background: rgba(35, 35, 31, .34);
+    }
+
+    .modal.show { display: flex; }
+
+    .sheet {
+      width: 100%;
+      max-height: 88%;
+      overflow: auto;
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: 0 -24px 60px rgba(35, 35, 31, .24);
+      padding: 14px;
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: #efede6;
+      font-size: 20px;
+    }
+
+    .detail-art {
+      height: 158px;
+      margin: 12px 0;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(153, 53, 86, .15), rgba(47, 111, 18, .1)), #f7f3ed;
+      border: 1px solid rgba(35, 35, 31, .08);
+      font-size: 76px;
+    }
+
+    .detail-title {
+      margin: 0 0 8px;
+      font-size: 23px;
+      line-height: 1.05;
+    }
+
+    .truths {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .truth {
+      min-height: 78px;
+      padding: 11px;
+      border-radius: 15px;
+      border: 1px solid var(--line);
+      background: #fbfaf6;
+    }
+
+    .truth b {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .truth span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .play {
+      margin-top: 11px;
+      padding: 13px;
+      border-radius: 17px;
+      background: #eef5eb;
+      border: 1px solid rgba(47, 111, 18, .18);
+    }
+
+    .play h3 {
+      margin: 0 0 7px;
+      font-size: 14px;
+    }
+
+    .play p {
+      margin: 0;
+      color: #263820;
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .sheet-actions button {
+      min-height: 46px;
+      border-radius: 15px;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 950;
+    }
+
+    .sheet-actions button:nth-child(2) {
+      background: #efede6;
+      color: var(--ink);
+    }
+
+    .note {
+      min-height: 18px;
+      margin-top: 8px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <div class="corner">Codex · Reinterpretation</div>
+    <div class="screen">
+      <header>
+        <div class="eyebrow"><span class="pulse"></span>Start with intent</div>
+        <h1>What are you trying to do?</h1>
+        <p class="sub">Deal Hunter answers with one clean next move, then lets the store or aisle refine it.</p>
+      </header>
+
+      <section class="intent-grid" aria-label="Shopping intent">
+        <button class="intent active" type="button" data-intent="rare"><b>Best rare deal</b><span>Show me the one worth leaving for.</span></button>
+        <button class="intent" type="button" data-intent="store"><b>I’m going to a store</b><span>Pick a retailer and see the play.</span></button>
+        <button class="intent" type="button" data-intent="aisle"><b>I’m in an aisle</b><span>Filter by what’s in front of me.</span></button>
+        <button class="intent" type="button" data-intent="watch"><b>Watch for something</b><span>Preview alerts without noise.</span></button>
+      </section>
+
+      <section class="answer">
+        <div class="answer-head">
+          <h2 id="answerTitle">Best rare deal</h2>
+          <span id="answerHint">Tap for the play</span>
+        </div>
+        <button class="rare-card" type="button" id="rareCard">
+          <div class="rare-art" id="rareEmoji">🧦</div>
+          <div class="rare-copy">
+            <div class="tagline"><span class="badge" id="rareType">Penny</span><span id="rareStore">Dollar Tree</span></div>
+            <h3 id="rareTitle">Smurfs Grumpy Crew Socks</h3>
+            <div class="price-row"><span class="price" id="rarePrice">$0.01</span><span class="was" id="rareWas">$1.25</span><span class="badge green" id="rareOff">99% off</span></div>
+            <div class="signal" id="rareSignal">31 confirmed today · matched to catalog</div>
+          </div>
+        </button>
+        <div class="action-row">
+          <button class="quick" type="button" id="quickStore">Open store</button>
+          <button class="quick secondary" type="button" id="quickShare">Share</button>
+        </div>
+      </section>
+
+      <section class="best-bets" aria-label="Deals of the day">
+        <div class="bets-head">
+          <h2>Other best bets</h2>
+          <span>today’s shortlist</span>
+        </div>
+        <div class="bet-row" id="bets"></div>
+      </section>
+
+      <div class="chips" id="chips" aria-label="Category filters"></div>
+
+      <section class="store-section" aria-label="Retailers">
+        <div class="section-title">
+          <h2>Retailer doors</h2>
+          <span>store-first</span>
+        </div>
+        <div class="store-stack" id="stores"></div>
+      </section>
+
+      <section class="store-result" aria-live="polite">
+        <div class="result-head">
+          <div>
+            <h2 id="storeName">Dollar Tree</h2>
+            <p id="storeSub">Penny list · everything 1¢</p>
+          </div>
+          <button class="follow" type="button" id="follow">Follow</button>
+        </div>
+        <div class="deal-list" id="dealList"></div>
+        <div class="empty" id="empty">No strong deal in this aisle for this retailer right now. Nothing is hidden; Deal Hunter simply will not fake certainty.</div>
+      </section>
+    </div>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Deal detail">
+      <div class="sheet">
+        <div class="sheet-head">
+          <span class="badge" id="detailType">Penny</span>
+          <button class="close" type="button" id="close" aria-label="Close">×</button>
+        </div>
+        <div class="detail-art" id="detailEmoji">🧦</div>
+        <h2 class="detail-title" id="detailTitle">Smurfs Grumpy Crew Socks</h2>
+        <div class="price-row"><span class="price" id="detailPrice">$0.01</span><span class="was" id="detailWas">$1.25</span><span class="badge green" id="detailOff">99% off</span></div>
+        <div class="truths">
+          <div class="truth"><b>Honest trust</b><span id="detailTrust">matched to catalog</span></div>
+          <div class="truth"><b>Freshness</b><span id="detailFresh">31 confirmed today</span></div>
+        </div>
+        <div class="play">
+          <h3>The play</h3>
+          <p>Hunt end-caps & clearance shelves → scan at self-checkout (it rings <b>1¢</b>) → don't ask staff to look it up.</p>
+        </div>
+        <div class="play">
+          <h3>In-store signs</h3>
+          <p>Items with no shelf tag, dusty or discontinued stock, and last-one-on-the-peg are the best targets.</p>
+        </div>
+        <div class="sheet-actions">
+          <button type="button" id="share">Share deal</button>
+          <button type="button" id="confirm">Scan to confirm</button>
+        </div>
+        <div class="note" id="note"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const retailers = [
+      { name: "Dollar Tree", headline: "Penny list · everything 1¢", count: 98 },
+      { name: "Dollar General", headline: "12 fresh penny + coupon finds", count: 13 },
+      { name: "Target", headline: "70% off camping clearance", count: 8 },
+      { name: "Walmart", headline: "Hidden clearance, scan to find", count: 9 },
+      { name: "Publix", headline: "BOGO laundry event this week", count: 7 },
+      { name: "Walgreens", headline: "Coupon-stack week", count: 7 },
+      { name: "Amazon", headline: "Price glitch — act fast", count: 2 },
+      { name: "CVS", headline: "ExtraBucks deals", count: 3 }
+    ];
+
+    const deals = [
+      { id: 1, title: "Smurfs Grumpy Crew Socks", price: "$0.01", was: "$1.25", off: "99% off", retailer: "Dollar Tree", type: "Penny", emoji: "🧦", freshness: "31 confirmed today", trust: "matched to catalog", category: "Apparel" },
+      { id: 2, title: "Coleman 4-Person Tent", price: "$23.98", was: "$79.99", off: "70% off", retailer: "Target", type: "Clearance", emoji: "⛺", freshness: "fresh 2h ago", trust: "reported · check tag", category: "Camping" },
+      { id: 3, title: "Gain Liquid Detergent 154oz", price: "$4.97", was: "~$12", off: "glitch", retailer: "Amazon", type: "Glitch", emoji: "🧴", freshness: "live now, usually fixed within hours", trust: "reported", category: "Laundry" },
+      { id: 4, title: "Dove Deep Moisture Body Wash 22oz", price: "$1.50", was: "$7.99", off: "81% off", retailer: "Dollar General", type: "Sale", emoji: "🧴", freshness: "aging — going fast", trust: "check tag", category: "Personal care" },
+      { id: 5, title: "Gain Original Plus Laundry Detergent", price: "BOGO", was: "", off: "BOGO", retailer: "Publix", type: "BOGO", emoji: "🧺", freshness: "this week", trust: "reported", category: "Laundry" },
+      { id: 6, title: "Air Wick Vibrant Essential Oil Refill", price: "Coupon", was: "", off: "coupon", retailer: "Dollar General", type: "Coupon", emoji: "🌸", freshness: "fresh today", trust: "reported", category: "Home" },
+      { id: 7, title: "Elmo Black Crew Socks", price: "$0.01", was: "$1.25", off: "penny", retailer: "Dollar Tree", type: "Penny", emoji: "🧦", freshness: "matched today", trust: "matched to catalog", category: "Apparel" },
+      { id: 8, title: "Scrubbing Bubbles Foaming Toilet Cleaner", price: "BOGO", was: "", off: "BOGO", retailer: "Dollar General", type: "BOGO", emoji: "🧼", freshness: "check shelf tag", trust: "check tag", category: "Cleaning" },
+      { id: 9, title: "Mr. Clean Bathroom Cleaner", price: "Coupon", was: "", off: "coupon", retailer: "Walgreens", type: "Coupon", emoji: "🧽", freshness: "coupon-stack week", trust: "reported", category: "Cleaning" },
+      { id: 10, title: "Hello Kitty Kids Slides", price: "Clearance", was: "", off: "clearance", retailer: "Walmart", type: "Clearance", emoji: "🩴", freshness: "scan to find", trust: "check tag", category: "Apparel" }
+    ];
+
+    const categories = ["All", "Laundry", "Apparel", "Cleaning", "Camping", "Personal care"];
+    const intentMap = {
+      rare: { title: "Best rare deal", hint: "Tap for the play", deal: 1 },
+      store: { title: "Best store to check", hint: "Dollar General has range", deal: 4, retailer: "Dollar General" },
+      aisle: { title: "In the aisle", hint: "Laundry and cleaning first", deal: 3, category: "Laundry" },
+      watch: { title: "Watch-worthy deal", hint: "Share now, alerts later", deal: 2, retailer: "Target" }
+    };
+
+    let activeRetailer = "Dollar Tree";
+    let activeCategory = "All";
+    let featuredDeal = deals[0];
+
+    function id(name) { return document.getElementById(name); }
+
+    function setFeatured(deal) {
+      featuredDeal = deal;
+      id("rareEmoji").textContent = deal.emoji;
+      id("rareType").textContent = deal.type;
+      id("rareStore").textContent = deal.retailer;
+      id("rareTitle").textContent = deal.title;
+      id("rarePrice").textContent = deal.price;
+      id("rareWas").textContent = deal.was || deal.retailer;
+      id("rareWas").style.textDecoration = deal.was ? "line-through" : "none";
+      id("rareOff").textContent = deal.off;
+      id("rareSignal").textContent = `${deal.freshness} · ${deal.trust}`;
+    }
+
+    function applyIntent(intent) {
+      const config = intentMap[intent];
+      const deal = deals.find(item => item.id === config.deal);
+      id("answerTitle").textContent = config.title;
+      id("answerHint").textContent = config.hint;
+      if (config.retailer) activeRetailer = config.retailer;
+      if (config.category) activeCategory = config.category;
+      if (intent === "rare") {
+        activeRetailer = "Dollar Tree";
+        activeCategory = "All";
+      }
+      setFeatured(deal);
+      document.querySelectorAll(".intent").forEach(button => button.classList.toggle("active", button.dataset.intent === intent));
+      renderChips();
+      renderStores();
+      renderStoreDeals();
+    }
+
+    function renderChips() {
+      id("chips").innerHTML = categories.map(category => `
+        <button class="chip ${category === activeCategory ? "active" : ""}" type="button" data-category="${category}">${category}</button>
+      `).join("");
+      document.querySelectorAll(".chip").forEach(button => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.category;
+          renderChips();
+          renderStoreDeals();
+        });
+      });
+    }
+
+    function renderBets() {
+      id("bets").innerHTML = deals.slice(1, 4).map(deal => `
+        <button class="bet" type="button" data-id="${deal.id}">
+          <span class="bet-emoji">${deal.emoji}</span>
+          <b>${deal.title}</b>
+          <span>${deal.price}</span>
+        </button>
+      `).join("");
+      document.querySelectorAll(".bet").forEach(button => {
+        button.addEventListener("click", () => openDeal(Number(button.dataset.id)));
+      });
+    }
+
+    function renderStores() {
+      id("stores").innerHTML = retailers.map(store => `
+        <button class="store ${store.name === activeRetailer ? "active" : ""}" type="button" data-store="${store.name}">
+          <span><b>${store.name}</b><span>${store.headline}</span></span>
+          <span class="count">${store.count}</span>
+        </button>
+      `).join("");
+      document.querySelectorAll(".store").forEach(button => {
+        button.addEventListener("click", () => {
+          activeRetailer = button.dataset.store;
+          renderStores();
+          renderStoreDeals();
+        });
+      });
+    }
+
+    function renderStoreDeals() {
+      const store = retailers.find(item => item.name === activeRetailer);
+      id("storeName").textContent = store.name;
+      id("storeSub").textContent = store.headline;
+      const filtered = deals.filter(deal => deal.retailer === activeRetailer && (activeCategory === "All" || deal.category === activeCategory));
+      id("dealList").innerHTML = filtered.map(deal => `
+        <button class="deal-row" type="button" data-id="${deal.id}">
+          <span class="deal-art">${deal.emoji}</span>
+          <span><b>${deal.title}</b><span>${deal.price}${deal.was ? " vs " + deal.was : ""} · ${deal.trust}</span></span>
+        </button>
+      `).join("");
+      id("empty").classList.toggle("show", filtered.length === 0);
+      document.querySelectorAll(".deal-row").forEach(button => {
+        button.addEventListener("click", () => openDeal(Number(button.dataset.id)));
+      });
+    }
+
+    function openDeal(dealId) {
+      const deal = deals.find(item => item.id === dealId) || featuredDeal;
+      id("detailType").textContent = deal.type;
+      id("detailEmoji").textContent = deal.emoji;
+      id("detailTitle").textContent = deal.title;
+      id("detailPrice").textContent = deal.price;
+      id("detailWas").textContent = deal.was || deal.retailer;
+      id("detailWas").style.textDecoration = deal.was ? "line-through" : "none";
+      id("detailOff").textContent = deal.off;
+      id("detailTrust").textContent = deal.trust;
+      id("detailFresh").textContent = deal.freshness;
+      id("note").textContent = "";
+      id("modal").classList.add("show");
+    }
+
+    document.querySelectorAll(".intent").forEach(button => {
+      button.addEventListener("click", () => applyIntent(button.dataset.intent));
+    });
+    id("rareCard").addEventListener("click", () => openDeal(featuredDeal.id));
+    id("quickStore").addEventListener("click", () => {
+      activeRetailer = featuredDeal.retailer;
+      renderStores();
+      renderStoreDeals();
+      id("storeName").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    id("quickShare").addEventListener("click", () => openDeal(featuredDeal.id));
+    id("follow").addEventListener("click", event => {
+      event.currentTarget.textContent = event.currentTarget.textContent === "Follow" ? "Following" : "Follow";
+    });
+    id("close").addEventListener("click", () => id("modal").classList.remove("show"));
+    id("modal").addEventListener("click", event => {
+      if (event.target.id === "modal") id("modal").classList.remove("show");
+    });
+    id("share").addEventListener("click", () => id("note").textContent = "Share card ready with price story and honest trust label.");
+    id("confirm").addEventListener("click", () => id("note").textContent = "Scan to confirm. No live inventory claim.");
+
+    applyIntent("rare");
+    renderBets();
+  </script>
+</body>
+</html>

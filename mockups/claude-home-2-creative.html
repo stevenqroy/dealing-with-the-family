@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Today's Front Page (Creative)</title>
+<style>
+  /* ============================================================
+     Deal Hunter · "Today's Front Page"
+     SLOT 2 — Creative. Editorial / ad-agency home screen.
+     Warm cream + ink + refined pink + green. No orange.
+     Self-contained: inline CSS + JS, no network, emoji imagery.
+     ============================================================ */
+
+  :root{
+    --paper:      #fffdf7;   /* page / cover stock          */
+    --paper-2:    #f6f3ea;   /* recessed surface            */
+    --card:       #ffffff;   /* raised card                 */
+    --ink:        #211f1a;   /* near-black headline ink      */
+    --ink-2:      #5b574d;   /* secondary text               */
+    --ink-3:      #908b7e;   /* tertiary / captions          */
+    --hair:       #e7e2d4;   /* hairline borders             */
+    --hair-soft:  #efebdf;
+
+    --pink:       #993556;   /* penny / brand accent         */
+    --pink-deep:  #72243e;
+    --pink-wash:  #fbeef2;
+    --pink-line:  #f0d3dd;
+
+    --green:      #2f6f12;   /* good price                    */
+    --green-deep: #235610;
+    --green-wash: #eef5e6;
+
+    --plum:       #4b3a63;   /* clearance / cool deal-type    */
+    --plum-wash:  #efeaf4;
+    --teal:       #0f6e56;   /* sale / fresh                  */
+    --teal-wash:  #e4f3ed;
+    --gold:       #8a6a12;   /* glitch/urgent — warm, NOT orange */
+    --gold-wash:  #f6efda;
+
+    --r-xl: 26px;
+    --r-lg: 20px;
+    --r-md: 14px;
+    --r-sm: 10px;
+
+    --shadow-cover: 0 24px 60px -22px rgba(40,28,18,.42), 0 6px 18px -10px rgba(40,28,18,.28);
+    --shadow-card:  0 12px 30px -16px rgba(40,28,18,.30), 0 2px 8px -4px rgba(40,28,18,.16);
+    --shadow-chip:  0 2px 6px -3px rgba(40,28,18,.30);
+
+    --ease: cubic-bezier(.22,.61,.30,1);
+    --ease-out: cubic-bezier(.16,.84,.36,1);
+
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html{ background:#cbc4b4; }          /* desk behind the phone */
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #d8d2c2 0%, #c4bdac 55%, #b6af9d 100%);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{
+    width:390px;
+    max-width:100vw;
+    min-height:100dvh;
+    background:var(--paper);
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.5);
+  }
+  @media (min-width:430px){
+    .phone{ min-height:auto; height:844px; margin:28px 0 48px; border-radius:46px;
+            border:10px solid #15130f; box-shadow:0 50px 110px -28px rgba(0,0,0,.62); }
+  }
+
+  /* scroll region so sticky bars behave like a real app */
+  .screen{
+    position:absolute; inset:0;
+    overflow-y:auto; overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
+  }
+  @media (min-width:430px){ .phone, .screen{ border-radius:36px; } }
+
+  /* ---------- status bar ---------- */
+  .statusbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 24px 4px; font-size:13px; font-weight:700; color:var(--ink);
+    letter-spacing:.02em;
+  }
+  .statusbar .dots{ display:flex; gap:5px; align-items:center; opacity:.85; }
+  .statusbar .bar{ width:17px; height:11px; border:1.5px solid var(--ink); border-radius:3px; position:relative; }
+  .statusbar .bar::after{ content:""; position:absolute; right:-3px; top:3px; width:2px; height:5px; background:var(--ink); border-radius:1px; }
+  .statusbar .bar i{ position:absolute; inset:1.5px; right:5px; background:var(--ink); border-radius:1px; display:block; }
+
+  /* ---------- masthead ---------- */
+  .masthead{ padding:6px 22px 10px; }
+  .masthead .kicker{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  .masthead .kicker .live{ display:inline-flex; align-items:center; gap:6px; color:var(--green-deep); }
+  .live .pulse{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(47,111,18,.5);
+    animation:pulse 2.4s var(--ease) infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(47,111,18,.45);} 70%{ box-shadow:0 0 0 7px rgba(47,111,18,0);} 100%{ box-shadow:0 0 0 0 rgba(47,111,18,0);} }
+
+  .masthead .title-row{ display:flex; align-items:flex-end; justify-content:space-between; margin-top:7px; }
+  .wordmark{
+    font-size:33px; font-weight:850; letter-spacing:-.025em; line-height:.92; color:var(--ink);
+    font-family:"Georgia","Times New Roman",serif; font-style:italic;
+  }
+  .wordmark b{ font-style:normal; color:var(--pink); }
+  .masthead .date{ font-size:11px; font-weight:700; color:var(--ink-3); text-align:right; letter-spacing:.04em; line-height:1.35; }
+  .masthead .rule{ height:2px; background:var(--ink); margin:11px 0 0; border-radius:2px; opacity:.9; }
+  .masthead .subrule{ display:flex; justify-content:space-between; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); padding-top:6px; }
+
+  /* ============================================================
+     SECTION — the magazine cover (rarest deal of the day)
+     ============================================================ */
+  .cover-wrap{ padding:14px 18px 4px; }
+
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; padding:0 4px 9px; }
+  .section-head h2{ margin:0; font-size:13px; font-weight:800; letter-spacing:.02em; color:var(--ink); }
+  .section-head h2 span{ color:var(--ink-3); font-weight:600; }
+  .section-head .more{ font-size:12px; font-weight:700; color:var(--pink); }
+
+  .cover{
+    position:relative; border-radius:var(--r-xl); overflow:hidden; cursor:pointer;
+    background:
+      radial-gradient(120% 90% at 78% 8%, #fff6e9 0%, #fdeccd 36%, #f6dca8 100%);
+    box-shadow:var(--shadow-cover);
+    isolation:isolate;
+    transform:translateZ(0);
+    transition:transform .5s var(--ease), box-shadow .5s var(--ease);
+    display:flex; flex-direction:column;
+  }
+  .cover:active{ transform:scale(.985); }
+
+  /* spotlight sweep — tasteful, slow, behind the art */
+  .cover .spotlight{
+    position:absolute; inset:-30% -40%; z-index:0; pointer-events:none;
+    background:radial-gradient(closest-side, rgba(255,255,255,.55), rgba(255,255,255,0) 70%);
+    transform:translate(-12%,-6%);
+    animation:sweep 9s var(--ease) infinite;
+    mix-blend-mode:soft-light;
+  }
+  @keyframes sweep{
+    0%,100%{ transform:translate(-16%,-8%) scale(1); opacity:.55; }
+    50%{ transform:translate(20%,10%) scale(1.18); opacity:.9; }
+  }
+
+  /* faint penny-coin watermark, editorial texture */
+  .cover .watermark{
+    position:absolute; right:-34px; bottom:-34px; z-index:0; pointer-events:none;
+    font-size:230px; line-height:1; opacity:.10; transform:rotate(-12deg);
+    filter:grayscale(.2);
+  }
+
+  .cover .topline{
+    position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between;
+    gap:10px; padding:15px 17px 0;
+  }
+  .badge-rare{
+    display:inline-flex; align-items:center; gap:6px; flex:none;
+    background:var(--ink); color:#fff; font-size:10px; font-weight:800;
+    letter-spacing:.12em; text-transform:uppercase; padding:6px 11px; border-radius:999px;
+    box-shadow:var(--shadow-chip); white-space:nowrap;
+  }
+  .badge-rare .star{ color:#ffd98a; font-size:11px; }
+  .cover .issue{ font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--pink-deep); text-align:right; line-height:1.3; white-space:nowrap; }
+
+  .cover .art{
+    position:relative; z-index:1; display:flex; align-items:center; justify-content:center;
+    height:172px; margin-top:4px;
+  }
+  .cover .art .glyph{
+    font-size:118px; line-height:1;
+    filter:drop-shadow(0 22px 26px rgba(80,40,20,.30));
+    animation:float 6.5s var(--ease) infinite;
+  }
+  @keyframes float{ 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-12px) rotate(2deg);} }
+
+  .cover .copy{
+    position:relative; z-index:2; padding:4px 20px 16px;
+  }
+  .cover .eyebrow{
+    font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--pink-deep); display:flex; align-items:center; gap:8px;
+  }
+  .cover .eyebrow .dot{ width:5px; height:5px; border-radius:50%; background:var(--pink); }
+  .cover .headline{
+    font-family:"Georgia","Times New Roman",serif;
+    font-size:27px; font-weight:800; line-height:1.03; letter-spacing:-.01em;
+    color:#241a12; margin:6px 0 2px; max-width:13ch;
+  }
+  .cover .dek{ font-size:13.5px; color:#5a4632; line-height:1.4; margin:4px 0 0; max-width:30ch; font-weight:500; }
+
+  .cover .pricerow{
+    display:flex; align-items:flex-end; gap:12px; margin-top:11px;
+  }
+  .cover .price{
+    font-size:46px; font-weight:850; letter-spacing:-.03em; line-height:.82; color:var(--pink-deep);
+    font-family:"Georgia","Times New Roman",serif;
+  }
+  /* price-reveal motion on load */
+  .cover .price .ct{ display:inline-block; animation:rise .7s var(--ease-out) both .15s; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0);} }
+  .cover .pricemeta{ display:flex; flex-direction:column; gap:3px; padding-bottom:4px; }
+  .cover .was{ font-size:14px; color:#8a7459; text-decoration:line-through; font-weight:600; }
+  .cover .save{
+    align-self:flex-start; font-size:11px; font-weight:800; letter-spacing:.04em;
+    color:#fff; background:var(--green); padding:3px 9px; border-radius:999px;
+  }
+
+  .cover .footer{
+    position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between;
+    margin:2px 18px 16px; padding-top:13px; border-top:1px solid rgba(120,80,40,.16);
+  }
+  .cta-open{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:800;
+    padding:11px 17px; border-radius:999px; box-shadow:var(--shadow-chip);
+    transition:transform .25s var(--ease), background .25s var(--ease);
+  }
+  .cover:hover .cta-open{ background:#000; }
+  .cta-open .arrow{ transition:transform .3s var(--ease); }
+  .cover:hover .cta-open .arrow{ transform:translateX(3px); }
+
+  /* honest trust chip (one, glanceable) */
+  .trust{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:11.5px; font-weight:700; color:var(--ink-2);
+    background:rgba(255,255,255,.62); border:1px solid rgba(120,80,40,.16);
+    padding:7px 11px; border-radius:999px; backdrop-filter:blur(3px);
+  }
+  .trust .fdot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .fdot.f-confirmed{ background:var(--green); box-shadow:0 0 0 3px var(--green-wash); }
+  .fdot.f-fresh{ background:var(--teal); box-shadow:0 0 0 3px var(--teal-wash); }
+  .fdot.f-aging{ background:var(--gold); box-shadow:0 0 0 3px var(--gold-wash); }
+  .fdot.f-check{ background:var(--ink-3); box-shadow:0 0 0 3px rgba(0,0,0,.05); }
+
+  /* ============================================================
+     SECTION — "Also worth a look today" (other heroes, swipe strip)
+     ============================================================ */
+  .strip-sec{ padding:20px 0 6px; }
+  .strip{
+    display:flex; gap:13px; overflow-x:auto; padding:2px 18px 14px; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .strip::-webkit-scrollbar{ display:none; }
+  .mini{
+    scroll-snap-align:start; flex:0 0 200px; background:var(--card); border-radius:var(--r-lg);
+    border:1px solid var(--hair); box-shadow:var(--shadow-card); cursor:pointer; overflow:hidden;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .mini:active{ transform:translateY(2px) scale(.99); }
+  .mini .top{
+    height:104px; display:flex; align-items:center; justify-content:center; position:relative;
+    background:radial-gradient(120% 110% at 30% 18%, #fffdf6, #f3eddd);
+  }
+  .mini .top .g{ font-size:62px; filter:drop-shadow(0 10px 12px rgba(80,40,20,.20)); }
+  .mini .type-tag{
+    position:absolute; top:10px; left:10px; font-size:9.5px; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; padding:4px 8px; border-radius:999px;
+  }
+  .mini .body{ padding:11px 13px 13px; }
+  .mini .r{ font-size:10.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); }
+  .mini h3{ margin:3px 0 7px; font-size:14px; font-weight:700; line-height:1.18; color:var(--ink); min-height:33px; }
+  .mini .pr{ display:flex; align-items:baseline; gap:7px; }
+  .mini .pr b{ font-size:19px; font-weight:850; color:var(--pink-deep); letter-spacing:-.02em; }
+  .mini .pr s{ font-size:11.5px; color:var(--ink-3); }
+  .mini .mtrust{ display:flex; align-items:center; gap:6px; margin-top:9px; font-size:10.5px; font-weight:700; color:var(--ink-2); }
+  .mini .mtrust .fdot{ width:7px; height:7px; }
+
+  /* deal-type tag color families (no orange) */
+  .t-penny{ background:var(--pink-wash); color:var(--pink-deep); }
+  .t-clearance{ background:var(--plum-wash); color:var(--plum); }
+  .t-glitch{ background:var(--gold-wash); color:var(--gold); }
+  .t-sale{ background:var(--teal-wash); color:var(--teal); }
+  .t-bogo{ background:var(--green-wash); color:var(--green-deep); }
+  .t-coupon{ background:#eef0f4; color:#3c4658; }
+
+  /* ============================================================
+     SECTION — category filter (calm, forgiving chips)
+     ============================================================ */
+  .cats-sec{ padding:16px 0 4px; }
+  .cats{
+    display:flex; gap:9px; overflow-x:auto; padding:2px 18px 6px; scrollbar-width:none;
+  }
+  .cats::-webkit-scrollbar{ display:none; }
+  .chip{
+    flex:none; display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+    background:var(--card); border:1px solid var(--hair); color:var(--ink-2);
+    font-size:13px; font-weight:700; padding:9px 14px; border-radius:999px;
+    transition:all .22s var(--ease); box-shadow:0 1px 0 rgba(0,0,0,.02);
+    user-select:none;
+  }
+  .chip .em{ font-size:14px; }
+  .chip:active{ transform:scale(.96); }
+  .chip[aria-pressed="true"]{
+    background:var(--ink); color:#fff; border-color:var(--ink);
+    box-shadow:var(--shadow-chip);
+  }
+  .chip[aria-pressed="true"] .em{ filter:none; }
+
+  /* ============================================================
+     SECTION — retailers as "channels you can tune into"
+     ============================================================ */
+  .channels-sec{ padding:16px 0 8px; }
+  .channels{ display:flex; flex-direction:column; gap:11px; padding:2px 18px 0; }
+
+  .channel{
+    position:relative; display:flex; align-items:center; gap:13px; cursor:pointer;
+    background:var(--card); border:1px solid var(--hair); border-radius:var(--r-lg);
+    padding:13px 14px; box-shadow:var(--shadow-card);
+    overflow:hidden;
+    transition:transform .26s var(--ease), box-shadow .26s var(--ease), border-color .26s var(--ease);
+  }
+  .channel::before{ /* left accent spine */
+    content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--ch,--ink-3);
+    transition:width .26s var(--ease);
+  }
+  .channel:active{ transform:scale(.99); }
+  .channel:hover{ border-color:var(--hair-soft); box-shadow:0 16px 34px -18px rgba(40,28,18,.34); }
+  .channel:hover::before{ width:7px; }
+
+  .ch-logo{
+    width:50px; height:50px; flex:none; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:25px; background:var(--chw,#f2efe6); box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .ch-main{ flex:1; min-width:0; }
+  .ch-name{ display:flex; align-items:center; gap:8px; font-size:15.5px; font-weight:800; color:var(--ink); letter-spacing:-.01em; }
+  .ch-name .ribbon{ font-size:9px; font-weight:800; letter-spacing:.07em; text-transform:uppercase;
+    padding:3px 7px; border-radius:6px; }
+  .ch-headline{ font-size:12.5px; font-weight:600; color:var(--ink-2); margin-top:3px; line-height:1.3;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ch-headline b{ color:var(--ch,var(--ink)); font-weight:800; }
+  .ch-right{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex:none; }
+  .ch-count{ font-size:18px; font-weight:850; color:var(--ink); letter-spacing:-.02em; line-height:1; }
+  .ch-count span{ display:block; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); text-align:right; margin-top:2px; }
+  .ch-go{ width:26px; height:26px; border-radius:50%; background:var(--paper-2); display:flex; align-items:center; justify-content:center; color:var(--ink-2); font-size:14px; transition:transform .26s var(--ease), background .26s var(--ease); }
+  .channel:hover .ch-go{ transform:translateX(2px); background:var(--ink); color:#fff; }
+
+  /* add / follow a retailer */
+  .add-channel{
+    display:flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
+    margin:13px 18px 0; padding:13px; border-radius:var(--r-lg);
+    border:1.5px dashed var(--pink-line); color:var(--pink-deep); background:var(--pink-wash);
+    font-size:13.5px; font-weight:800; letter-spacing:.01em;
+    transition:background .22s var(--ease), transform .22s var(--ease);
+  }
+  .add-channel:active{ transform:scale(.99); }
+  .add-channel:hover{ background:#f8e3ea; }
+
+  .footnote{ text-align:center; color:var(--ink-3); font-size:11px; font-weight:600; padding:22px 24px 34px; line-height:1.6; }
+  .footnote b{ color:var(--ink-2); }
+
+  /* empty-state (calm, not broken) */
+  .calm-note{
+    margin:2px 18px 0; padding:16px 16px; border-radius:var(--r-lg);
+    background:var(--paper-2); border:1px solid var(--hair); display:none;
+    align-items:center; gap:12px;
+  }
+  .calm-note.show{ display:flex; animation:rise .4s var(--ease-out) both; }
+  .calm-note .ico{ font-size:26px; }
+  .calm-note .tx{ font-size:12.5px; color:var(--ink-2); line-height:1.45; font-weight:600; }
+  .calm-note .tx b{ color:var(--ink); }
+
+  /* ============================================================
+     CORNER LABEL
+     ============================================================ */
+  .corner{
+    position:absolute; right:0; top:0; z-index:60;
+    background:rgba(33,31,26,.86); color:#fff; font-size:10px; font-weight:700; letter-spacing:.05em;
+    padding:5px 11px; border-bottom-left-radius:12px; backdrop-filter:blur(4px); pointer-events:none;
+  }
+  .corner b{ color:#ffd1de; font-weight:800; }
+
+  /* ============================================================
+     DETAIL SHEET (deal detail — price story / trust / play / share)
+     ============================================================ */
+  .scrim{
+    position:absolute; inset:0; z-index:70; background:rgba(28,20,12,.46);
+    opacity:0; pointer-events:none; transition:opacity .34s var(--ease);
+    backdrop-filter:blur(2px);
+  }
+  .scrim.open{ opacity:1; pointer-events:auto; }
+
+  .sheet{
+    position:absolute; left:0; right:0; bottom:0; z-index:71; max-height:92%;
+    background:var(--paper); border-radius:26px 26px 0 0; overflow:hidden;
+    transform:translateY(102%); transition:transform .42s var(--ease-out);
+    box-shadow:0 -20px 50px -20px rgba(0,0,0,.4); display:flex; flex-direction:column;
+  }
+  .sheet.open{ transform:translateY(0); }
+  .sheet .grab{ width:42px; height:5px; border-radius:3px; background:var(--hair); margin:10px auto 4px; flex:none; }
+  .sheet .scrollarea{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
+
+  .sheet-hero{
+    position:relative; padding:14px 22px 18px; overflow:hidden;
+    background:radial-gradient(120% 100% at 80% 0%, #fff7ea, #f7e6c6);
+  }
+  .sheet-hero .closerow{ display:flex; align-items:center; justify-content:space-between; }
+  .sheet-hero .typepill{ font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:999px; }
+  .sheet-close{ width:32px; height:32px; border-radius:50%; border:none; background:rgba(255,255,255,.7); color:var(--ink); font-size:17px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+  .sheet-hero .hgrid{ display:flex; gap:16px; align-items:center; margin-top:6px; }
+  .sheet-hero .hglyph{ font-size:78px; line-height:1; flex:none; filter:drop-shadow(0 14px 16px rgba(80,40,20,.24)); }
+  .sheet-hero .hmeta{ flex:1; min-width:0; }
+  .sheet-hero .hr{ font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--pink-deep); }
+  .sheet-hero h2{ margin:4px 0 0; font-size:21px; font-weight:800; line-height:1.08; color:#241a12; font-family:"Georgia",serif; }
+
+  .pricecard{
+    margin:14px 22px 0; background:var(--card); border:1px solid var(--hair); border-radius:var(--r-lg);
+    padding:15px 16px; box-shadow:var(--shadow-card);
+  }
+  .pricecard .lab{ font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  .pricecard .row1{ display:flex; align-items:flex-end; gap:12px; margin-top:7px; }
+  .pricecard .now{ font-size:42px; font-weight:850; letter-spacing:-.03em; line-height:.85; color:var(--pink-deep); font-family:"Georgia",serif; }
+  .pricecard .col{ display:flex; flex-direction:column; gap:5px; padding-bottom:3px; }
+  .pricecard .wasx{ font-size:14px; color:var(--ink-3); text-decoration:line-through; font-weight:600; }
+  .pricecard .savx{ font-size:11px; font-weight:800; color:#fff; background:var(--green); padding:3px 9px; border-radius:999px; align-self:flex-start; }
+
+  /* honest trust block */
+  .trustcard{
+    margin:12px 22px 0; display:flex; gap:12px; align-items:flex-start;
+    background:var(--paper-2); border:1px solid var(--hair); border-radius:var(--r-md); padding:13px 14px;
+  }
+  .trustcard .tdot{ width:13px; height:13px; border-radius:50%; flex:none; margin-top:2px; }
+  .trustcard .tt{ font-size:13px; font-weight:800; color:var(--ink); }
+  .trustcard .ts{ font-size:12px; color:var(--ink-2); margin-top:2px; line-height:1.45; font-weight:500; }
+
+  /* "the play" */
+  .play{
+    margin:14px 22px 0; background:var(--card); border:1px solid var(--hair); border-radius:var(--r-lg);
+    padding:15px 16px 14px; box-shadow:var(--shadow-card);
+  }
+  .play h4{ margin:0 0 3px; font-size:14px; font-weight:850; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .play h4 .tag{ font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--pink-deep); background:var(--pink-wash); padding:3px 8px; border-radius:6px; }
+  .play .sub{ font-size:11.5px; color:var(--ink-3); font-weight:600; margin-bottom:11px; }
+  .play ol{ margin:0; padding:0; list-style:none; counter-reset:step; display:flex; flex-direction:column; gap:11px; }
+  .play ol li{ position:relative; padding-left:34px; font-size:13px; color:var(--ink-2); line-height:1.4; font-weight:500; }
+  .play ol li::before{
+    counter-increment:step; content:counter(step);
+    position:absolute; left:0; top:-1px; width:23px; height:23px; border-radius:50%;
+    background:var(--ink); color:#fff; font-size:12px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .play .signs{ margin-top:13px; padding-top:12px; border-top:1px dashed var(--hair); }
+  .play .signs .sl{ font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:7px; }
+  .play .signs .pill{
+    display:inline-flex; align-items:center; gap:6px; margin:0 6px 6px 0;
+    font-size:11.5px; font-weight:700; color:var(--ink-2);
+    background:var(--paper-2); border:1px solid var(--hair); padding:6px 10px; border-radius:999px;
+  }
+
+  /* aisle hint (forward-looking, honest) */
+  .aisle{ margin:12px 22px 0; display:flex; align-items:center; gap:10px; font-size:12px; font-weight:600; color:var(--ink-2); }
+  .aisle .ic{ width:30px; height:30px; border-radius:9px; background:var(--plum-wash); color:var(--plum); display:flex; align-items:center; justify-content:center; font-size:15px; }
+
+  /* sheet actions */
+  .sheet-actions{ display:flex; gap:11px; padding:16px 22px calc(20px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--paper) 72%, rgba(255,253,247,0)); position:sticky; bottom:0; }
+  .btn{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    font-size:14px; font-weight:800; border-radius:15px; padding:15px 12px; cursor:pointer; border:none;
+    transition:transform .2s var(--ease); }
+  .btn:active{ transform:scale(.97); }
+  .btn-share{ flex:0 0 56px; background:var(--card); border:1px solid var(--hair); color:var(--ink); font-size:18px; box-shadow:var(--shadow-card); }
+  .btn-go{ background:var(--ink); color:#fff; box-shadow:var(--shadow-chip); }
+  .btn-go:hover{ background:#000; }
+
+  /* tiny share toast */
+  .toast{
+    position:absolute; left:50%; bottom:96px; z-index:80; transform:translate(-50%,18px);
+    background:var(--ink); color:#fff; font-size:12.5px; font-weight:700; padding:11px 16px; border-radius:999px;
+    box-shadow:var(--shadow-card); opacity:0; pointer-events:none; transition:opacity .3s var(--ease), transform .3s var(--ease);
+    display:inline-flex; align-items:center; gap:9px; max-width:84%;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%,0); }
+  .toast .ref{ color:#ffd1de; font-weight:800; }
+
+  /* ============================================================
+     STORE VIEW (retailer tap → that store's deals)
+     ============================================================ */
+  .storeview{
+    position:absolute; inset:0; z-index:65; background:var(--paper);
+    transform:translateX(100%); transition:transform .4s var(--ease-out);
+    display:flex; flex-direction:column;
+  }
+  .storeview.open{ transform:translateX(0); }
+  .sv-head{ padding:14px 18px 12px; color:#fff; position:relative; overflow:hidden; }
+  .sv-head .barrow{ display:flex; align-items:center; gap:12px; position:relative; z-index:2; }
+  .sv-back{ width:38px; height:38px; border-radius:50%; border:none; background:rgba(255,255,255,.18); color:#fff; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+  .sv-title{ flex:1; min-width:0; }
+  .sv-title .nm{ font-size:21px; font-weight:850; letter-spacing:-.02em; display:flex; align-items:center; gap:9px; }
+  .sv-title .nm .em{ font-size:22px; }
+  .sv-title .hl{ font-size:12.5px; font-weight:600; opacity:.92; margin-top:2px; }
+  .sv-follow{ border:none; background:rgba(255,255,255,.92); color:#211f1a; font-size:12px; font-weight:800; padding:9px 13px; border-radius:999px; cursor:pointer; flex:none; transition:transform .2s var(--ease); }
+  .sv-follow:active{ transform:scale(.95); }
+  .sv-follow.following{ background:rgba(255,255,255,.2); color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.5); }
+  .sv-stats{ display:flex; gap:18px; margin-top:13px; position:relative; z-index:2; }
+  .sv-stats .st{ font-size:11px; font-weight:600; opacity:.92; }
+  .sv-stats .st b{ display:block; font-size:17px; font-weight:850; letter-spacing:-.02em; }
+  .sv-glow{ position:absolute; right:-60px; top:-70px; width:200px; height:200px; border-radius:50%;
+    background:radial-gradient(closest-side, rgba(255,255,255,.32), rgba(255,255,255,0)); z-index:1; }
+
+  .sv-body{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 18px 30px; background:var(--paper); }
+  .sv-cat{ font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:4px 2px 11px; }
+  .sv-deal{
+    display:flex; align-items:center; gap:13px; background:var(--card); border:1px solid var(--hair);
+    border-radius:var(--r-md); padding:11px 13px; margin-bottom:11px; cursor:pointer; box-shadow:var(--shadow-card);
+    transition:transform .24s var(--ease);
+  }
+  .sv-deal:active{ transform:scale(.99); }
+  .sv-deal .g{ width:54px; height:54px; flex:none; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:30px; background:radial-gradient(120% 110% at 30% 20%, #fffdf6, #f1ebda); }
+  .sv-deal .mid{ flex:1; min-width:0; }
+  .sv-deal .mid .tt{ font-size:14px; font-weight:700; color:var(--ink); line-height:1.18; }
+  .sv-deal .mid .mt{ display:flex; align-items:center; gap:7px; margin-top:6px; font-size:10.5px; font-weight:700; color:var(--ink-2); }
+  .sv-deal .mid .mt .fdot{ width:7px; height:7px; }
+  .sv-deal .pp{ text-align:right; flex:none; }
+  .sv-deal .pp b{ font-size:18px; font-weight:850; color:var(--pink-deep); letter-spacing:-.02em; }
+  .sv-deal .pp s{ display:block; font-size:11px; color:var(--ink-3); margin-top:1px; }
+  .sv-deal .pp .typ{ display:inline-block; margin-top:5px; font-size:9px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:3px 7px; border-radius:6px; }
+
+  /* respect reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="corner">Claude · <b>Creative</b></div>
+
+    <!-- ===================== MAIN SCREEN ===================== -->
+    <div class="screen" id="screen">
+
+      <div class="statusbar">
+        <span>9:41</span>
+        <span class="dots">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><rect x="0" y="7" width="3" height="4" rx="1" fill="#211f1a"/><rect x="4.5" y="5" width="3" height="6" rx="1" fill="#211f1a"/><rect x="9" y="2.5" width="3" height="8.5" rx="1" fill="#211f1a"/><rect x="13.5" y="0" width="3" height="11" rx="1" fill="#211f1a"/></svg>
+          <span class="bar"><i></i></span>
+        </span>
+      </div>
+
+      <!-- masthead -->
+      <header class="masthead">
+        <div class="kicker">
+          <span>The discount-shopping daily</span>
+          <span class="live"><span class="pulse"></span>Live now</span>
+        </div>
+        <div class="title-row">
+          <div class="wordmark">Deal&nbsp;<b>Hunter</b></div>
+          <div class="date">TUE · JUN 16<br>Morning edition</div>
+        </div>
+        <div class="rule"></div>
+        <div class="subrule"><span>Today's best finds</span><span>Curated · honest · private</span></div>
+      </header>
+
+      <!-- ===== COVER: rarest deal of the day ===== -->
+      <section class="cover-wrap">
+        <div class="section-head">
+          <h2>Deal of the day <span>· the rarest right now</span></h2>
+        </div>
+
+        <article class="cover" id="cover" data-deal="1" role="button" tabindex="0" aria-label="Open deal of the day">
+          <div class="spotlight"></div>
+          <div class="watermark">🪙</div>
+
+          <div class="topline">
+            <span class="badge-rare"><span class="star">★</span>Rarest find today</span>
+            <span class="issue">No. 412 · Penny list</span>
+          </div>
+
+          <div class="art"><div class="glyph">🧦</div></div>
+
+          <div class="copy">
+            <div class="eyebrow"><span class="dot"></span>Dollar Tree · Penny</div>
+            <h1 class="headline">Smurfs Grumpy crew socks</h1>
+            <p class="dek">Licensed character socks that ring up for a single cent at the register. 31 hunters confirmed it today.</p>
+            <div class="pricerow">
+              <div class="price"><span class="ct">$0.01</span></div>
+              <div class="pricemeta">
+                <span class="was">$1.25</span>
+                <span class="save">99% off</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <span class="trust"><span class="fdot f-confirmed"></span>Matched to catalog</span>
+            <span class="cta-open">See the play <span class="arrow">→</span></span>
+          </div>
+        </article>
+      </section>
+
+      <!-- ===== ALSO TODAY: swipe strip of other heroes ===== -->
+      <section class="strip-sec">
+        <div class="section-head" style="padding-left:22px; padding-right:22px;">
+          <h2>Also worth a look <span>· swipe →</span></h2>
+          <span class="more">3 more</span>
+        </div>
+        <div class="strip" id="strip"><!-- minis injected --></div>
+      </section>
+
+      <!-- ===== CATEGORY FILTER ===== -->
+      <section class="cats-sec">
+        <div class="section-head" style="padding-left:22px; padding-right:22px;">
+          <h2>Shopping for something? <span>· tap to narrow</span></h2>
+        </div>
+        <div class="cats" id="cats"><!-- chips injected --></div>
+      </section>
+
+      <!-- ===== CHANNELS (retailers) ===== -->
+      <section class="channels-sec">
+        <div class="section-head" style="padding-left:22px; padding-right:22px;">
+          <h2 id="ch-h2">Pick a store to check <span>· headlines tell you if it's worth it</span></h2>
+        </div>
+        <div class="calm-note" id="calmNote">
+          <span class="ico">🌤️</span>
+          <span class="tx"></span>
+        </div>
+        <div class="channels" id="channels"><!-- channels injected --></div>
+        <div class="add-channel" id="addChannel">
+          <span style="font-size:16px;">＋</span> Follow another store
+        </div>
+      </section>
+
+      <div class="footnote">
+        Prices are <b>reported by hunters</b>, not a live feed.<br>
+        Always <b>scan at the register</b> to confirm — we tell you when we're sure and when to check.
+      </div>
+    </div><!-- /screen -->
+
+    <!-- ===================== STORE VIEW ===================== -->
+    <section class="storeview" id="storeview" aria-hidden="true">
+      <div class="sv-head" id="svHead">
+        <div class="sv-glow"></div>
+        <div class="barrow">
+          <button class="sv-back" id="svBack" aria-label="Back to home">←</button>
+          <div class="sv-title">
+            <div class="nm"><span class="em" id="svEm">🏬</span><span id="svName">Store</span></div>
+            <div class="hl" id="svHl">headline</div>
+          </div>
+          <button class="sv-follow" id="svFollow">＋ Follow</button>
+        </div>
+        <div class="sv-stats">
+          <div class="st"><b id="svCount">0</b>live deals</div>
+          <div class="st"><b id="svFresh">—</b>freshest</div>
+          <div class="st"><b id="svType">—</b>deal style</div>
+        </div>
+      </div>
+      <div class="sv-body">
+        <div class="sv-cat" id="svCat">BEST RIGHT NOW</div>
+        <div id="svList"></div>
+      </div>
+    </section>
+
+    <!-- ===================== DETAIL SHEET ===================== -->
+    <div class="scrim" id="scrim"></div>
+    <section class="sheet" id="sheet" aria-hidden="true">
+      <div class="grab"></div>
+      <div class="scrollarea">
+        <div class="sheet-hero">
+          <div class="closerow">
+            <span class="typepill" id="dTypePill">Penny</span>
+            <button class="sheet-close" id="sheetClose" aria-label="Close">✕</button>
+          </div>
+          <div class="hgrid">
+            <div class="hglyph" id="dGlyph">🧦</div>
+            <div class="hmeta">
+              <div class="hr" id="dRetailer">Dollar Tree</div>
+              <h2 id="dTitle">Smurfs Grumpy crew socks</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="pricecard">
+          <div class="lab">The price story</div>
+          <div class="row1">
+            <div class="now" id="dNow">$0.01</div>
+            <div class="col">
+              <span class="wasx" id="dWas">$1.25</span>
+              <span class="savx" id="dSav">99% off</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trustcard">
+          <span class="tdot" id="dTrustDot"></span>
+          <div>
+            <div class="tt" id="dTrustTitle">Matched to catalog</div>
+            <div class="ts" id="dTrustSub"></div>
+          </div>
+        </div>
+
+        <div class="aisle" id="dAisle">
+          <span class="ic">📍</span><span id="dAisleTx">Likely aisle: seasonal / character socks peg-wall</span>
+        </div>
+
+        <div class="play">
+          <h4><span class="tag">The play</span> How to actually get it</h4>
+          <div class="sub" id="dPlaySub">Confidence comes from doing it right — here's the move.</div>
+          <ol id="dPlaySteps"></ol>
+          <div class="signs">
+            <div class="sl">In-store tells to look for</div>
+            <div id="dSigns"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-actions">
+        <button class="btn btn-share" id="btnShare" aria-label="Share this deal">⤴</button>
+        <button class="btn btn-go" id="btnGo">Take me to <span id="dGoStore">the store</span> →</button>
+      </div>
+    </section>
+
+    <div class="toast" id="toast"><span>🔗</span><span>Deal link copied — <span class="ref">friends join free</span></span></div>
+
+  </div><!-- /phone -->
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- DATA (from SAMPLE-DATA.md) ---------- */
+  var TYPE = {
+    penny:    { label:"Penny",     cls:"t-penny" },
+    clearance:{ label:"Clearance", cls:"t-clearance" },
+    glitch:   { label:"Glitch",    cls:"t-glitch" },
+    sale:     { label:"Sale",      cls:"t-sale" },
+    bogo:     { label:"BOGO",      cls:"t-bogo" },
+    coupon:   { label:"Coupon",    cls:"t-coupon" }
+  };
+
+  /* trust vocabulary → glanceable dot + honest sentence */
+  var TRUST = {
+    matched: { dot:"f-confirmed", title:"Matched to catalog", sub:"We've matched this to a known product record, so the item and price are high-confidence. Inventory still varies by store — no live stock feed." },
+    fresh:   { dot:"f-fresh",     title:"Fresh · reported 2h ago", sub:"Recently reported by a hunter. That means recency, not guaranteed stock — scan to confirm the price in-store." },
+    check:   { dot:"f-check",     title:"Check tag · discount unverified", sub:"The exact discount isn't confirmed yet. Trust the register, not the shelf — scan it to see the real price." },
+    aging:   { dot:"f-aging",     title:"Aging · going fast", sub:"This one's been live a while and may sell through. Worth a quick check, but don't count on it lasting." },
+    reported:{ dot:"f-fresh",     title:"Reported", sub:"Shared by a hunter and not yet catalog-matched. Treat the price as a strong lead and confirm at checkout." }
+  };
+
+  var PLAYS = {
+    penny: {
+      sub:"Penny items aren't on sale — they're being phased out. Let the register do the talking.",
+      steps:[
+        "Hunt end-caps, clearance shelves and the last item on a peg.",
+        "Scan it yourself at self-checkout — it rings up at 1¢.",
+        "Don't ask staff to look it up; unlisted items get pulled."
+      ],
+      signs:["No shelf tag","Dusty / discontinued","Last one on the peg"]
+    },
+    clearance:{
+      sub:"Seasonal clearance moves fast and prices drop in stages — scan to see the current cut.",
+      steps:[
+        "Head to the seasonal / outdoor clearance back wall.",
+        "Scan with the store app — clearance often beats the shelf tag.",
+        "If it's the floor model, ask for the open-box discount."
+      ],
+      signs:["Yellow clearance tag","Picked-over shelf","Endcap overflow"]
+    },
+    glitch:{
+      sub:"Price glitches are live online and usually corrected within hours — move now, calmly.",
+      steps:[
+        "Add to cart and check out right away — don't wait for a coupon.",
+        "One unit per order; don't over-buy and trip a cancel.",
+        "Screenshot the price in case you need order support."
+      ],
+      signs:["Price far below market","Ships from seller","Limited time"]
+    },
+    sale:{
+      sub:"A genuine markdown — verify the shelf price matches before you load up.",
+      steps:[
+        "Find it in the bath / body aisle.",
+        "Scan to confirm the sale price rings correctly.",
+        "Stack a manufacturer coupon if one's clipped."
+      ],
+      signs:["Sale shelf tag","Stacked display","Limit per visit"]
+    },
+    bogo:{
+      sub:"Buy-one-get-one runs this week — bring two to the register to unlock it.",
+      steps:[
+        "Grab two of the qualifying size.",
+        "Check the tag for 'this week' dates before you go.",
+        "Stack a store coupon on the paid unit if allowed."
+      ],
+      signs:["BOGO shelf flag","Weekly ad item","Same size required"]
+    },
+    coupon:{
+      sub:"This one shines when you stack the right coupon — clip first, then shop.",
+      steps:[
+        "Clip the digital coupon in the store app first.",
+        "Find the matching size on shelf and scan.",
+        "Combine with a weekly-ad price for the best stack."
+      ],
+      signs:["Coupon-eligible tag","App-clip required","Watch the size"]
+    }
+  };
+
+  var AISLE = {
+    penny:"Likely aisle: seasonal / character peg-wall, clearance end-caps",
+    clearance:"Likely aisle: seasonal / outdoor clearance, back wall",
+    glitch:"Online only — no aisle; check out in-app",
+    sale:"Likely aisle: health & beauty / bath & body",
+    bogo:"Likely aisle: laundry & cleaning",
+    coupon:"Likely aisle: home fragrance / cleaning"
+  };
+
+  /* hero deals — the 4 candidates; #1 is the cover, 2–4 the strip */
+  var DEALS = {
+    1:{ title:"Smurfs Grumpy crew socks", retailer:"Dollar Tree", glyph:"🧦", now:"$0.01", was:"$1.25", save:"99% off", type:"penny", trust:"matched", tagline:"31 confirmed today" },
+    2:{ title:"Coleman 4-person tent", retailer:"Target", glyph:"⛺", now:"$23.98", was:"$79.99", save:"70% off", type:"clearance", trust:"fresh", tagline:"fresh 2h ago" },
+    3:{ title:"Gain liquid detergent · 154oz", retailer:"Amazon", glyph:"🧴", now:"$4.97", was:"$12.00", save:"price glitch", type:"glitch", trust:"reported", tagline:"⚡ live now" },
+    4:{ title:"Dove deep moisture body wash · 22oz", retailer:"Dollar General", glyph:"🧴", now:"$1.50", was:"$7.99", save:"81% off", type:"sale", trust:"aging", tagline:"aging — going fast" },
+    /* store-view extras */
+    7:{ title:"Elmo black crew socks", retailer:"Dollar Tree", glyph:"🧦", now:"$0.01", was:"$1.25", save:"99% off", type:"penny", trust:"matched", tagline:"matched to catalog" },
+    5:{ title:"Gain Original Plus detergent", retailer:"Publix", glyph:"🧺", now:"BOGO", was:"", save:"buy 1 get 1", type:"bogo", trust:"reported", tagline:"this week" },
+    6:{ title:"Air Wick essential oil refill", retailer:"Dollar General", glyph:"🌸", now:"Coupon", was:"", save:"with app clip", type:"coupon", trust:"reported", tagline:"reported" },
+    8:{ title:"Scrubbing Bubbles foaming cleaner", retailer:"Dollar General", glyph:"🧼", now:"BOGO", was:"", save:"buy 1 get 1", type:"bogo", trust:"check", tagline:"check tag" },
+    9:{ title:"Mr. Clean bathroom cleaner", retailer:"Walgreens", glyph:"🧽", now:"Coupon", was:"", save:"with clip", type:"coupon", trust:"reported", tagline:"reported" },
+    10:{ title:"Hello Kitty kids slides", retailer:"Walmart", glyph:"🩴", now:"Clearance", was:"", save:"scan to find", type:"clearance", trust:"check", tagline:"check tag" }
+  };
+
+  /* category index for filtering (deal id -> categories) */
+  var DEAL_CATS = {
+    1:["socks"], 7:["socks"], 10:["socks"],
+    2:["outdoors"],
+    3:["laundry"], 5:["laundry"],
+    4:["bath"], 9:["bath","cleaning"],
+    6:["home"],
+    8:["cleaning","bath"]
+  };
+
+  /* retailers as channels — each sells itself with a headline */
+  var CHANNELS = [
+    { key:"dollar-tree",   name:"Dollar Tree",    em:"🌳", color:"#993556", wash:"#fbeef2",
+      headline:"Penny list · <b>everything 1¢</b>", count:98, fresh:"2h", typ:"Penny",
+      ribbon:{txt:"Penny", bg:"#fbeef2", fg:"#993556"}, deals:[1,7] },
+    { key:"dollar-general",name:"Dollar General", em:"🟡", color:"#235610", wash:"#eef5e6",
+      headline:"<b>12 fresh</b> penny + coupon finds", count:13, fresh:"1h", typ:"Mixed",
+      ribbon:null, deals:[4,6,8] },
+    { key:"target",        name:"Target",         em:"🎯", color:"#a32d2d", wash:"#fcebeb",
+      headline:"<b>70% off</b> camping clearance", count:8, fresh:"2h", typ:"Clearance",
+      ribbon:{txt:"Hot", bg:"#fcebeb", fg:"#a32d2d"}, deals:[2] },
+    { key:"walmart",       name:"Walmart",        em:"🔵", color:"#185fa5", wash:"#e6f1fb",
+      headline:"Hidden clearance · <b>scan to find</b>", count:9, fresh:"4h", typ:"Clearance",
+      ribbon:null, deals:[10] },
+    { key:"publix",        name:"Publix",         em:"🟢", color:"#3b6d11", wash:"#eaf3de",
+      headline:"<b>BOGO laundry</b> event this week", count:7, fresh:"today", typ:"BOGO",
+      ribbon:null, deals:[5] },
+    { key:"walgreens",     name:"Walgreens",      em:"🔴", color:"#a32d2d", wash:"#fcebeb",
+      headline:"<b>Coupon-stack</b> week", count:7, fresh:"today", typ:"Coupon",
+      ribbon:null, deals:[9] },
+    { key:"amazon",        name:"Amazon",         em:"📦", color:"#8a6a12", wash:"#f6efda",
+      headline:"<b>⚡ Price glitch</b> — act fast", count:2, fresh:"now", typ:"Glitch",
+      ribbon:{txt:"Live", bg:"#f6efda", fg:"#8a6a12"}, deals:[3] },
+    { key:"cvs",           name:"CVS",            em:"❤️", color:"#a32d2d", wash:"#fcebeb",
+      headline:"<b>ExtraBucks</b> deals", count:3, fresh:"today", typ:"Rewards",
+      ribbon:null, deals:[] }
+  ];
+
+  var CATS = [
+    { key:"all",      em:"✨", label:"All deals" },
+    { key:"socks",    em:"🧦", label:"Socks" },
+    { key:"laundry",  em:"🧺", label:"Laundry" },
+    { key:"bath",     em:"🧴", label:"Bath & body" },
+    { key:"cleaning", em:"🧽", label:"Cleaning" },
+    { key:"outdoors", em:"⛺", label:"Outdoors" },
+    { key:"home",     em:"🌸", label:"Home" }
+  ];
+
+  var DOTCLS = { matched:"f-confirmed", fresh:"f-fresh", check:"f-check", aging:"f-aging", reported:"f-fresh" };
+
+  /* ---------- helpers ---------- */
+  function el(html){ var t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstChild; }
+  function byId(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  /* ---------- build "also today" strip ---------- */
+  (function buildStrip(){
+    var wrap = byId("strip");
+    [2,3,4].forEach(function(id){
+      var d = DEALS[id], ty = TYPE[d.type], dot = DOTCLS[d.trust];
+      var tl = d.trust==="matched" ? "Matched" : d.trust==="fresh" ? "Fresh 2h ago" : d.trust==="aging" ? "Aging" : d.trust==="check" ? "Check tag" : "Reported";
+      var card = el(
+        '<div class="mini" data-deal="'+id+'" role="button" tabindex="0">'+
+          '<div class="top"><div class="g">'+d.glyph+'</div>'+
+            '<span class="type-tag '+ty.cls+'">'+ty.label+'</span></div>'+
+          '<div class="body">'+
+            '<div class="r">'+esc(d.retailer)+'</div>'+
+            '<h3>'+esc(d.title)+'</h3>'+
+            '<div class="pr"><b>'+esc(d.now)+'</b>'+(d.was?'<s>'+esc(d.was)+'</s>':'')+'</div>'+
+            '<div class="mtrust"><span class="fdot '+dot+'"></span>'+tl+'</div>'+
+          '</div>'+
+        '</div>');
+      wrap.appendChild(card);
+    });
+  })();
+
+  /* ---------- build category chips ---------- */
+  var activeCat = "all";
+  (function buildCats(){
+    var wrap = byId("cats");
+    CATS.forEach(function(c){
+      var chip = el('<button class="chip" data-cat="'+c.key+'" aria-pressed="'+(c.key==="all")+'"><span class="em">'+c.em+'</span>'+c.label+'</button>');
+      wrap.appendChild(chip);
+    });
+  })();
+
+  /* ---------- build channels ---------- */
+  function channelMarkup(ch){
+    var ribbon = ch.ribbon ? '<span class="ribbon" style="background:'+ch.ribbon.bg+';color:'+ch.ribbon.fg+'">'+ch.ribbon.txt+'</span>' : '';
+    return '<div class="channel" data-store="'+ch.key+'" role="button" tabindex="0" '+
+             'style="--ch:'+ch.color+';--chw:'+ch.wash+'">'+
+             '<div class="ch-logo">'+ch.em+'</div>'+
+             '<div class="ch-main">'+
+               '<div class="ch-name">'+esc(ch.name)+ribbon+'</div>'+
+               '<div class="ch-headline">'+ch.headline+'</div>'+
+             '</div>'+
+             '<div class="ch-right">'+
+               '<div class="ch-count">'+ch.count+'<span>deals</span></div>'+
+               '<div class="ch-go">→</div>'+
+             '</div>'+
+           '</div>';
+  }
+  function renderChannels(list){
+    var wrap = byId("channels");
+    wrap.innerHTML = "";
+    list.forEach(function(ch){ wrap.appendChild(el(channelMarkup(ch))); });
+  }
+  renderChannels(CHANNELS);
+
+  /* ---------- CATEGORY FILTER (visibly reshapes channels) ---------- */
+  function dealMatchesCat(id, cat){ return cat==="all" || (DEAL_CATS[id]||[]).indexOf(cat)>=0; }
+
+  function applyCategory(cat){
+    activeCat = cat;
+    document.querySelectorAll(".chip").forEach(function(c){
+      c.setAttribute("aria-pressed", String(c.dataset.cat===cat));
+    });
+
+    var catObj = CATS.filter(function(c){return c.key===cat;})[0] || { em:"🔎", label:cat };
+    var h2 = byId("ch-h2");
+
+    if(cat==="all"){
+      h2.innerHTML = 'Pick a store to check <span>· headlines tell you if it\'s worth it</span>';
+      renderChannels(CHANNELS);
+      byId("calmNote").classList.remove("show");
+      byId("addChannel").style.display = "";
+      return;
+    }
+
+    /* keep only stores that actually have a deal in this category */
+    var matching = CHANNELS.filter(function(ch){
+      return ch.deals.some(function(id){ return dealMatchesCat(id, cat); });
+    });
+
+    h2.innerHTML = 'Stores with '+esc(catObj.em+" "+catObj.label.toLowerCase())+' <span>· '+matching.length+' right now</span>';
+
+    if(matching.length===0){
+      renderChannels([]);
+      var note = byId("calmNote");
+      note.querySelector(".tx").innerHTML = "<b>Nothing amazing in "+esc(catObj.label.toLowerCase())+" right now.</b> That's okay — we only show real wins. Try another category, or check back this afternoon.";
+      note.classList.add("show");
+      byId("addChannel").style.display = "none";
+    } else {
+      byId("calmNote").classList.remove("show");
+      byId("addChannel").style.display = "";
+      renderChannels(matching);
+    }
+  }
+
+  /* ---------- DETAIL SHEET ---------- */
+  var scrim = byId("scrim"), sheet = byId("sheet");
+  function openDeal(id){
+    var d = DEALS[id]; if(!d) return;
+    var ty = TYPE[d.type], tr = TRUST[d.trust], play = PLAYS[d.type];
+
+    byId("dTypePill").textContent = ty.label;
+    byId("dTypePill").className = "typepill "+ty.cls;
+    byId("dGlyph").textContent = d.glyph;
+    byId("dRetailer").textContent = d.retailer+" · "+ty.label;
+    byId("dTitle").textContent = d.title;
+
+    byId("dNow").textContent = d.now;
+    byId("dWas").textContent = d.was || "";
+    byId("dWas").style.display = d.was ? "" : "none";
+    byId("dSav").textContent = d.save;
+
+    byId("dTrustDot").className = "tdot "+tr.dot;
+    byId("dTrustTitle").textContent = tr.title;
+    byId("dTrustSub").textContent = tr.sub;
+
+    byId("dAisleTx").textContent = AISLE[d.type];
+    byId("dAisle").style.display = (d.type==="glitch") ? "none" : "flex";
+
+    byId("dPlaySub").textContent = play.sub;
+    var ol = byId("dPlaySteps"); ol.innerHTML = "";
+    play.steps.forEach(function(s){ ol.appendChild(el('<li>'+esc(s)+'</li>')); });
+    var signs = byId("dSigns"); signs.innerHTML = "";
+    play.signs.forEach(function(s){ signs.appendChild(el('<span class="pill">'+esc(s)+'</span>')); });
+
+    byId("dGoStore").textContent = d.retailer;
+    byId("btnGo").dataset.store = (CHANNELS.filter(function(c){return c.name===d.retailer;})[0]||{}).key || "";
+
+    scrim.classList.add("open");
+    sheet.classList.add("open");
+    sheet.setAttribute("aria-hidden","false");
+  }
+  function closeSheet(){
+    scrim.classList.remove("open");
+    sheet.classList.remove("open");
+    sheet.setAttribute("aria-hidden","true");
+  }
+
+  /* ---------- SHARE (honest growth hook, no private data) ---------- */
+  var toast = byId("toast"), toastTimer;
+  function shareDeal(){
+    var title = byId("dTitle").textContent;
+    toast.querySelector("span:nth-child(2)").innerHTML =
+      esc(title.length>22 ? title.slice(0,22)+"…" : title)+' copied — <span class="ref">friends join free</span>';
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 2600);
+    if(navigator.vibrate){ try{ navigator.vibrate(8); }catch(e){} }
+  }
+
+  /* ---------- STORE VIEW ---------- */
+  var storeview = byId("storeview");
+  function openStore(key){
+    var ch = CHANNELS.filter(function(c){return c.key===key;})[0]; if(!ch) return;
+
+    byId("svEm").textContent = ch.em;
+    byId("svName").textContent = ch.name;
+    byId("svHl").innerHTML = ch.headline;
+    byId("svCount").textContent = ch.count;
+    byId("svFresh").textContent = ch.fresh;
+    byId("svType").textContent = ch.typ;
+    byId("svHead").style.background = ch.color;
+    byId("svCat").textContent = "BEST AT " + ch.name.toUpperCase() + " RIGHT NOW";
+
+    /* follow button state */
+    var fb = byId("svFollow");
+    fb.dataset.store = key;
+    fb.classList.toggle("following", !!followed[key]);
+    fb.textContent = followed[key] ? "✓ Following" : "＋ Follow";
+
+    /* deals list */
+    var list = byId("svList"); list.innerHTML = "";
+    var ids = ch.deals.length ? ch.deals : [];
+    if(ids.length===0){
+      list.appendChild(el('<div style="text-align:center;color:#908b7e;font-size:13px;font-weight:600;padding:40px 20px;line-height:1.6">No standout deals here this minute.<br>Follow the store and we\'ll surface them the moment they land.</div>'));
+    }
+    ids.forEach(function(id){
+      var d = DEALS[id], ty = TYPE[d.type], dot = DOTCLS[d.trust];
+      var item = el(
+        '<div class="sv-deal" data-deal="'+id+'" role="button" tabindex="0">'+
+          '<div class="g">'+d.glyph+'</div>'+
+          '<div class="mid">'+
+            '<div class="tt">'+esc(d.title)+'</div>'+
+            '<div class="mt"><span class="fdot '+dot+'"></span>'+esc(d.tagline)+'</div>'+
+          '</div>'+
+          '<div class="pp"><b>'+esc(d.now)+'</b>'+(d.was?'<s>'+esc(d.was)+'</s>':'')+
+            '<span class="typ '+ty.cls+'">'+ty.label+'</span></div>'+
+        '</div>');
+      list.appendChild(item);
+    });
+
+    byId("svBody") && (byId("svBody").scrollTop = 0);
+    storeview.classList.add("open");
+    storeview.setAttribute("aria-hidden","false");
+  }
+  function closeStore(){
+    storeview.classList.remove("open");
+    storeview.setAttribute("aria-hidden","true");
+  }
+
+  /* ---------- FOLLOW state ---------- */
+  var followed = { "target":true, "dollar-tree":true };
+  function toggleFollow(key, btn){
+    followed[key] = !followed[key];
+    btn.classList.toggle("following", followed[key]);
+    btn.textContent = followed[key] ? "✓ Following" : "＋ Follow";
+    if(navigator.vibrate){ try{ navigator.vibrate(6); }catch(e){} }
+  }
+
+  /* ============================================================
+     EVENT WIRING (delegation — robust + light)
+     ============================================================ */
+  document.addEventListener("click", function(e){
+    var t = e.target;
+
+    /* category chip */
+    var chip = t.closest(".chip");
+    if(chip){ applyCategory(chip.dataset.cat); return; }
+
+    /* open a deal (cover, mini, store-view row) */
+    var dealEl = t.closest("[data-deal]");
+    if(dealEl){ openDeal(dealEl.getAttribute("data-deal")); return; }
+
+    /* open a store channel */
+    var chEl = t.closest(".channel[data-store]");
+    if(chEl){ openStore(chEl.getAttribute("data-store")); return; }
+
+    /* add/follow store from home */
+    if(t.closest("#addChannel")){
+      var n = byId("calmNote");
+      n.querySelector(".tx").innerHTML = "<b>Tell us a store you love</b> and we'll put its best finds at the top of your edition each morning. (Demo: follow toggles live on any store page.)";
+      byId("calmNote").querySelector(".ico").textContent = "🔔";
+      n.classList.add("show");
+      setTimeout(function(){ n.classList.remove("show"); n.querySelector(".ico").textContent="🌤️"; }, 4200);
+      return;
+    }
+
+    /* sheet controls */
+    if(t.closest("#sheetClose") || t === scrim){ closeSheet(); return; }
+    if(t.closest("#btnShare")){ shareDeal(); return; }
+    if(t.closest("#btnGo")){
+      var k = byId("btnGo").dataset.store;
+      closeSheet();
+      if(k){ setTimeout(function(){ openStore(k); }, 180); }
+      return;
+    }
+
+    /* store view controls */
+    if(t.closest("#svBack")){ closeStore(); return; }
+    if(t.closest("#svFollow")){ var fb=byId("svFollow"); toggleFollow(fb.dataset.store, fb); return; }
+  });
+
+  /* keyboard: Enter/Space on role=button, Esc to close */
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape"){
+      if(sheet.classList.contains("open")) return closeSheet();
+      if(storeview.classList.contains("open")) return closeStore();
+    }
+    if((e.key==="Enter"||e.key===" ") && document.activeElement){
+      var a = document.activeElement;
+      if(a.matches("[data-deal],[data-store],.chip")){ e.preventDefault(); a.click(); }
+    }
+  });
+
+  /* tap scrim closes */
+  scrim.addEventListener("click", closeSheet);
+
+})();
+</script>
+</body>
+</html>

@@ -2512,7 +2512,7 @@ window.STAGING_DEALS = [
     "note": "Walgreens \u00b7 clearance \u00b7 93% extraction confidence. Source-only fields are omitted from this public staging snapshot."
   },
   {
-    "id": "fb_974074741757877",
+    "id": "dh_redacted01",
     "sku": "",
     "title": "7-Eleven Large Cheese Pizza",
     "retailer": "7-Eleven",

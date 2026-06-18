@@ -1,0 +1,1560 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter Home - Best Effort Mockup</title>
+  <style>
+    :root {
+      --page: #efeee9;
+      --app: #fffefa;
+      --ink: #23231f;
+      --muted: #6f6b63;
+      --soft: #9b968c;
+      --line: #ded9ce;
+      --line-soft: #ebe7dc;
+      --wash: #f5f3ed;
+      --tile: #ffffff;
+      --pink: #993556;
+      --pink-bg: #f8e8ef;
+      --green: #276311;
+      --green-bg: #eaf3e4;
+      --blue: #183d5d;
+      --blue-bg: #e8f0f6;
+      --red: #9d2c25;
+      --red-bg: #f9e8e5;
+      --shadow: 0 16px 38px rgba(35, 35, 31, 0.12);
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--page);
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .canvas {
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: minmax(340px, 430px) minmax(280px, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .phone {
+      width: min(100%, 430px);
+      min-height: 860px;
+      margin: 0 auto;
+      background: var(--app);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .app {
+      min-height: 860px;
+      background: var(--app);
+    }
+
+    .top {
+      padding: 18px 18px 12px;
+      background: rgba(255, 254, 250, 0.94);
+      border-bottom: 1px solid var(--line-soft);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(18px);
+    }
+
+    .top-row,
+    .row,
+    .spread {
+      display: flex;
+      align-items: center;
+    }
+
+    .top-row {
+      gap: 10px;
+    }
+
+    .spread {
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      background: var(--ink);
+      color: var(--app);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .brand-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-title strong {
+      display: block;
+      font-size: 19px;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+
+    .brand-title span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .icon-btn,
+    .back-btn,
+    .quiet-btn,
+    .mini-btn {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--tile);
+      min-width: 0;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .back-btn {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .search {
+      margin-top: 14px;
+      position: relative;
+    }
+
+    .search input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--tile);
+      color: var(--ink);
+      padding: 0 42px 0 15px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search input:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(153, 53, 86, 0.10);
+    }
+
+    .search span {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 16px 18px 22px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 27px;
+      line-height: 1.05;
+      font-weight: 850;
+    }
+
+    h2 {
+      font-size: 17px;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin: 18px 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pink);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .eyebrow::before,
+    .live::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .fine {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--tile);
+      box-shadow: 0 12px 30px rgba(35, 35, 31, 0.10);
+      min-width: 0;
+    }
+
+    .hero-art {
+      min-height: 206px;
+      display: grid;
+      grid-template-columns: 44% 56%;
+      background:
+        linear-gradient(135deg, rgba(153, 53, 86, 0.08), rgba(39, 99, 17, 0.07)),
+        var(--wash);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .hero-photo {
+      min-height: 206px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 8px 14px 14px;
+    }
+
+    .hero-photo img,
+    .mini-art img,
+    .deal-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hero-photo img {
+      width: 112px;
+      height: 158px;
+      filter: drop-shadow(0 14px 14px rgba(35, 35, 31, 0.18));
+    }
+
+    .hero-copy {
+      padding: 18px 12px 15px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .store-pill,
+    .signal-pill,
+    .category-chip,
+    .trust-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .store-pill {
+      align-self: flex-start;
+      background: var(--pink-bg);
+      color: var(--pink);
+      font-size: 11px;
+      font-weight: 850;
+      padding: 5px 8px;
+      margin-bottom: 9px;
+    }
+
+    .hero-title {
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 850;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+
+    .price-line {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-top: 9px;
+      min-width: 0;
+    }
+
+    .price {
+      color: var(--green);
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .was {
+      color: var(--soft);
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: line-through;
+    }
+
+    .hero-note {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.32;
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 10px;
+      background: #fbfaf7;
+    }
+
+    .trust-chip {
+      border: 1px solid var(--line-soft);
+      background: var(--tile);
+      color: var(--muted);
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .trust-chip.good {
+      border-color: rgba(39, 99, 17, 0.22);
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 10px 11px;
+      background: #fbfaf7;
+      min-width: 0;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      height: 42px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 850;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .primary-btn {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--app);
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--line);
+      background: var(--tile);
+      color: var(--ink);
+    }
+
+    .mini-rail,
+    .chip-rail,
+    .store-rail {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 9px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mini-rail::-webkit-scrollbar,
+    .chip-rail::-webkit-scrollbar,
+    .store-rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mini-card {
+      flex: 0 0 164px;
+      border: 1px solid var(--line);
+      background: var(--tile);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mini-art {
+      height: 94px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--wash);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .mini-card:nth-child(2) .mini-art {
+      background: var(--blue-bg);
+    }
+
+    .mini-card:nth-child(3) .mini-art {
+      background: var(--green-bg);
+    }
+
+    .mini-body {
+      padding: 10px;
+    }
+
+    .mini-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 7px;
+    }
+
+    .mini-price {
+      color: var(--green);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .signal-pill {
+      padding: 5px 7px;
+      font-size: 10px;
+      font-weight: 850;
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .signal-pill.warn {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    .store-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .follow-strip {
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: #fbfaf7;
+      padding: 9px 10px;
+    }
+
+    .follow-strip strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .follow-strip span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .store-card {
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--tile);
+      color: var(--ink);
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      text-align: left;
+      align-items: center;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .store-card.active,
+    .store-card:focus-visible {
+      outline: none;
+      border-color: var(--blue);
+      background: var(--blue-bg);
+    }
+
+    .store-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--wash);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--pink);
+    }
+
+    .store-copy {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .store-name {
+      display: block;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.15;
+    }
+
+    .store-headline {
+      display: block;
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .follow-btn {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--tile);
+      color: var(--ink);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .follow-btn.on {
+      color: var(--green);
+      border-color: rgba(39, 99, 17, 0.28);
+      background: var(--green-bg);
+    }
+
+    .chip-rail {
+      padding: 1px 0 2px;
+    }
+
+    .category-chip {
+      flex: 0 0 auto;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: var(--tile);
+      color: var(--ink);
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .category-chip.active {
+      background: var(--ink);
+      color: var(--app);
+      border-color: var(--ink);
+    }
+
+    .deal-stack {
+      display: grid;
+      gap: 9px;
+      min-height: 126px;
+    }
+
+    .deal-row-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--tile);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 11px;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .deal-thumb {
+      height: 72px;
+      border-radius: 8px;
+      background: var(--wash);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px;
+      overflow: hidden;
+    }
+
+    .deal-copy {
+      min-width: 0;
+    }
+
+    .deal-title {
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.18;
+    }
+
+    .deal-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .deal-price {
+      color: var(--green);
+      font-size: 21px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .deal-trust {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .deal-play {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.32;
+      margin-top: 7px;
+    }
+
+    .store-hero {
+      padding: 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background:
+        linear-gradient(145deg, rgba(24, 61, 93, 0.08), rgba(153, 53, 86, 0.06)),
+        var(--app);
+    }
+
+    .store-hero h1 {
+      margin-top: 8px;
+      max-width: 310px;
+    }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .play-band {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 12px;
+    }
+
+    .play-band strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .empty,
+    .loading-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--tile);
+      padding: 18px 15px;
+      text-align: center;
+    }
+
+    .empty h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .empty .secondary-btn {
+      margin-top: 13px;
+      min-width: 132px;
+      padding: 0 16px;
+    }
+
+    .loading-card {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .skeleton {
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--line-soft), #f8f5ee, var(--line-soft));
+      background-size: 220% 100%;
+      animation: shimmer 1.1s linear infinite;
+    }
+
+    .skeleton.short {
+      width: 56%;
+    }
+
+    .skeleton.tall {
+      height: 70px;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -20% 0; }
+    }
+
+    .detail-sheet {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 20;
+      display: none;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(35, 35, 31, 0.22);
+    }
+
+    .detail-sheet.open {
+      display: flex;
+    }
+
+    .sheet-card {
+      width: min(100%, 394px);
+      border-radius: 16px 16px 0 0;
+      background: var(--app);
+      border: 1px solid var(--line);
+      padding: 14px;
+      box-shadow: 0 -18px 40px rgba(35, 35, 31, 0.18);
+    }
+
+    .sheet-card .deal-row-card {
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .notes {
+      color: var(--ink);
+      background: #fbfaf7;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .notes h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .notes h3 {
+      margin-top: 18px;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    .notes p,
+    .notes li {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .notes ul {
+      margin: 8px 0 0;
+      padding-left: 19px;
+    }
+
+    .notes li + li {
+      margin-top: 7px;
+    }
+
+    .notes code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--ink);
+      background: var(--wash);
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      padding: 1px 4px;
+    }
+
+    .compact-title {
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 860px) {
+      .canvas {
+        display: block;
+        padding: 0;
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+
+      .phone {
+        width: 100vw;
+        max-width: 100vw;
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .app {
+        width: 100vw;
+        max-width: 100vw;
+        min-height: 100vh;
+      }
+
+      .notes {
+        border-width: 1px 0 0;
+        border-radius: 0;
+      }
+
+      .hero-art {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+
+      .hero-photo {
+        min-height: 142px;
+        padding: 16px 16px 6px;
+      }
+
+      .hero-photo img {
+        width: 104px;
+        height: 126px;
+      }
+
+      .hero-copy {
+        padding: 0 16px 16px;
+      }
+
+      .hero-title {
+        font-size: 23px;
+      }
+
+      .hero-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .follow-strip {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 370px) {
+      .content,
+      .top,
+      .store-hero {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .hero-title { font-size: 21px; }
+
+      .price {
+        font-size: 28px;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="phone" aria-label="Deal Hunter mobile mockup">
+      <main class="app" id="app"></main>
+    </div>
+
+    <aside class="notes" aria-label="Design notes">
+      <p class="compact-title">Independent direction 1</p>
+      <h2>Storefront first, dashboard later</h2>
+      <p>This version makes the opening screen do two things only: sell the best few deals of the day, then make the next retailer tap obvious. It keeps the warm Deal Hunter palette, but lowers the visual noise and gives one product a true ad-agency moment.</p>
+
+      <h3>Why each element earns its place</h3>
+      <ul>
+        <li><strong>Top search:</strong> supports "I need a product" without competing with the curated home story.</li>
+        <li><strong>Hero deal:</strong> creates the "holy smokes" moment with image, penny price, was-price, and one honest confidence row.</li>
+        <li><strong>Three mini deals:</strong> proves there are multiple real opportunities today without turning the page into a feed.</li>
+        <li><strong>Retailer cards:</strong> answer "which store should I care about?" with a headline, not a count dump.</li>
+        <li><strong>Category chips:</strong> visible, finger-sized, and immediate. Tap <code>Cleaning</code> or <code>Kids</code> to reshape the page; tap <code>Pets</code> for the calm empty state.</li>
+        <li><strong>The play:</strong> each deal has a short route-to-success hook, leaving room for the future authored deal instructions and sharing flow.</li>
+      </ul>
+
+      <h3>Interaction proof</h3>
+      <ul>
+        <li>Tap a retailer card to enter that store's best-deals view.</li>
+        <li>Tap any category chip to filter the home and store view.</li>
+        <li>Tap a deal for the single deal card sheet with price story, trust, play, and share/watch affordances.</li>
+        <li>The <code>Pets</code> chip shows the empty state; <code>Check again</code> briefly shows loading.</li>
+      </ul>
+
+      <h3>Honesty treatment</h3>
+      <p>Every deal uses one compact trust row: freshness, match/report confidence, and "check tag" or "scan to confirm." It never claims stock and never invents verification.</p>
+    </aside>
+  </div>
+
+  <div class="detail-sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Deal detail">
+    <div class="sheet-card" id="sheetCard"></div>
+  </div>
+
+  <script>
+    const stores = [
+      {
+        id: "dt",
+        short: "DT",
+        name: "Dollar Tree",
+        headline: "98 penny-list photos ready",
+        sub: "Best for scan-and-match finds",
+        count: 98,
+        followed: true,
+        play: "Start with baby care, licensed socks, and seasonal endcaps. Scan the shelf tag before checkout. No live stock."
+      },
+      {
+        id: "target",
+        short: "TGT",
+        name: "Target",
+        headline: "70% off camping and home",
+        sub: "Few items, stronger savings",
+        count: 12,
+        followed: false,
+        play: "Check clearance aisles first, then endcaps near seasonal. Look for red clearance tags and compare in app."
+      },
+      {
+        id: "dg",
+        short: "DG",
+        name: "Dollar General",
+        headline: "$5 off $25 stacks today",
+        sub: "Coupon math, simple plays",
+        count: 8,
+        followed: false,
+        play: "Build the basket before checkout. Clip the store coupon, scan each item, and keep a backup item ready."
+      },
+      {
+        id: "wm",
+        short: "WM",
+        name: "Walmart",
+        headline: "Rollback toys under $3",
+        sub: "Good for quick grocery runs",
+        count: 5,
+        followed: false,
+        play: "Use this as an add-on stop. Confirm the shelf tag and scan if the app price looks stale."
+      }
+    ];
+
+    const deals = [
+      {
+        id: "baby-shark-pair",
+        title: "Baby Shark bath pair",
+        retailer: "Dollar Tree",
+        store: "dt",
+        category: "Kids",
+        type: "Penny",
+        price: "$0.01",
+        was: "$1.25",
+        signal: "Fresh today",
+        trust: "Matched catalog",
+        confirm: "Check tag",
+        image: "../deal-hunter-staging/images/379530.jpg",
+        imageAlt: "Baby Shark shampoo",
+        hook: "Two bath minis on the penny list.",
+        play: "Go to baby care, match the blue bottle and cap, then scan before checkout."
+      },
+      {
+        id: "smurfs-socks",
+        title: "Bugs Bunny crew socks",
+        retailer: "Dollar Tree",
+        store: "dt",
+        category: "Apparel",
+        type: "Penny",
+        price: "$0.01",
+        was: "$1.25",
+        signal: "Fresh today",
+        trust: "Matched catalog",
+        confirm: "Check tag",
+        image: "../deal-hunter-staging/images/402718.jpg",
+        imageAlt: "Bugs Bunny crew socks",
+        hook: "Licensed socks are the fast movers.",
+        play: "Check sock pegs and seasonal bins. Match character art, not just color."
+      },
+      {
+        id: "bathroom-cleaner",
+        title: "Bathroom cleaner kit",
+        retailer: "Dollar Tree",
+        store: "dt",
+        category: "Cleaning",
+        type: "Penny",
+        price: "$0.01",
+        was: "$1.25",
+        signal: "New match",
+        trust: "Matched catalog",
+        confirm: "Check tag",
+        image: "../deal-hunter-staging/images/367385.jpg",
+        imageAlt: "Bathroom cleaner kit",
+        hook: "Practical score, easy to spot.",
+        play: "Start in cleaning. Look low on the shelf and compare the green handle."
+      },
+      {
+        id: "soup-pack",
+        title: "Spicy tomato soup",
+        retailer: "Dollar Tree",
+        store: "dt",
+        category: "Pantry",
+        type: "Penny",
+        price: "$0.01",
+        was: "$1.25",
+        signal: "Aging",
+        trust: "Reported",
+        confirm: "Scan to confirm",
+        image: "../deal-hunter-staging/images/413552.jpg",
+        imageAlt: "Campbell's spicy tomato soup",
+        hook: "Worth checking if you are already there.",
+        play: "Check pantry shelves and clearance carts. Treat as a bonus find, not a dedicated trip."
+      },
+      {
+        id: "camping-chair",
+        title: "Compact camp chair",
+        retailer: "Target",
+        store: "target",
+        category: "Camping",
+        type: "Clearance",
+        price: "$7.49",
+        was: "$24.99",
+        signal: "Reported 2h",
+        trust: "Reported",
+        confirm: "Scan to confirm",
+        image: "../deal-hunter-staging/images/846236.jpg",
+        imageAlt: "Representative product photo",
+        hook: "Big savings, store-tag dependent.",
+        play: "Start at seasonal clearance. Only trust the scanner if shelf tags disagree."
+      },
+      {
+        id: "body-wash",
+        title: "Body wash coupon stack",
+        retailer: "Dollar General",
+        store: "dg",
+        category: "Beauty",
+        type: "Coupon",
+        price: "$2.95",
+        was: "$7.99",
+        signal: "Today",
+        trust: "Reported",
+        confirm: "Clip coupon",
+        image: "../deal-hunter-staging/images/379537.jpg",
+        imageAlt: "Representative body care bottle",
+        hook: "Good basket builder for the $5 off $25 play.",
+        play: "Clip the coupon, scan in cart, and verify the subtotal before checkout."
+      },
+      {
+        id: "waterproof-bandages",
+        title: "Carepak waterproof bandages",
+        retailer: "Walmart",
+        store: "wm",
+        category: "Health",
+        type: "Rollback",
+        price: "$1.50",
+        was: "$4.98",
+        signal: "Fresh today",
+        trust: "Reported",
+        confirm: "No live stock",
+        image: "../deal-hunter-staging/images/333872.jpg",
+        imageAlt: "Carepak waterproof bandages",
+        hook: "Useful household filler.",
+        play: "Only check if you are already shopping. Scan tag and skip if not clearly marked."
+      }
+    ];
+
+    const categories = ["All", "Cleaning", "Kids", "Pantry", "Beauty", "Apparel", "Camping", "Pets"];
+    const app = document.getElementById("app");
+    const sheet = document.getElementById("sheet");
+    const sheetCard = document.getElementById("sheetCard");
+
+    let state = {
+      view: "home",
+      store: null,
+      category: "All",
+      loading: false
+    };
+
+    function dealSavings(deal) {
+      const price = parseFloat(deal.price.replace("$", ""));
+      const was = parseFloat(deal.was.replace("$", ""));
+      if (!was || !price) return "";
+      const pct = Math.round((1 - price / was) * 100);
+      return pct + "% off";
+    }
+
+    function byCategory(list) {
+      if (state.category === "All") return list;
+      return list.filter((deal) => deal.category === state.category);
+    }
+
+    function dealButton(deal, compact) {
+      return `
+        <button class="deal-row-card" type="button" data-deal="${deal.id}">
+          <span class="deal-thumb"><img src="${deal.image}" alt="${deal.imageAlt}" loading="lazy"></span>
+          <span class="deal-copy">
+            <span class="row" style="gap:6px; margin-bottom:5px;">
+              <span class="store-pill" style="margin:0;">${deal.type}</span>
+              <span class="fine">${deal.retailer}</span>
+            </span>
+            <span class="deal-title">${deal.title}</span>
+            <span class="deal-line">
+              <span class="deal-price">${deal.price}</span>
+              <span class="was">${deal.was}</span>
+              <span class="signal-pill">${dealSavings(deal)}</span>
+            </span>
+            <span class="deal-trust">
+              <span class="trust-chip good">${deal.signal}</span>
+              <span class="trust-chip">${deal.trust}</span>
+              <span class="trust-chip">${deal.confirm}</span>
+            </span>
+            ${compact ? "" : `<span class="deal-play">${deal.hook}</span>`}
+          </span>
+        </button>
+      `;
+    }
+
+    function categoryRail() {
+      return `
+        <div class="chip-rail" role="tablist" aria-label="Categories">
+          ${categories.map((category) => `
+            <button class="category-chip ${state.category === category ? "active" : ""}" type="button" data-category="${category}">
+              ${category}
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderTop() {
+      const isStore = state.view === "store";
+      const selectedStore = stores.find((store) => store.id === state.store);
+      return `
+        <header class="top">
+          <div class="top-row">
+            ${isStore ? `<button class="back-btn" type="button" data-action="home">Back</button>` : `<span class="brand-mark">DH</span>`}
+            <div class="brand-title">
+              <strong>${isStore ? selectedStore.name : "Deal Hunter"}</strong>
+              <span>${isStore ? selectedStore.headline : "Fresh finds, picked for today"}</span>
+            </div>
+            <button class="icon-btn" type="button" aria-label="Alerts">!</button>
+          </div>
+          <label class="search">
+            <input type="search" placeholder="Search product, SKU, or store">
+            <span>Go</span>
+          </label>
+        </header>
+      `;
+    }
+
+    function heroDealHtml(deal) {
+      return `
+        <section class="hero" aria-label="Top deal today">
+          <div class="hero-art">
+            <div class="hero-photo">
+              <img src="${deal.image}" alt="${deal.imageAlt}">
+            </div>
+            <div class="hero-copy">
+              <span class="store-pill">${deal.retailer}</span>
+              <h1 class="hero-title">${deal.title}</h1>
+              <div class="price-line">
+                <span class="price">${deal.price}</span>
+                <span class="was">${deal.was}</span>
+              </div>
+              <p class="hero-note">${deal.hook}</p>
+            </div>
+          </div>
+          <div class="trust-row">
+            <span class="trust-chip good">${deal.signal}</span>
+            <span class="trust-chip">${deal.trust}</span>
+            <span class="trust-chip">${deal.confirm}</span>
+            <span class="trust-chip">${dealSavings(deal)}</span>
+          </div>
+          <div class="hero-actions">
+            <button class="primary-btn" type="button" data-store="${deal.store}">See ${deal.retailer}</button>
+            <button class="secondary-btn" type="button" data-deal="${deal.id}">The play</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function miniDealsHtml(list) {
+      return `
+        <div class="mini-rail" aria-label="More deals of the day">
+          ${list.slice(0, 3).map((deal) => `
+            <button class="mini-card" type="button" data-deal="${deal.id}">
+              <span class="mini-art"><img src="${deal.image}" alt="${deal.imageAlt}" loading="lazy"></span>
+              <span class="mini-body">
+                <span class="fine">${deal.retailer} - ${deal.type}</span>
+                <h3>${deal.title}</h3>
+                <span class="mini-meta">
+                  <span class="mini-price">${deal.price}</span>
+                  <span class="signal-pill ${deal.signal === "Aging" ? "warn" : ""}">${deal.signal}</span>
+                </span>
+              </span>
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function storesHtml() {
+      return `
+        <div class="store-grid">
+          ${stores.map((store) => `
+            <button class="store-card ${state.store === store.id ? "active" : ""}" type="button" data-store="${store.id}">
+              <span class="store-badge">${store.short}</span>
+              <span class="store-copy">
+                <span class="store-name">${store.name}</span>
+                <span class="store-headline">${store.followed ? "Following - " : ""}${store.headline}</span>
+              </span>
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function emptyHtml() {
+      return `
+        <section class="empty" aria-live="polite">
+          <h3>Nothing amazing in ${state.category} right now.</h3>
+          <p class="fine">No live stock claims, no filler deals. Follow the category and Deal Hunter will surface it when the signal is worth a trip.</p>
+          <button class="secondary-btn" type="button" data-action="refresh">Check again</button>
+        </section>
+      `;
+    }
+
+    function loadingHtml() {
+      return `
+        <section class="loading-card" aria-live="polite" aria-label="Checking deals">
+          <span class="skeleton tall"></span>
+          <span class="skeleton"></span>
+          <span class="skeleton short"></span>
+        </section>
+      `;
+    }
+
+    function renderHome() {
+      const filtered = byCategory(deals);
+      const hero = filtered[0];
+      const rest = filtered.slice(1);
+
+      app.innerHTML = `
+        ${renderTop()}
+        <div class="content">
+          <div class="spread">
+            <span class="eyebrow">Updated 9 min ago</span>
+            <span class="fine">No live stock</span>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h2>Deals of the day</h2>
+              <p class="fine">Best few first. Everything else can wait.</p>
+            </div>
+          </div>
+
+          ${state.loading ? loadingHtml() : hero ? heroDealHtml(hero) : emptyHtml()}
+
+          <div class="section-head">
+            <div>
+              <h2>Pick a retailer</h2>
+              <p class="fine">Tap the store you are willing to check.</p>
+            </div>
+          </div>
+          <div class="follow-strip">
+            <div>
+              <strong>Following Dollar Tree</strong>
+              <span>Add the stores you actually shop.</span>
+            </div>
+            <button class="quiet-btn" style="border-radius:999px; padding:7px 10px; font-size:12px; font-weight:800;" type="button" data-action="add-store">Add store</button>
+          </div>
+          ${storesHtml()}
+
+          <div class="section-head">
+            <div>
+              <h2>Shop by need</h2>
+              <p class="fine">Narrow without digging.</p>
+            </div>
+          </div>
+          ${categoryRail()}
+
+          ${!state.loading && hero && rest.length ? `
+            <div class="section-head">
+              <h2>Worth a look</h2>
+              <span class="fine">${filtered.length} picks</span>
+            </div>
+            ${miniDealsHtml(rest)}
+          ` : ""}
+
+          <div class="section-head">
+            <h2>${state.category === "All" ? "Today shortlist" : "Best in " + state.category}</h2>
+            <button class="quiet-btn" style="border-radius:999px; padding:7px 10px; font-size:12px; font-weight:800;" type="button" data-action="refresh">Refresh</button>
+          </div>
+          <div class="deal-stack">
+            ${state.loading ? loadingHtml() : filtered.length ? filtered.slice(0, 4).map((deal) => dealButton(deal, false)).join("") : emptyHtml()}
+          </div>
+        </div>
+      `;
+      bindEvents();
+    }
+
+    function renderStore() {
+      const selectedStore = stores.find((store) => store.id === state.store) || stores[0];
+      const storeDeals = byCategory(deals.filter((deal) => deal.store === selectedStore.id));
+
+      app.innerHTML = `
+        ${renderTop()}
+        <section class="store-hero">
+          <span class="live">${selectedStore.count} useful finds</span>
+          <h1>${selectedStore.headline}</h1>
+          <p class="fine" style="margin-top:8px;">${selectedStore.sub}</p>
+          <div class="play-band">
+            <strong>The play</strong>
+            <p class="fine">${selectedStore.play}</p>
+          </div>
+        </section>
+        <div class="content">
+          <div class="section-head">
+            <div>
+              <h2>Filter this store</h2>
+              <p class="fine">Keep only what matters for the aisle you are in.</p>
+            </div>
+          </div>
+          ${categoryRail()}
+
+          <div class="section-head">
+            <div>
+              <h2>${state.category === "All" ? "Best at " + selectedStore.name : state.category + " at " + selectedStore.name}</h2>
+              <p class="fine">${storeDeals.length ? storeDeals.length + " useful picks" : "No strong signal"}</p>
+            </div>
+          </div>
+          <div class="deal-stack">
+            ${state.loading ? loadingHtml() : storeDeals.length ? storeDeals.map((deal) => dealButton(deal, false)).join("") : emptyHtml()}
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h2>Other stores</h2>
+              <p class="fine">Jump without going back.</p>
+            </div>
+          </div>
+          ${storesHtml()}
+        </div>
+      `;
+      bindEvents();
+    }
+
+    function render() {
+      if (state.view === "store") {
+        renderStore();
+      } else {
+        renderHome();
+      }
+    }
+
+    function setCategory(category) {
+      state.category = category;
+      state.loading = false;
+      render();
+    }
+
+    function setStore(storeId) {
+      state.view = "store";
+      state.store = storeId;
+      state.loading = false;
+      render();
+    }
+
+    function refresh() {
+      state.loading = true;
+      render();
+      window.setTimeout(() => {
+        state.loading = false;
+        render();
+      }, 650);
+    }
+
+    function addStore() {
+      const nextStore = stores.find((store) => !store.followed);
+      if (!nextStore) return;
+      nextStore.followed = true;
+      render();
+    }
+
+    function showDeal(dealId) {
+      const deal = deals.find((item) => item.id === dealId);
+      if (!deal) return;
+      sheetCard.innerHTML = `
+        ${dealButton(deal, false)}
+        <div class="play-band">
+          <strong>The play</strong>
+          <p class="fine">${deal.play}</p>
+        </div>
+        <div class="sheet-actions">
+          <button class="secondary-btn" type="button" data-action="close">Share</button>
+          <button class="primary-btn" type="button" data-action="close">Watch this</button>
+        </div>
+      `;
+      sheet.classList.add("open");
+      sheetCard.querySelectorAll("[data-action='close']").forEach((button) => {
+        button.addEventListener("click", closeSheet);
+      });
+    }
+
+    function closeSheet() {
+      sheet.classList.remove("open");
+    }
+
+    function bindEvents() {
+      app.querySelectorAll("[data-category]").forEach((button) => {
+        button.addEventListener("click", () => setCategory(button.dataset.category));
+      });
+
+      app.querySelectorAll("[data-store]").forEach((button) => {
+        button.addEventListener("click", () => {
+          setStore(button.dataset.store);
+        });
+      });
+
+      app.querySelectorAll("[data-deal]").forEach((button) => {
+        button.addEventListener("click", () => showDeal(button.dataset.deal));
+      });
+
+      app.querySelectorAll("[data-action='home']").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.view = "home";
+          state.store = null;
+          state.loading = false;
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-action='refresh']").forEach((button) => {
+        button.addEventListener("click", refresh);
+      });
+
+      app.querySelectorAll("[data-action='add-store']").forEach((button) => {
+        button.addEventListener("click", addStore);
+      });
+    }
+
+    sheet.addEventListener("click", (event) => {
+      if (event.target === sheet) closeSheet();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSheet();
+    });
+
+    render();
+  </script>
+</body>
+</html>

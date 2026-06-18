@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Best deals today</title>
+<style>
+  :root{
+    /* Calm, premium palette — NO orange anywhere */
+    --bg:#eef1f4;
+    --paper:#ffffff;
+    --ink:#16202b;          /* near-black, slightly warm */
+    --ink-2:#41525f;        /* secondary text */
+    --ink-3:#7d8c98;        /* tertiary / captions */
+    --line:#e7ebef;         /* hairlines */
+    --line-2:#eef2f5;
+    --brand:#0f7a6a;        /* deep teal — trustworthy, the "win" green */
+    --brand-soft:#e6f4f1;
+    --brand-ink:#0a5c50;
+    --gold:#b07d2a;         /* muted gold for "rare find", warm not orange */
+    --gold-soft:#f6efe2;
+    --photo-bg:#f4f6f8;     /* behind product photos */
+    --shadow: 0 1px 2px rgba(22,32,43,.05), 0 8px 24px rgba(22,32,43,.06);
+    --shadow-lg: 0 2px 6px rgba(22,32,43,.06), 0 18px 44px rgba(22,32,43,.12);
+    --r:18px;
+    --r-lg:26px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(120% 60% at 50% -8%, #f4f7fb 0%, var(--bg) 60%) fixed,
+      var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;justify-content:center;
+    padding:22px 0 0;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{
+    width:392px;
+    min-height:830px;
+    background:var(--bg);
+    border-radius:46px;
+    padding:11px;
+    box-shadow:
+      0 0 0 2px #d4dae0,
+      0 0 0 11px #11161b,
+      0 0 0 12px #232a31,
+      var(--shadow-lg);
+    position:relative;
+  }
+  .screen{
+    background:var(--bg);
+    border-radius:36px;
+    overflow:hidden;
+    position:relative;
+    height:808px;
+  }
+  .scroll{
+    height:100%;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* status bar */
+  .status{
+    height:52px;display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 26px 7px;font-weight:600;font-size:14px;color:var(--ink);
+    position:sticky;top:0;z-index:40;
+    background:linear-gradient(var(--bg) 72%, rgba(238,241,244,0));
+  }
+  .status .dots{display:flex;align-items:center;gap:5px}
+  .status .bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+  .status .bars i{width:3px;background:var(--ink);border-radius:1px;display:block}
+  .status .bars i:nth-child(1){height:4px}
+  .status .bars i:nth-child(2){height:6px}
+  .status .bars i:nth-child(3){height:8px}
+  .status .bars i:nth-child(4){height:11px}
+  .battery{width:24px;height:12px;border:1.6px solid var(--ink);border-radius:3px;position:relative;opacity:.95}
+  .battery::after{content:"";position:absolute;right:-3px;top:3px;width:2px;height:6px;background:var(--ink);border-radius:0 1px 1px 0}
+  .battery i{position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:62%;background:var(--ink);border-radius:1px}
+
+  /* ---------- app header ---------- */
+  header.app{
+    padding:4px 20px 12px;
+    position:sticky;top:52px;z-index:35;
+    background:linear-gradient(var(--bg) 80%, rgba(238,241,244,0));
+  }
+  .brandline{display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand .mark{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(150deg,var(--brand) 0%, #14a08a 100%);
+    display:grid;place-items:center;box-shadow:0 4px 10px rgba(15,122,106,.28);
+  }
+  .brand .mark svg{width:17px;height:17px;display:block}
+  .brand h1{font-size:19px;letter-spacing:-.3px;margin:0;font-weight:800}
+  .brand h1 span{color:var(--ink-3);font-weight:700}
+  .avatar{
+    width:33px;height:33px;border-radius:50%;
+    background:#dfe6ea url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%237d8c98"><circle cx="12" cy="9" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>') center/22px no-repeat;
+    border:1px solid var(--line);
+  }
+  .hello{margin:11px 2px 0}
+  .hello .big{font-size:25px;line-height:1.12;letter-spacing:-.5px;font-weight:800;margin:0}
+  .hello .sub{margin:5px 0 0;color:var(--ink-2);font-size:14px;font-weight:500}
+  .hello .sub b{color:var(--brand-ink);font-weight:700}
+
+  main{padding:6px 16px 26px}
+
+  /* ---------- section heads ---------- */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 4px 12px}
+  .sec-head h2{font-size:18px;letter-spacing:-.3px;margin:0;font-weight:800}
+  .sec-head .more{font-size:13.5px;color:var(--brand-ink);font-weight:700;text-decoration:none}
+  .sec-sub{margin:-6px 4px 13px;color:var(--ink-3);font-size:13px;font-weight:500}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--paper);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(231,235,239,.9);
+  }
+  .hero .photo{
+    position:relative;
+    background:
+      radial-gradient(120% 90% at 50% 18%, #ffffff 0%, var(--photo-bg) 100%);
+    height:288px;
+    display:grid;place-items:center;
+  }
+  .hero .photo img{
+    max-width:78%;max-height:248px;width:auto;height:auto;object-fit:contain;
+    filter:drop-shadow(0 18px 26px rgba(22,32,43,.16));
+  }
+  .ribbon{
+    position:absolute;top:15px;left:15px;
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.86);backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    color:var(--gold);
+    padding:7px 12px;border-radius:999px;
+    font-size:11.5px;font-weight:800;letter-spacing:.2px;
+    box-shadow:0 4px 14px rgba(22,32,43,.10);
+    border:1px solid rgba(176,125,42,.18);
+  }
+  .ribbon svg{width:13px;height:13px}
+  .verified{
+    position:absolute;top:15px;right:15px;
+    display:inline-flex;align-items:center;gap:5px;
+    background:rgba(255,255,255,.86);backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    color:var(--brand-ink);
+    padding:7px 11px;border-radius:999px;
+    font-size:11.5px;font-weight:700;
+    box-shadow:0 4px 14px rgba(22,32,43,.08);
+    border:1px solid rgba(15,122,106,.16);
+  }
+  .verified svg{width:13px;height:13px}
+
+  .hero .body{padding:17px 19px 19px}
+  .hero .store{display:flex;align-items:center;gap:7px;color:var(--ink-2);font-size:13px;font-weight:600;margin-bottom:7px}
+  .hero .store .pin{width:14px;height:14px;color:var(--ink-3)}
+  .hero h3{font-size:22px;line-height:1.18;letter-spacing:-.4px;margin:0 0 12px;font-weight:800}
+
+  .pricewrap{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+  .penny{
+    display:flex;align-items:baseline;gap:2px;
+    color:var(--brand-ink);font-weight:900;letter-spacing:-1.5px;line-height:.9;
+  }
+  .penny .n{font-size:52px}
+  .penny .c{font-size:25px;font-weight:900;letter-spacing:-.5px;margin-left:1px}
+  .wasblock{display:flex;flex-direction:column;gap:2px;padding-bottom:5px}
+  .was{color:var(--ink-3);font-size:14px;font-weight:600}
+  .was s{text-decoration-thickness:1.5px;text-decoration-color:#c2ccd3}
+  .savetag{
+    align-self:flex-start;
+    background:var(--brand-soft);color:var(--brand-ink);
+    font-size:11.5px;font-weight:800;letter-spacing:.2px;
+    padding:4px 9px;border-radius:7px;
+  }
+
+  .howto{
+    margin-top:15px;background:var(--brand-soft);border-radius:14px;
+    padding:13px 14px;display:flex;gap:11px;align-items:flex-start;
+  }
+  .howto .ico{
+    flex:none;width:26px;height:26px;border-radius:8px;background:#fff;
+    display:grid;place-items:center;color:var(--brand);box-shadow:0 2px 6px rgba(15,122,106,.14);
+  }
+  .howto .ico svg{width:15px;height:15px}
+  .howto .txt{font-size:13.5px;line-height:1.45;color:var(--brand-ink);font-weight:600}
+  .howto .txt b{font-weight:800}
+
+  .hero .actions{display:flex;gap:10px;margin-top:15px}
+  .btn{
+    flex:1;border:0;cursor:pointer;font-family:inherit;
+    height:50px;border-radius:14px;font-size:15px;font-weight:800;letter-spacing:.1px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn svg{width:17px;height:17px}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 18px rgba(15,122,106,.30)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);flex:0 0 52px}
+
+  .honest{
+    display:flex;align-items:center;gap:7px;justify-content:center;
+    margin-top:13px;color:var(--ink-3);font-size:12px;font-weight:500;
+  }
+  .honest svg{width:13px;height:13px;flex:none}
+
+  /* ---------- best few grid ---------- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .card{
+    background:var(--paper);border-radius:var(--r);overflow:hidden;
+    box-shadow:var(--shadow);border:1px solid rgba(231,235,239,.8);
+    cursor:pointer;display:flex;flex-direction:column;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .card:active{transform:translateY(1px) scale(.995)}
+  .card .ph{
+    position:relative;height:148px;
+    background:radial-gradient(120% 100% at 50% 12%, #fff 0%, var(--photo-bg) 100%);
+    display:grid;place-items:center;padding:12px;
+  }
+  .card .ph img{max-width:100%;max-height:122px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(22,32,43,.12))}
+  .card .pennychip{
+    position:absolute;left:9px;bottom:9px;
+    background:var(--brand);color:#fff;
+    font-size:14px;font-weight:900;letter-spacing:-.2px;
+    padding:5px 9px 5px 8px;border-radius:9px;
+    display:inline-flex;align-items:baseline;gap:1px;
+    box-shadow:0 5px 12px rgba(15,122,106,.30);
+  }
+  .card .pennychip .c{font-size:11px;font-weight:800}
+  .card .vchip{
+    position:absolute;right:9px;top:9px;width:22px;height:22px;border-radius:50%;
+    background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--brand);
+    box-shadow:0 3px 8px rgba(22,32,43,.12);
+  }
+  .card .vchip svg{width:13px;height:13px}
+  .card .meta{padding:11px 12px 13px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .card .meta .name{font-size:13.5px;line-height:1.32;font-weight:700;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+  .card .meta .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .card .meta .store{font-size:11.5px;color:var(--ink-3);font-weight:600;display:flex;align-items:center;gap:4px}
+  .card .meta .store .dot{width:5px;height:5px;border-radius:50%;background:var(--brand);flex:none}
+  .card .meta .was{font-size:11.5px;color:var(--ink-3);font-weight:600}
+  .card .meta .was s{text-decoration-color:#cdd5db}
+
+  /* ---------- your stores ---------- */
+  .stores{display:flex;flex-direction:column;gap:10px}
+  .store-row{
+    background:var(--paper);border-radius:16px;padding:14px 15px;
+    box-shadow:var(--shadow);border:1px solid rgba(231,235,239,.8);
+    display:flex;align-items:center;gap:13px;cursor:pointer;
+  }
+  .store-row:active{transform:translateY(1px)}
+  .store-logo{
+    flex:none;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+    font-weight:900;font-size:17px;letter-spacing:-.5px;color:#fff;
+  }
+  .lg-dt{background:linear-gradient(150deg,#0f7a6a,#13957f)}
+  .lg-heb{background:linear-gradient(150deg,#37506a,#46627f)}
+  .lg-wal{background:linear-gradient(150deg,#5b6470,#727c89)}
+  .lg-tg{background:linear-gradient(150deg,#46506a,#5b6685)}
+  .store-row .info{flex:1;min-width:0}
+  .store-row .info .nm{font-size:15px;font-weight:800;letter-spacing:-.2px;margin:0}
+  .store-row .info .hl{font-size:13px;color:var(--ink-2);font-weight:500;margin:3px 0 0;line-height:1.35}
+  .store-row .info .hl b{color:var(--brand-ink);font-weight:800}
+  .store-row .cnt{
+    flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;
+  }
+  .store-row .cnt .num{font-size:18px;font-weight:900;color:var(--brand-ink);letter-spacing:-.5px}
+  .store-row .cnt .lbl{font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .store-row .chev{flex:none;color:var(--ink-3);width:16px;height:16px;margin-left:2px}
+  .store-row.quiet .cnt .num{color:var(--ink-2)}
+
+  /* category chips */
+  .chips{display:flex;gap:9px;overflow-x:auto;padding:2px 4px 4px;margin:0 -4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none;background:var(--paper);border:1px solid var(--line);
+    border-radius:13px;padding:11px 15px;font-size:13.5px;font-weight:700;color:var(--ink);
+    display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--shadow);
+  }
+  .chip:active{transform:translateY(1px)}
+  .chip .e{width:18px;height:18px;color:var(--brand)}
+
+  .tail{margin:22px 6px 4px;text-align:center;color:var(--ink-3);font-size:12px;line-height:1.5;font-weight:500}
+  .tail b{color:var(--ink-2);font-weight:700}
+
+  /* ---------- bottom nav ---------- */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(255,255,255,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);
+    padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+    display:flex;justify-content:space-around;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);font-size:10.5px;font-weight:700;cursor:pointer;flex:1}
+  .tab svg{width:23px;height:23px}
+  .tab.on{color:var(--brand-ink)}
+  .home-ind{position:absolute;left:50%;transform:translateX(-50%);bottom:7px;width:128px;height:5px;border-radius:3px;background:rgba(22,32,43,.22);z-index:60}
+
+  /* fade so content tucks under the tab bar */
+  .botfade{height:78px}
+
+  /* ---------- detail sheet ---------- */
+  .sheet-scrim{
+    position:absolute;inset:0;z-index:70;background:rgba(16,24,33,.42);
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .26s ease;
+  }
+  .sheet-scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:71;
+    background:var(--paper);border-radius:26px 26px 0 0;
+    transform:translateY(102%);transition:transform .3s cubic-bezier(.22,.61,.36,1);
+    max-height:90%;display:flex;flex-direction:column;
+    box-shadow:0 -10px 40px rgba(16,24,33,.22);
+  }
+  .sheet.open{transform:translateY(0)}
+  .sheet .grab{width:38px;height:5px;border-radius:3px;background:#d8dee3;margin:9px auto 2px;flex:none}
+  .sheet .sclose{position:absolute;top:13px;right:14px;width:31px;height:31px;border-radius:50%;
+    background:#f0f3f5;border:0;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);z-index:2}
+  .sheet .sclose svg{width:16px;height:16px}
+  .sheet .sbody{overflow-y:auto;padding:6px 20px 26px;scrollbar-width:none}
+  .sheet .sbody::-webkit-scrollbar{display:none}
+  .sheet .sphoto{
+    background:radial-gradient(120% 90% at 50% 16%, #fff 0%, var(--photo-bg) 100%);
+    border-radius:20px;height:250px;display:grid;place-items:center;margin:6px 0 16px;position:relative;
+    border:1px solid var(--line-2);
+  }
+  .sheet .sphoto img{max-width:74%;max-height:212px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 16px 22px rgba(22,32,43,.16))}
+  .sheet .sstore{display:flex;align-items:center;gap:7px;color:var(--ink-2);font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .sheet .sstore svg{width:15px;height:15px;color:var(--ink-3)}
+  .sheet h3{font-size:22px;line-height:1.2;letter-spacing:-.4px;margin:0 0 14px;font-weight:800}
+  .sheet .sprice{display:flex;align-items:flex-end;gap:13px;margin-bottom:4px}
+  .sheet .step{
+    display:flex;gap:13px;align-items:flex-start;padding:15px 0;border-top:1px solid var(--line-2);
+  }
+  .sheet .step:first-of-type{border-top:0}
+  .sheet .step .num{flex:none;width:27px;height:27px;border-radius:9px;background:var(--brand-soft);color:var(--brand-ink);
+    display:grid;place-items:center;font-weight:900;font-size:13px}
+  .sheet .step .st{flex:1}
+  .sheet .step .st .t{font-size:14.5px;font-weight:800;margin:1px 0 3px}
+  .sheet .step .st .d{font-size:13.5px;color:var(--ink-2);line-height:1.5;font-weight:500}
+  .scan{
+    margin-top:4px;background:#11181f;color:#fff;border-radius:16px;padding:15px 16px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .scan .bars{flex:none;height:42px;display:flex;align-items:stretch;gap:2px}
+  .scan .bars i{display:block;background:#fff;border-radius:1px}
+  .scan .info .lbl{font-size:11px;color:#9fb0bb;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+  .scan .info .sku{font-size:20px;font-weight:900;letter-spacing:1px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .scan .info .sub{font-size:12px;color:#aab9c3;margin-top:2px;font-weight:500}
+  .sheet .snote{
+    margin-top:15px;background:var(--gold-soft);border-radius:14px;padding:13px 14px;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .sheet .snote svg{flex:none;width:17px;height:17px;color:var(--gold);margin-top:1px}
+  .sheet .snote .nt{font-size:13px;line-height:1.45;color:#7a5a1f;font-weight:600}
+  .sheet .snote .nt b{font-weight:800;color:#5f4717}
+  .sheet .sactions{display:flex;gap:10px;margin-top:18px}
+
+  @media (max-height:740px){ .phone{transform:scale(.94);transform-origin:top center} }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+
+    <!-- detail sheet -->
+    <div class="sheet-scrim" id="scrim" onclick="closeSheet()"></div>
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <button class="sclose" onclick="closeSheet()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="sbody" id="sbody"><!-- filled by JS --></div>
+    </div>
+
+    <div class="scroll" id="scroll">
+      <!-- status bar -->
+      <div class="status">
+        <span>9:41</span>
+        <span class="dots">
+          <span class="bars"><i></i><i></i><i></i><i></i></span>
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.5c2 0 3.9.8 5.3 2.1l1.2-1.2A9.4 9.4 0 0 0 8.5.7 9.4 9.4 0 0 0 2 3.4l1.2 1.2A7.4 7.4 0 0 1 8.5 2.5Zm0 3.4c1.1 0 2.1.4 2.9 1.2l1.2-1.2a6 6 0 0 0-8.2 0l1.2 1.2c.8-.8 1.8-1.2 2.9-1.2Zm0 3.3L10.2 11 8.5 12 6.8 11 8.5 9.2Z"/></svg>
+          <span class="battery"><i></i></span>
+        </span>
+      </div>
+
+      <!-- header -->
+      <header class="app">
+        <div class="brandline">
+          <div class="brand">
+            <span class="mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </span>
+            <h1>Deal Hunter</h1>
+          </div>
+          <div class="avatar"></div>
+        </div>
+        <div class="hello">
+          <p class="big">Today's best finds</p>
+          <p class="sub">Picked for you near <b>Austin, TX</b> &middot; updated this morning</p>
+        </div>
+      </header>
+
+      <main>
+        <!-- ===== HERO ===== -->
+        <div class="sec-head" style="margin-top:8px">
+          <h2>The find of the day</h2>
+        </div>
+        <article class="hero" id="heroCard"></article>
+
+        <!-- ===== BEST FEW ===== -->
+        <div class="sec-head">
+          <h2>Best deals today</h2>
+          <a class="more" href="#" onclick="return false">See all</a>
+        </div>
+        <p class="sec-sub">A few hand-picked wins. Real photos from shoppers.</p>
+        <div class="grid" id="bestGrid"></div>
+
+        <!-- ===== BROWSE BY CATEGORY ===== -->
+        <div class="sec-head">
+          <h2>Browse by category</h2>
+        </div>
+        <div class="chips">
+          <span class="chip"><svg class="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11h14V9"/><path d="M9 13h6"/></svg>Kids &amp; baby</span>
+          <span class="chip"><svg class="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v6H3z"/><path d="M6 9v12M18 9v12M6 15h12"/></svg>Household</span>
+          <span class="chip"><svg class="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v7a4 4 0 0 0 8 0V2"/><path d="M12 13v9"/></svg>Kitchen</span>
+          <span class="chip"><svg class="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16l-1.5 12.5a2 2 0 0 1-2 1.5H7.5a2 2 0 0 1-2-1.5L4 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Snacks</span>
+          <span class="chip"><svg class="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.4-9.3-9C1 8.5 2.5 5 6 5c2 0 3 1.3 3.8 2.4C10.6 6.3 11.7 5 13.7 5 17 5 18.6 8.5 17.3 12c-.9 1.9-2.7 3.7-4.5 5.1"/></svg>Health &amp; care</span>
+        </div>
+
+        <!-- ===== YOUR STORES ===== -->
+        <div class="sec-head">
+          <h2>Your stores</h2>
+          <a class="more" href="#" onclick="return false">Edit</a>
+        </div>
+        <div class="stores">
+          <div class="store-row" onclick="openStore('Dollar Tree')">
+            <div class="store-logo lg-dt">DT</div>
+            <div class="info">
+              <p class="nm">Dollar Tree</p>
+              <p class="hl">Lots of <b>1&cent; finds</b> today &middot; 1.2 mi away</p>
+            </div>
+            <div class="cnt"><span class="num" id="dtCount">—</span><span class="lbl">1&cent; deals</span></div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+
+          <div class="store-row quiet">
+            <div class="store-logo lg-heb">H</div>
+            <div class="info">
+              <p class="nm">H-E-B</p>
+              <p class="hl">A few coupon deals &middot; cleaning &amp; household</p>
+            </div>
+            <div class="cnt"><span class="num">4</span><span class="lbl">deals</span></div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+
+          <div class="store-row quiet">
+            <div class="store-logo lg-wal">W</div>
+            <div class="info">
+              <p class="nm">Walgreens</p>
+              <p class="hl">Weekly sale &amp; a coupon match</p>
+            </div>
+            <div class="cnt"><span class="num">3</span><span class="lbl">deals</span></div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+
+          <div class="store-row quiet">
+            <div class="store-logo lg-tg">T</div>
+            <div class="info">
+              <p class="nm">Target</p>
+              <p class="hl">Clearance spotted &middot; no photos yet</p>
+            </div>
+            <div class="cnt"><span class="num">5</span><span class="lbl">deals</span></div>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+
+        <p class="tail">
+          Deal Hunter shows what <b>shoppers reported</b>, not live store stock.<br>
+          Prices change — always check the tag in store.
+        </p>
+
+        <div class="botfade"></div>
+      </main>
+    </div>
+
+    <!-- bottom nav -->
+    <nav class="tabbar">
+      <div class="tab on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span>Search</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Stores</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14V9a7 7 0 1 0-14 0v5l-2 3h18l-2-3Z"/><path d="M9 20a3 3 0 0 0 6 0"/></svg>
+        <span>Saved</span>
+      </div>
+    </nav>
+    <div class="home-ind"></div>
+
+  </div>
+</div>
+
+<!-- REAL PHOTOS: the only external reference -->
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+(function(){
+  "use strict";
+  const IMG_BASE = "../deal-hunter-staging/";
+  const RAW = (window.STAGING_DEALS || []).filter(d => d && d.image);
+
+  /* ---------- humanize the retail shorthand into plain language ---------- */
+  function titleCaseWord(w){
+    if(!w) return w;
+    if(/^[0-9]/.test(w)) return w;          // keep numbers/sizes as-is
+    if(/^[A-Z0-9.\-]+$/.test(w) && w.length<=3) return w; // tiny tokens (oz, 2L handled below)
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }
+  function humanize(t){
+    if(!t) return "Dollar Tree find";
+    let s = " " + t + " ";
+    // expand common abbreviations (word-boundary, case-insensitive)
+    const map = [
+      [/\bLic\b/gi,"licensed"],
+      [/\bCrew\b/gi,"crew socks"],
+      [/\bcrew socks socks\b/gi,"crew socks"],
+      [/\bQtr\b/gi,"quarter socks"],
+      [/\bLC\b/g,"low-cut socks"],
+      [/\bAstd\b/gi,"assorted"],
+      [/\bAst\b/gi,"assorted"],
+      [/\bPwdr\b/gi,"powder"],
+      [/\bClr\b/gi,"clear"],
+      [/\bGrn\b/gi,"green"],
+      [/\bBlk\b/gi,"black"],
+      [/\bGry\b/gi,"gray"],
+      [/\bPnk\b/gi,"pink"],
+      [/\bWht\b/gi,"white"],
+      [/\bPurpl\b/gi,"purple"],
+      [/\bLvnd\b/gi,"lavender"],
+      [/\bLrg\b/gi,"large"],
+      [/\bSq\b/gi,"square"],
+      [/\bRnd\b/gi,"round"],
+      [/\bMed\b/gi,"medium"],
+      [/\bStrp\b/gi,"striped"],
+      [/\bWmn\b/gi,"women's"],
+      [/\bMen\b/gi,"men's"],
+      [/\bClem\b/gi,"clementine"],
+      [/\bCham\b/gi,"chamomile"],
+      [/\bLav\b/gi,"lavender"],
+      [/\bAmb\b/gi,"amber"],
+      [/\bOrig\b/gi,"original"],
+      [/\bBP\b/g,"beauty"],
+      [/\bCS\b/g,""],
+      [/\bAD SC\b/g,""],
+      [/\b4N1\b/gi,"4-in-1"],
+      [/\b24H\b/gi,"24-hour"],
+      [/\bPCS\b/gi,"pieces"],
+      [/\bPC\b/gi,"piece"],
+    ];
+    map.forEach(([re,rep]) => { s = s.replace(re, rep); });
+    // drop pure retail noise tokens
+    s = s.replace(/\b(PDQ|BTS|B\d{3,}|PK|2PK|CT|CS|w\/)\b/gi, " ");
+    // tidy size tokens: 2L, 30ML, 11oz, 1.06oz, 30CT
+    s = s.replace(/\b(\d+(?:\.\d+)?)\s*ML\b/gi, "$1 ml");
+    s = s.replace(/\b(\d+(?:\.\d+)?)\s*OZ\b/gi, "$1 oz");
+    s = s.replace(/\b(\d+)\s*L\b/g, "$1 L");
+    s = s.replace(/\b(\d+)\s*CT\b/gi, "$1 ct");
+    s = s.replace(/\b(\d+)\s*PCS?\b/gi, "$1 pieces");
+    // collapse whitespace
+    s = s.replace(/\s{2,}/g," ").trim();
+    // sentence case: capitalize first letter, keep the rest as built; uppercase a few brand initialisms
+    if(s.length) s = s.charAt(0).toUpperCase() + s.slice(1);
+    // fix obvious brand capitalizations that got lowercased
+    s = s.replace(/\bLed\b/g,"LED").replace(/\bXxl\b/gi,"XXL")
+         .replace(/\bX-men\b/gi,"X-Men").replace(/\bE\.t\./gi,"E.T.")
+         .replace(/\bXoxo\b/gi,"XOXO");
+    return s;
+  }
+  function skuOf(d){ return (d.image||"").replace("images/","").replace(".jpg",""); }
+  function imgTag(d, cls){
+    return '<img src="'+IMG_BASE+d.image+'" alt="'+humanize(d.title).replace(/"/g,'')+'" '+
+           'loading="eager" onerror="this.style.visibility=\'hidden\'">';
+  }
+
+  /* ---------- hand-picked curation (skip the 1 broken thumbnail 404079) ---------- */
+  const byList = (skus) => skus.map(s => RAW.find(d => skuOf(d)===s)).filter(Boolean);
+
+  const HERO = byList(["379530"])[0]                       // Baby Shark baby shampoo — bright, recognizable, a true "wow 1¢"
+        || RAW.find(d => d.price==="$0.01");
+
+  const BEST = byList([
+    "412418",  // Silicone snack tray — was $3.00, strongest dollar-saved story
+    "405736",  // Peppa Pig fruity rings cereal — kid favorite
+    "396424",  // X-Men crew socks — licensed, Marcus the reseller's lane
+    "333862",  // Carepak neon bandages 30ct — Dana, household
+    "284222",  // Welch's pineapple soda 2L — fun, recognizable
+    "188749"   // Heart-shaped beads — crafts, colorful for Tasha
+  ]);
+
+  /* ---------- render hero ---------- */
+  function renderHero(d){
+    const sku = skuOf(d);
+    const name = humanize(d.title);
+    const was = d.was && d.was !== "" ? d.was : "";
+    const el = document.getElementById("heroCard");
+    el.innerHTML =
+      '<div class="photo __ph">'+
+        '<span class="ribbon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 21.3 6.8 18.2l1-5.8L3.5 8.2l5.9-.9L12 2z"/></svg>Rare 1&cent; find</span>'+
+        '<span class="verified"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Verified product</span>'+
+        imgTag(d)+
+      '</div>'+
+      '<div class="body">'+
+        '<div class="store"><svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Dollar Tree &middot; 1.2 mi</div>'+
+        '<h3>'+name+'</h3>'+
+        '<div class="pricewrap">'+
+          '<span class="penny"><span class="n">1</span><span class="c">&cent;</span></span>'+
+          '<span class="wasblock">'+
+            (was ? '<span class="was">Was <s>'+was+'</s></span>' : '<span class="was">Was about <s>$1.25</s></span>')+
+            '<span class="savetag">You save '+(was||'$1.25')+'</span>'+
+          '</span>'+
+        '</div>'+
+        '<div class="howto">'+
+          '<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>'+
+          '<span class="txt"><b>How to get it:</b> ask a worker if it rings up at 1&cent;. These are last-batch items leaving the shelves — when they ring up a penny, it\'s a real win.</span>'+
+        '</div>'+
+        '<div class="actions">'+
+          '<button class="btn btn-primary" onclick="openDeal(\''+sku+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Find in store</button>'+
+          '<button class="btn btn-ghost" aria-label="Save" onclick="bump(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>'+
+        '</div>'+
+        '<div class="honest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>Prices change — check the tag in store.</div>'+
+      '</div>';
+  }
+
+  /* ---------- render best-few cards ---------- */
+  function renderBest(list){
+    const grid = document.getElementById("bestGrid");
+    grid.innerHTML = list.map(d => {
+      const sku = skuOf(d);
+      const name = humanize(d.title);
+      const was = d.was && d.was!=="" ? d.was : "$1.25";
+      return ''+
+      '<div class="card" onclick="openDeal(\''+sku+'\')">'+
+        '<div class="ph __ph">'+
+          '<span class="vchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'+
+          imgTag(d)+
+          '<span class="pennychip">1<span class="c">&cent;</span></span>'+
+        '</div>'+
+        '<div class="meta">'+
+          '<div class="name">'+name+'</div>'+
+          '<div class="foot">'+
+            '<span class="store"><span class="dot"></span>Dollar Tree</span>'+
+            '<span class="was">was <s>'+was+'</s></span>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+  }
+
+  /* ---------- detail sheet ---------- */
+  const scrim = document.getElementById("scrim");
+  const sheet = document.getElementById("sheet");
+  const sbody = document.getElementById("sbody");
+
+  function barcode(seed){
+    let h=0; for(let i=0;i<seed.length;i++){ h=(h*31+seed.charCodeAt(i))>>>0; }
+    let out=""; for(let i=0;i<34;i++){ h=(h*1103515245+12345)>>>0; const w=1+(h%3); out+='<i style="width:'+w+'px"></i>'; }
+    return out;
+  }
+  window.openDeal = function(sku){
+    const d = RAW.find(x => skuOf(x)===sku); if(!d) return;
+    const name = humanize(d.title);
+    const was = d.was && d.was!=="" ? d.was : "$1.25";
+    sbody.innerHTML =
+      '<div class="sphoto __ph">'+imgTag(d)+'</div>'+
+      '<div class="sstore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>Dollar Tree &middot; 1.2 mi &middot; <span style="color:#0a5c50;font-weight:800;margin-left:2px">Verified product&nbsp;&#10003;</span></div>'+
+      '<h3>'+name+'</h3>'+
+      '<div class="sprice">'+
+        '<span class="penny"><span class="n">1</span><span class="c">&cent;</span></span>'+
+        '<span class="wasblock"><span class="was">Was <s>'+was+'</s></span><span class="savetag">You save '+was+'</span></span>'+
+      '</div>'+
+
+      '<div style="margin-top:18px">'+
+        '<div class="step"><span class="num">1</span><div class="st"><div class="t">Head to the right aisle</div><div class="d">Found near the front checkout displays. Workers move these around, so it may have shifted.</div></div></div>'+
+        '<div class="step"><span class="num">2</span><div class="st"><div class="t">Scan it to check the price</div><div class="d">Use the store\'s price scanner, or ask a worker. If it shows 1&cent;, it\'s leaving the shelves — grab it.</div></div></div>'+
+        '<div class="step"><span class="num">3</span><div class="st"><div class="t">Check the tag before the register</div><div class="d">The shelf tag is the final word. Prices change between stores and days.</div></div></div>'+
+      '</div>'+
+
+      '<div class="scan">'+
+        '<div class="bars">'+barcode(sku)+'</div>'+
+        '<div class="info"><div class="lbl">Scan in store</div><div class="sku">'+sku+'</div><div class="sub">Show this number to a worker</div></div>'+
+      '</div>'+
+
+      '<div class="snote">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>'+
+        '<div class="nt"><b>Heads up:</b> this is a shopper-reported penny price. It might not ring up at every store — worth a look, but don\'t count on it.</div>'+
+      '</div>'+
+
+      '<div class="sactions">'+
+        '<button class="btn btn-primary" onclick="closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Add to my list</button>'+
+        '<button class="btn btn-ghost" aria-label="Save" onclick="bump(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>'+
+      '</div>'+
+      '<div style="height:6px"></div>';
+    sbody.scrollTop = 0;
+    scrim.classList.add("open"); sheet.classList.add("open");
+  };
+  window.closeSheet = function(){ scrim.classList.remove("open"); sheet.classList.remove("open"); };
+  window.openStore = function(){ /* demo: stores would open here */ };
+  window.bump = function(btn){ btn.style.borderColor="#0f7a6a"; btn.style.color="#0f7a6a"; const s=btn.querySelector('svg'); if(s){s.setAttribute('fill','#0f7a6a');} };
+
+  /* count of true 1¢ deals for the Dollar Tree row */
+  document.getElementById("dtCount").textContent =
+    RAW.filter(d => d.retailer==="Dollar Tree" && d.price==="$0.01").length;
+
+  renderHero(HERO);
+  renderBest(BEST);
+})();
+</script>
+</body>
+</html>

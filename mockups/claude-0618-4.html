@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Find what you need</title>
+<style>
+  :root{
+    --bg:#f4f5f7;
+    --card:#ffffff;
+    --ink:#16181d;
+    --ink-2:#5a6068;
+    --ink-3:#8a9099;
+    --line:#e9ebef;
+    --line-2:#eef0f3;
+    /* a calm, trustworthy teal/indigo — explicitly NOT orange */
+    --brand:#0f7d6e;
+    --brand-soft:#e6f4f1;
+    --brand-ink:#0a5e53;
+    --win:#0f7d6e;          /* the 1¢ win color */
+    --penny-bg:#eafaf3;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+    --shadow-lg:0 10px 40px rgba(16,24,40,.16);
+    --r:18px;
+    --r-sm:13px;
+    --maxw:430px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 520px at 50% -240px, #eaf3f1 0%, rgba(234,243,241,0) 70%),
+      var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;justify-content:center;
+    min-height:100vh;
+  }
+  .phone{
+    width:100%;max-width:var(--maxw);
+    background:transparent;
+    min-height:100vh;
+    position:relative;
+    padding-bottom:96px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    padding:14px 18px 12px;
+    background:linear-gradient(180deg, #f6f8f7 72%, rgba(246,248,247,.0) 100%);
+    backdrop-filter:saturate(1.2) blur(6px);
+  }
+  .brandrow{display:flex;align-items:center;gap:10px;margin:2px 2px 12px}
+  .mark{
+    width:30px;height:30px;border-radius:9px;flex:0 0 auto;
+    background:linear-gradient(150deg,var(--brand),#16a08c);
+    display:grid;place-items:center;color:#fff;
+    box-shadow:0 4px 12px rgba(15,125,110,.35);
+  }
+  .mark svg{width:17px;height:17px}
+  .brandname{font-size:18px;font-weight:800;letter-spacing:-.02em}
+  .brandname span{color:var(--brand-ink)}
+  .loc{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-2);
+    background:#fff;border:1px solid var(--line);padding:6px 11px;border-radius:999px;font-weight:600;box-shadow:var(--shadow)}
+  .loc svg{width:13px;height:13px;color:var(--brand)}
+
+  /* ---------- search ---------- */
+  .searchwrap{position:relative}
+  .search{
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border:1px solid var(--line);
+    border-radius:15px;padding:0 14px;height:52px;
+    box-shadow:var(--shadow);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .search:focus-within{border-color:#bfe2db;box-shadow:0 0 0 4px var(--brand-soft), var(--shadow)}
+  .search svg.mag{width:19px;height:19px;color:var(--ink-3);flex:0 0 auto}
+  .search input{
+    border:0;outline:0;flex:1;background:transparent;
+    font-size:16px;color:var(--ink);font-weight:500;min-width:0;
+  }
+  .search input::placeholder{color:var(--ink-3);font-weight:500}
+  .clearx{
+    border:0;background:#eef1f0;color:var(--ink-2);
+    width:24px;height:24px;border-radius:999px;display:none;place-items:center;cursor:pointer;flex:0 0 auto;font-size:13px;
+  }
+  .clearx.show{display:grid}
+
+  /* quick chips */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink-2);
+    font-size:13px;font-weight:600;padding:8px 13px;border-radius:999px;cursor:pointer;
+    box-shadow:var(--shadow);transition:.12s;white-space:nowrap;
+  }
+  .chip:active{transform:scale(.97)}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(15,125,110,.3)}
+
+  /* ---------- scroll body ---------- */
+  .body{padding:6px 18px 0}
+
+  .section-h{display:flex;align-items:baseline;gap:8px;margin:22px 2px 13px}
+  .section-h h2{font-size:17px;font-weight:800;letter-spacing:-.02em;margin:0}
+  .section-h .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-left:auto}
+
+  /* ---------- hero strip (best 1¢ today) ---------- */
+  .heroscroll{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;scroll-snap-type:x mandatory}
+  .heroscroll::-webkit-scrollbar{display:none}
+  .herocard{
+    flex:0 0 76%;scroll-snap-align:start;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    overflow:hidden;box-shadow:var(--shadow);cursor:pointer;position:relative;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .herocard:active{transform:scale(.985)}
+  .herocard .ph{
+    position:relative;width:100%;aspect-ratio:1.42/1;background:#f1f3f4;overflow:hidden;
+    display:grid;place-items:center;
+  }
+  .herocard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .pennytag{
+    position:absolute;top:11px;left:11px;z-index:2;
+    background:rgba(255,255,255,.94);backdrop-filter:blur(4px);
+    color:var(--brand-ink);font-weight:800;font-size:12px;
+    padding:5px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;
+    box-shadow:0 2px 8px rgba(16,24,40,.12);
+  }
+  .pennytag b{font-size:13px}
+  .herobody{padding:12px 14px 14px}
+  .herobody .nm{font-size:14.5px;font-weight:700;line-height:1.3;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px}
+  .herobody .pr{display:flex;align-items:baseline;gap:8px;margin-top:7px}
+  .herobody .pr .now{font-size:21px;font-weight:850;color:var(--win);letter-spacing:-.02em}
+  .herobody .pr .was{font-size:13px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .herobody .store{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-2);margin-top:8px;font-weight:600}
+  .dot{width:4px;height:4px;border-radius:999px;background:var(--ink-3);display:inline-block}
+
+  /* ---------- category tiles ---------- */
+  .tilegrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .tile{
+    position:relative;border-radius:var(--r);overflow:hidden;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);
+    aspect-ratio:1.16/1;display:block;transition:transform .12s, box-shadow .12s;
+  }
+  .tile:active{transform:scale(.98)}
+  .tile .timg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .tile .scrim{position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(10,14,16,0) 32%, rgba(10,14,16,.30) 64%, rgba(10,14,16,.74) 100%);}
+  .tile .tmeta{position:absolute;left:0;right:0;bottom:0;padding:12px 13px;color:#fff;z-index:2}
+  .tile .tname{font-size:15px;font-weight:800;letter-spacing:-.01em;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+  .tile .tcount{font-size:11.5px;font-weight:600;opacity:.92;margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,.45)}
+  .tile .pennychip{
+    position:absolute;top:9px;right:9px;z-index:2;
+    background:rgba(255,255,255,.95);color:var(--brand-ink);font-size:11px;font-weight:800;
+    padding:3px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.18);
+  }
+
+  /* ---------- results view ---------- */
+  .results-head{display:flex;align-items:center;gap:11px;margin:18px 2px 4px}
+  .backbtn{
+    border:1px solid var(--line);background:#fff;color:var(--ink);
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;cursor:pointer;
+    box-shadow:var(--shadow);flex:0 0 auto;
+  }
+  .backbtn svg{width:18px;height:18px}
+  .results-head h2{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.15}
+  .results-head .cnt{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:1px}
+
+  .honest{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#fff;border:1px solid var(--line);border-radius:13px;
+    padding:11px 13px;margin:14px 0 4px;box-shadow:var(--shadow);
+  }
+  .honest svg{width:16px;height:16px;color:var(--brand);flex:0 0 auto;margin-top:1px}
+  .honest p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.45;font-weight:500}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:14px 0 4px}
+  .gcard{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);
+    overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .gcard:active{transform:scale(.98)}
+  .gcard .gph{position:relative;width:100%;aspect-ratio:1/1;background:#f1f3f4;overflow:hidden;display:grid;place-items:center}
+  .gcard .gph img{width:100%;height:100%;object-fit:cover;display:block}
+  .gcard .gpenny{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.94);color:var(--brand-ink);
+    font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:999px;box-shadow:0 1px 5px rgba(0,0,0,.12)}
+  .gcard .gbody{padding:10px 11px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .gcard .gnm{font-size:12.8px;font-weight:650;line-height:1.32;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:33px}
+  .gcard .gpr{display:flex;align-items:baseline;gap:7px;margin-top:auto}
+  .gcard .gpr .now{font-size:17px;font-weight:850;color:var(--win);letter-spacing:-.02em}
+  .gcard .gpr .was{font-size:11.5px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .gcard .gstore{font-size:11px;color:var(--ink-2);font-weight:600;display:flex;align-items:center;gap:5px}
+
+  .empty{padding:54px 20px;text-align:center;color:var(--ink-3)}
+  .empty .big{font-size:15px;font-weight:700;color:var(--ink-2);margin-bottom:5px}
+  .empty .small{font-size:13px}
+
+  /* ---------- non-photo (text) deals from other stores ---------- */
+  .otherstores{margin:6px 0 2px}
+  .orow{
+    display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);
+    border-radius:13px;padding:12px 13px;margin-bottom:9px;box-shadow:var(--shadow);cursor:pointer;
+  }
+  .orow .oprice{flex:0 0 auto;min-width:62px;text-align:center}
+  .orow .oprice .on{font-size:16px;font-weight:850;color:var(--ink);letter-spacing:-.02em;display:block}
+  .orow .oprice .ow{font-size:11px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .orow .odiv{width:1px;align-self:stretch;background:var(--line)}
+  .orow .obody{flex:1;min-width:0}
+  .orow .onm{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .orow .ometa{font-size:11.5px;color:var(--ink-2);font-weight:600;margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .pill{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:#eef1f0;color:var(--ink-2)}
+  .pill.save{background:var(--brand-soft);color:var(--brand-ink)}
+
+  /* ---------- detail sheet ---------- */
+  .sheet-scrim{position:fixed;inset:0;background:rgba(16,18,22,.46);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s}
+  .sheet-scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;left:50%;transform:translateX(-50%) translateY(100%);
+    bottom:0;width:100%;max-width:var(--maxw);z-index:100;
+    background:var(--bg);border-radius:24px 24px 0 0;
+    box-shadow:var(--shadow-lg);transition:transform .28s cubic-bezier(.32,.72,0,1);
+    max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .sheet.open{transform:translateX(-50%) translateY(0)}
+  .grab{width:38px;height:5px;border-radius:999px;background:#d4d8dd;margin:9px auto 2px}
+  .sheet .shclose{position:absolute;top:14px;right:16px;z-index:3;width:32px;height:32px;border-radius:999px;
+    border:0;background:rgba(255,255,255,.9);backdrop-filter:blur(4px);display:grid;place-items:center;cursor:pointer;color:var(--ink-2);box-shadow:var(--shadow)}
+  .sheet .shclose svg{width:16px;height:16px}
+  .sh-photo{position:relative;margin:10px 16px 0;border-radius:18px;overflow:hidden;background:#eef0f2;aspect-ratio:1.12/1;display:grid;place-items:center;border:1px solid var(--line)}
+  .sh-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .sh-penny{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.95);color:var(--brand-ink);font-weight:800;font-size:12.5px;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.12);display:flex;gap:6px;align-items:center}
+  .sh-body{padding:16px 18px 28px}
+  .sh-title{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.22;margin:0}
+  .sh-verified{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--brand-ink);background:var(--brand-soft);padding:4px 9px;border-radius:999px;margin-top:10px}
+  .sh-verified svg{width:12px;height:12px}
+
+  .pricebox{
+    display:flex;align-items:center;gap:14px;
+    background:var(--penny-bg);border:1px solid #c9ecdf;border-radius:16px;padding:16px 17px;margin:16px 0 6px;
+  }
+  .pricebox .pbnow{font-size:34px;font-weight:850;color:var(--win);letter-spacing:-.03em;line-height:1}
+  .pricebox .pbcol{display:flex;flex-direction:column;gap:3px}
+  .pricebox .pbwas{font-size:13px;color:var(--ink-2);font-weight:600}
+  .pricebox .pbwas s{color:var(--ink-3)}
+  .pricebox .pbsave{font-size:12.5px;font-weight:800;color:var(--brand-ink)}
+  .pricebox .pbicon{margin-left:auto;width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--win);box-shadow:var(--shadow)}
+  .pricebox .pbicon svg{width:22px;height:22px}
+
+  .infoblock{background:#fff;border:1px solid var(--line);border-radius:15px;padding:4px 16px;margin:14px 0;box-shadow:var(--shadow)}
+  .inforow{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+  .inforow:last-child{border-bottom:0}
+  .inforow .ic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;flex:0 0 auto}
+  .inforow .ic svg{width:18px;height:18px}
+  .inforow .tx{flex:1;min-width:0}
+  .inforow .tx .lab{font-size:12px;font-weight:700;color:var(--ink-3);text-transform:none;letter-spacing:0;margin-bottom:2px}
+  .inforow .tx .val{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.4}
+  .inforow .tx .val .skucode{font-variant-numeric:tabular-nums;background:#f1f3f4;padding:2px 8px;border-radius:7px;font-weight:800;letter-spacing:.02em}
+
+  .ctarow{display:flex;gap:11px;margin-top:18px}
+  .btn{flex:1;border:0;border-radius:14px;height:52px;font-size:15.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em}
+  .btn svg{width:18px;height:18px}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(15,125,110,.32)}
+  .btn-primary:active{transform:scale(.985)}
+  .btn-ghost{flex:0 0 auto;width:52px;background:#fff;border:1px solid var(--line);color:var(--ink-2);box-shadow:var(--shadow)}
+
+  .scannote{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.5;font-weight:500}
+
+  /* ---------- bottom nav ---------- */
+  .bottomnav{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:var(--maxw);z-index:50;
+    background:rgba(255,255,255,.92);backdrop-filter:saturate(1.3) blur(14px);
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;padding:9px 8px calc(9px + env(safe-area-inset-bottom));
+  }
+  .nav{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;cursor:pointer;color:var(--ink-3);font-size:10.5px;font-weight:700;padding:3px 14px}
+  .nav svg{width:23px;height:23px}
+  .nav.on{color:var(--brand)}
+
+  @media (max-width:360px){
+    .herocard{flex-basis:84%}
+    .tile .tname{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- TOP BAR + SEARCH -->
+  <div class="topbar">
+    <div class="brandrow">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="11" cy="11" r="2.4" fill="currentColor"/></svg>
+      </div>
+      <div class="brandname">Deal <span>Hunter</span></div>
+      <div class="loc">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
+        Your stores
+      </div>
+    </div>
+
+    <div class="searchwrap">
+      <label class="search" for="q">
+        <svg class="mag" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Search for soap, socks, a store…" enterkeyhint="search">
+        <button class="clearx" id="clearx" aria-label="Clear search">✕</button>
+      </label>
+    </div>
+
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <!-- HOME (search + categories) -->
+  <div class="body" id="home">
+
+    <div class="section-h">
+      <h2>Best deals today</h2>
+      <span class="sub">Shoppers found these</span>
+    </div>
+    <div class="heroscroll" id="hero"></div>
+
+    <div class="section-h">
+      <h2>Browse by category</h2>
+      <span class="sub" id="catcount"></span>
+    </div>
+    <div class="tilegrid" id="tiles"></div>
+
+    <div class="section-h">
+      <h2>More deals nearby</h2>
+      <span class="sub">Other stores</span>
+    </div>
+    <div class="otherstores" id="otherstores"></div>
+
+    <div class="honest" style="margin:16px 0 8px">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p>Prices change — always check the tag in store. We show what other shoppers reported, not live store stock.</p>
+    </div>
+
+  </div>
+
+  <!-- RESULTS (category tap or search) -->
+  <div class="body" id="results" style="display:none">
+    <div class="results-head">
+      <button class="backbtn" id="back" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div>
+        <h2 id="results-title">Results</h2>
+        <div class="cnt" id="results-count"></div>
+      </div>
+    </div>
+
+    <div class="honest">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p>Most of these are 1¢ treasures at Dollar Tree. Prices change — check the tag in store.</p>
+    </div>
+
+    <div class="grid" id="results-grid"></div>
+    <div id="results-other"></div>
+    <div class="empty" id="results-empty" style="display:none">
+      <div class="big">Nothing found yet</div>
+      <div class="small">Try another word, like “socks”, “cleaner”, or “Dollar Tree”.</div>
+    </div>
+  </div>
+
+  <!-- DETAIL SHEET -->
+  <div class="sheet-scrim" id="scrim"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <button class="shclose" id="shclose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="sheet-content"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomnav">
+    <button class="nav on" data-home="1">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Search
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/></svg>
+      Categories
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14M5 4v15l7-3 7 3V4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      Saved
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
+      Stores
+    </button>
+  </nav>
+
+</div>
+
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var IMGBASE = "../deal-hunter-staging/";
+  var RAW = (window.STAGING_DEALS || []);
+
+  /* ---------- helpers ---------- */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  // Make raw retail titles read like plain English (gently — keep the brand)
+  function niceTitle(t){
+    if(!t) return "Dollar Tree find";
+    var s = String(t);
+    var map = {
+      " Lic Crew ":" licensed crew socks — ", " Crew Socks":" crew socks",
+      " Wmn ":" women's ", " Men ":" men's ", "Men's":"Men's",
+      " Astd":" assorted", " Qtr ":" quarter ", " PK":"-pack", " CT":" count",
+      " Pwdr ":" powder ", " Lvnd ":" lavender ", " Clr ":" clear ",
+      " Sq":" square", " Grn ":" green ", " Blk ":" black ", " Gry ":" gray ",
+      " Pnk/Wht ":" pink & white ", " Strp ":" striped ", " Rnd ":" round ",
+      " Orig ":" original ", " w/ ":" with "
+    };
+    Object.keys(map).forEach(function(k){ s = s.split(k).join(map[k]); });
+    // sentence case: capitalize first letter, leave the rest (brands keep their case)
+    s = s.replace(/\s+/g," ").trim();
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    return s;
+  }
+
+  /* ---------- category taxonomy: messy raw -> plain groups ---------- */
+  // Each group: plain name, the matcher, and a preferred hero SKU (healthy, photogenic).
+  var GROUPS = [
+    { key:"socks",   name:"Socks & clothes",  hero:"396424",
+      test:function(d){ var c=lc(d.category); return c.indexOf("apparel")>-1 || c==="socks" || ttl(d).indexOf("sock")>-1 || ttl(d).indexOf("boxer")>-1 || ttl(d).indexOf("legging")>-1; } },
+    { key:"kids",    name:"Kids & toys",      hero:"405736",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("toys")>-1 || c.indexOf("baby")>-1
+          || t.indexOf("baby shark")>-1 || t.indexOf("peppa")>-1 || t.indexOf("bouncy")>-1
+          || t.indexOf("squish")>-1 || t.indexOf("harmonica")>-1 || t.indexOf("grow toy")>-1
+          || t.indexOf("fidget")>-1 || t.indexOf("sensory")>-1 || t.indexOf("eraser")>-1; } },
+    { key:"cleaning",name:"Cleaning",         hero:"319514",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("cleaner")>-1 || c.indexOf("cleaning")>-1 || c.indexOf("consumable")>-1
+          || t.indexOf("cleaner")>-1 || t.indexOf("killer")>-1 || t.indexOf("detergent")>-1
+          || t.indexOf("gain ")>-1 || t.indexOf("laundry")>-1; } },
+    { key:"kitchen", name:"Kitchen",          hero:"412418",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("kitchen")>-1 || t.indexOf("plate")>-1 || t.indexOf("tray")>-1
+          || t.indexOf("crate")>-1 || t.indexOf("basket")>-1 || c.indexOf("household product")>-1; } },
+    { key:"beauty",  name:"Beauty",           hero:"354840",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("personal care")>-1 || t.indexOf("lipstick")>-1 || t.indexOf("makeup")>-1
+          || t.indexOf("maybelline")>-1 || t.indexOf("razor")>-1 || t.indexOf("face mask")>-1
+          || t.indexOf("scrunchie")>-1 || t.indexOf("wig")>-1; } },
+    { key:"health",  name:"Health & first aid", hero:"333862",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("health")>-1 || t.indexOf("bandage")>-1 || t.indexOf("denture")>-1
+          || t.indexOf("antifungal")>-1 || t.indexOf("burn pad")>-1 || t.indexOf("floss")>-1; } },
+    { key:"snacks",  name:"Snacks & drinks",  hero:"284222",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("beverage")>-1 || c.indexOf("candy")>-1 || c==="food" || c.indexOf("food")>-1
+          || t.indexOf("soda")>-1 || t.indexOf("cereal")>-1 || t.indexOf("soup")>-1
+          || t.indexOf("cookie")>-1 || t.indexOf("candy")>-1 || t.indexOf("protein")>-1; } },
+    { key:"home",    name:"Home & scents",    hero:"406775",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("fragrance")>-1 || c.indexOf("disposable")>-1 || c.indexOf("home decor")>-1
+          || t.indexOf("diffuser")>-1 || t.indexOf("scented")>-1 || t.indexOf("tealight")>-1
+          || t.indexOf("hurricane")>-1 || t.indexOf("wax")>-1 || t.indexOf("oil refill")>-1
+          || t.indexOf("lighter")>-1; } },
+    { key:"crafts",  name:"Crafts",           hero:"188749",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("craft")>-1 || t.indexOf("bead")>-1 || t.indexOf("sticker")>-1
+          || t.indexOf("brush pen")>-1; } },
+    { key:"pets",    name:"Pets",             hero:"388675",
+      test:function(d){ var c=lc(d.category), t=ttl(d);
+        return c.indexOf("pet")>-1 || t.indexOf("puptart")>-1 || t.indexOf("biscuit")>-1; } }
+  ];
+  function lc(s){ return String(s||"").toLowerCase(); }
+  function ttl(d){ return lc(d.title); }
+
+  // Assign each photo deal to exactly one group (first match wins).
+  function groupOf(d){
+    for(var i=0;i<GROUPS.length;i++){ if(GROUPS[i].test(d)) return GROUPS[i].key; }
+    return "other";
+  }
+
+  /* ---------- prepare data ---------- */
+  var PHOTO = RAW.filter(function(d){ return d.image; });            // ~105 real photos
+  PHOTO.forEach(function(d){ d._g = groupOf(d); d._nice = niceTitle(d.title); });
+
+  // De-dupe by SKU within photo deals (some appear in 2 raw categories)
+  (function(){
+    var seen = {}; var out = [];
+    PHOTO.forEach(function(d){
+      var k = d.sku || d.id;
+      if(seen[k]) return; seen[k]=1; out.push(d);
+    });
+    PHOTO = out;
+  })();
+
+  // Non-photo deals from OTHER stores (present honestly as text headlines, not fake photos).
+  var OTHER = RAW.filter(function(d){
+    return !d.image && d.retailer && d.retailer!=="Dollar Tree"
+      && d.price && d.title && d.title!=="(deal)";
+  });
+  // prefer ones with a real saving + a recognizable brand; keep the list short & alive
+  OTHER.sort(function(a,b){ return (b.worthScore||0)-(a.worthScore||0); });
+
+  // counts per group (photo deals)
+  var GCOUNT = {};
+  PHOTO.forEach(function(d){ GCOUNT[d._g]=(GCOUNT[d._g]||0)+1; });
+
+  /* ---------- build category tiles ---------- */
+  function heroForGroup(g){
+    // preferred hero if it exists in our photo set, else first deal in the group
+    var pref = null, first = null;
+    for(var i=0;i<PHOTO.length;i++){
+      var d=PHOTO[i];
+      if(d._g!==g.key) continue;
+      if(!first) first=d;
+      if(d.sku===g.hero){ pref=d; break; }
+    }
+    return pref || first;
+  }
+  function renderTiles(){
+    var tiles = document.getElementById("tiles");
+    var html = "";
+    var shown = 0;
+    GROUPS.forEach(function(g){
+      var n = GCOUNT[g.key]||0;
+      if(n===0) return;
+      shown++;
+      var hd = heroForGroup(g);
+      var src = hd ? (IMGBASE + hd.image) : "";
+      html += '<a class="tile" data-group="'+g.key+'">'
+        + '<img class="timg" src="'+esc(src)+'" alt="" loading="lazy" '
+        +     'onerror="this.style.display=\'none\';this.parentNode.classList.add(\'noimg\')">'
+        + '<span class="scrim"></span>'
+        + '<span class="pennychip">1¢ finds</span>'
+        + '<span class="tmeta"><div class="tname">'+esc(g.name)+'</div>'
+        +   '<div class="tcount">'+n+' deal'+(n===1?"":"s")+'</div></span>'
+        + '</a>';
+    });
+    tiles.innerHTML = html;
+    document.getElementById("catcount").textContent = shown + " groups";
+  }
+
+  /* ---------- build hero strip (best 1¢ today) ---------- */
+  function renderHero(){
+    // pick visually strong, varied 1¢ items across different groups
+    var wantSkus = ["412418","405736","396424","388675","333862","284222","354840","406775"];
+    var picked = [];
+    wantSkus.forEach(function(sk){
+      var d = find(PHOTO,function(x){return x.sku===sk;});
+      if(d) picked.push(d);
+    });
+    // top up if needed
+    PHOTO.forEach(function(d){ if(picked.length<8 && picked.indexOf(d)<0) picked.push(d); });
+    var el = document.getElementById("hero");
+    el.innerHTML = picked.slice(0,8).map(function(d){
+      return heroCard(d);
+    }).join("");
+  }
+  function heroCard(d){
+    var penny = d.price==="$0.01";
+    return '<div class="herocard" data-id="'+esc(d.id)+'">'
+      + '<div class="ph"><img src="'+esc(IMGBASE+d.image)+'" alt="" loading="lazy" '
+      +    'onerror="this.style.visibility=\'hidden\'">'
+      +    (penny?'<span class="pennytag">🪙'.replace("🪙","")+'<b>1¢</b> deal</span>':'')
+      + '</div>'
+      + '<div class="herobody">'
+      +   '<div class="nm">'+esc(d._nice)+'</div>'
+      +   '<div class="pr"><span class="now">'+esc(priceLabel(d))+'</span>'
+      +     (d.was?'<span class="was">was '+esc(d.was)+'</span>':'')+'</div>'
+      +   '<div class="store"><span>'+esc(d.retailer||"Dollar Tree")+'</span>'
+      +     '<span class="dot"></span><span>Verified product</span></div>'
+      + '</div></div>';
+  }
+
+  function priceLabel(d){
+    if(d.price==="$0.01") return "1¢";
+    return d.price || "See in store";
+  }
+
+  /* ---------- other-stores rows ---------- */
+  function renderOther(targetId, list){
+    var el = document.getElementById(targetId);
+    if(!list.length){ el.innerHTML=""; return; }
+    el.innerHTML = list.slice(0,5).map(function(d){
+      var off = d.off ? d.off+" off" : "Deal";
+      return '<div class="orow" data-id="'+esc(d.id)+'">'
+        + '<div class="oprice"><span class="on">'+esc(d.price)+'</span>'
+        +   (d.was?'<span class="ow">'+esc(d.was)+'</span>':'')+'</div>'
+        + '<div class="odiv"></div>'
+        + '<div class="obody"><div class="onm">'+esc(d._nice||niceTitle(d.title))+'</div>'
+        +   '<div class="ometa"><span>'+esc(d.retailer)+'</span>'
+        +     (d.off?'<span class="pill save">'+esc(off)+'</span>':'')
+        +   '</div></div>'
+        + '</div>';
+    }).join("");
+  }
+
+  /* ---------- results view ---------- */
+  function showResults(title, photoList, otherList){
+    document.getElementById("home").style.display="none";
+    document.getElementById("results").style.display="block";
+    document.getElementById("results-title").textContent = title;
+
+    var grid = document.getElementById("results-grid");
+    var empty = document.getElementById("results-empty");
+    var otherWrap = document.getElementById("results-other");
+
+    var total = photoList.length + (otherList?otherList.length:0);
+    document.getElementById("results-count").textContent =
+      total ? (total + " deal" + (total===1?"":"s") + " found") : "";
+
+    grid.innerHTML = photoList.map(gridCard).join("");
+
+    if(otherList && otherList.length){
+      otherWrap.innerHTML =
+        '<div class="section-h" style="margin-top:20px"><h2 style="font-size:15px">More at other stores</h2></div>'
+        + '<div class="otherstores" id="ro-inner"></div>';
+      renderOtherInto("ro-inner", otherList);
+    } else {
+      otherWrap.innerHTML = "";
+    }
+
+    empty.style.display = total ? "none" : "block";
+    window.scrollTo(0,0);
+  }
+  function renderOtherInto(id,list){
+    var el=document.getElementById(id);
+    el.innerHTML = list.slice(0,6).map(function(d){
+      return '<div class="orow" data-id="'+esc(d.id)+'">'
+        + '<div class="oprice"><span class="on">'+esc(d.price||"—")+'</span>'
+        +   (d.was?'<span class="ow">'+esc(d.was)+'</span>':'')+'</div>'
+        + '<div class="odiv"></div>'
+        + '<div class="obody"><div class="onm">'+esc(niceTitle(d.title))+'</div>'
+        +   '<div class="ometa"><span>'+esc(d.retailer||"Local store")+'</span>'
+        +     (d.off?'<span class="pill save">'+esc(d.off)+' off</span>':'<span class="pill">Shoppers reported</span>')
+        +   '</div></div></div>';
+    }).join("");
+  }
+  function gridCard(d){
+    var penny = d.price==="$0.01";
+    return '<div class="gcard" data-id="'+esc(d.id)+'">'
+      + '<div class="gph"><img src="'+esc(IMGBASE+d.image)+'" alt="" loading="lazy" '
+      +    'onerror="this.style.visibility=\'hidden\'">'
+      +    (penny?'<span class="gpenny">1¢</span>':'')+'</div>'
+      + '<div class="gbody">'
+      +   '<div class="gnm">'+esc(d._nice)+'</div>'
+      +   '<div class="gpr"><span class="now">'+esc(priceLabel(d))+'</span>'
+      +     (d.was?'<span class="was">'+esc(d.was)+'</span>':'')+'</div>'
+      +   '<div class="gstore">'+esc(d.retailer||"Dollar Tree")+'</div>'
+      + '</div></div>';
+  }
+
+  function backHome(){
+    document.getElementById("results").style.display="none";
+    document.getElementById("home").style.display="block";
+    window.scrollTo(0,0);
+  }
+
+  /* ---------- detail sheet ---------- */
+  function openSheet(d){
+    var penny = d.price==="$0.01";
+    var glitch = d.dealType==="glitch";
+    var isDT = (d.retailer||"Dollar Tree")==="Dollar Tree";
+    var verified = !!d.image; // catalog match => has a real photo
+
+    var saveLine = "";
+    if(d.was && penny){ saveLine = "Was "+esc(d.was)+" → now 1¢"; }
+    else if(d.was){ saveLine = "Was "+esc(d.was)+" → now "+esc(d.price); }
+    else if(d.off){ saveLine = esc(d.off)+" off"; }
+
+    var photoHTML = d.image
+      ? '<div class="sh-photo"><img src="'+esc(IMGBASE+d.image)+'" alt="" onerror="this.style.visibility=\'hidden\'">'
+        + (penny?'<span class="sh-penny"><b>1¢</b> at '+esc(d.retailer||"Dollar Tree")+'</span>':'')
+        + '</div>'
+      : '';
+
+    var honest = glitch
+      ? "This looks like a price mistake. It might not ring up — worth a look, but don’t count on it."
+      : "Shoppers reported this deal. Prices change, so check the tag in store before you buy.";
+
+    var html = photoHTML
+      + '<div class="sh-body">'
+      +   '<h1 class="sh-title">'+esc(d._nice||niceTitle(d.title))+'</h1>'
+      +   (verified
+            ? '<span class="sh-verified"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified product</span>'
+            : '<span class="sh-verified" style="background:#eef1f0;color:#5a6068"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>Shoppers reported this</span>')
+
+      // price box
+      +   '<div class="pricebox">'
+      +     '<div class="pbnow">'+esc(priceLabel(d))+'</div>'
+      +     '<div class="pbcol">'
+      +       (d.was?'<div class="pbwas"><s>'+esc(d.was)+'</s></div>':'')
+      +       (saveLine?'<div class="pbsave">'+saveLine+'</div>':'<div class="pbsave">Great find</div>')
+      +     '</div>'
+      +     '<div class="pbicon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v10M9.5 14c0 1.2 1.1 2 2.5 2s2.5-.8 2.5-2-1.1-1.7-2.5-2-2.5-.8-2.5-2 1.1-2 2.5-2 2.5.8 2.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>'
+      +   '</div>'
+
+      // info: store, how to find, scan
+      +   '<div class="infoblock">'
+      +     row("store", "Where to get it", esc(d.retailer||"Dollar Tree"))
+      +     row("aisle", "How to find it in the store", aisleText(d))
+      +     (d.sku ? row("scan", "Scan in store", '<span class="skucode">SKU '+esc(d.sku)+'</span>') : "")
+      +   '</div>'
+
+      // honest line
+      +   '<div class="honest" style="margin:0 0 2px">'
+      +     '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      +     '<p>'+honest+'</p>'
+      +   '</div>'
+
+      // CTAs
+      +   '<div class="ctarow">'
+      +     '<button class="btn btn-primary">'
+      +       '<svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>'
+      +       'Find in store</button>'
+      +     '<button class="btn btn-ghost" aria-label="Save">'
+      +       '<svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12v16l-6-3-6 3V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'
+      +     '</button>'
+      +   '</div>'
+      +   '<div class="scannote">Show this SKU to a team member, or scan it on the store’s app, to check the shelf.</div>'
+      + '</div>';
+
+    document.getElementById("sheet-content").innerHTML = html;
+    document.getElementById("scrim").classList.add("open");
+    document.getElementById("sheet").classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function row(icon, lab, val){
+    var ics = {
+      store:'<path d="M4 9 5.5 5h13L20 9M4 9v10h16V9M4 9h16M9 19v-5h6v5" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>',
+      aisle:'<path d="M3 7h7v13H3zM14 4h7v16h-7" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>',
+      scan:'<path d="M4 7V5h3M20 7V5h-3M4 17v2h3M20 17v2h-3M7 9v6M10 9v6M13 9v6M16 9v6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>'
+    };
+    return '<div class="inforow"><span class="ic"><svg viewBox="0 0 24 24" fill="none">'+ics[icon]+'</svg></span>'
+      + '<div class="tx"><div class="lab">'+lab+'</div><div class="val">'+val+'</div></div></div>';
+  }
+  function aisleText(d){
+    var t = ttl(d), c = lc(d.category);
+    if(c.indexOf("apparel")>-1 || t.indexOf("sock")>-1) return "Look on the sock and clothing racks near the front.";
+    if(c.indexOf("health")>-1 || t.indexOf("bandage")>-1) return "Check the health and first-aid aisle.";
+    if(t.indexOf("plate")>-1 || c.indexOf("kitchen")>-1) return "Look in the kitchen and dishware aisle.";
+    if(c.indexOf("toys")>-1 || t.indexOf("toy")>-1) return "Try the toy aisle, or the bins by the checkout.";
+    if(c.indexOf("craft")>-1 || t.indexOf("bead")>-1) return "Head to the crafts aisle.";
+    if(t.indexOf("soda")>-1 || t.indexOf("cereal")>-1 || c.indexOf("food")>-1) return "Look in the food and drinks aisle.";
+    if(c.indexOf("checkout")>-1) return "These sit in the bins right by the register.";
+    if(t.indexOf("diffuser")>-1 || t.indexOf("scented")>-1 || t.indexOf("wax")>-1) return "Check the home and air-freshener aisle.";
+    return "Ask a team member — penny items often sit at the back of the shelf.";
+  }
+  function closeSheet(){
+    document.getElementById("scrim").classList.remove("open");
+    document.getElementById("sheet").classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  /* ---------- search ---------- */
+  function runSearch(qRaw){
+    var q = String(qRaw||"").trim().toLowerCase();
+    if(!q){ backHome(); return; }
+    var photoHits = PHOTO.filter(function(d){
+      return (d._nice+" "+d.title+" "+d.category+" "+(d.retailer||"")).toLowerCase().indexOf(q)>-1;
+    });
+    var otherHits = OTHER.filter(function(d){
+      return (d.title+" "+d.category+" "+(d.retailer||"")).toLowerCase().indexOf(q)>-1;
+    });
+    showResults('“'+qRaw.trim()+'”', photoHits, otherHits);
+  }
+
+  /* ---------- quick chips ---------- */
+  function renderChips(){
+    var defs = [
+      {label:"Best 1¢ today", q:"__penny"},
+      {label:"Socks & clothes", g:"socks"},
+      {label:"Kids & toys", g:"kids"},
+      {label:"Cleaning", g:"cleaning"},
+      {label:"Kitchen", g:"kitchen"},
+      {label:"Snacks & drinks", g:"snacks"}
+    ];
+    var el = document.getElementById("chips");
+    el.innerHTML = defs.map(function(c,i){
+      return '<button class="chip" data-chip="'+i+'">'+esc(c.label)+'</button>';
+    }).join("");
+    el.querySelectorAll(".chip").forEach(function(btn,i){
+      btn.addEventListener("click", function(){
+        el.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+        btn.classList.add("on");
+        var c = defs[i];
+        if(c.g){ openGroup(c.g); }
+        else if(c.q==="__penny"){
+          var list = PHOTO.filter(function(d){return d.price==="$0.01";});
+          showResults("Best 1¢ today", list, []);
+        }
+      });
+    });
+  }
+
+  function openGroup(key){
+    var g = find(GROUPS, function(x){return x.key===key;});
+    var list = PHOTO.filter(function(d){ return d._g===key; });
+    // sort: penny first, then nicer titles
+    list.sort(function(a,b){ return (a.price==="$0.01"?0:1)-(b.price==="$0.01"?0:1); });
+    showResults(g?g.name:"Deals", list, []);
+  }
+
+  /* ---------- util ---------- */
+  function find(arr,fn){ for(var i=0;i<arr.length;i++){ if(fn(arr[i])) return arr[i]; } return null; }
+  function byId(id){ return find(RAW, function(d){return d.id===id;}); }
+
+  /* ---------- wire up ---------- */
+  function init(){
+    renderChips();
+    renderHero();
+    renderTiles();
+    renderOther("otherstores", OTHER);
+
+    var q = document.getElementById("q");
+    var clearx = document.getElementById("clearx");
+    q.addEventListener("input", function(){
+      clearx.classList.toggle("show", !!q.value);
+      runSearch(q.value);
+      // clear chip selection while typing
+      document.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+    });
+    clearx.addEventListener("click", function(){
+      q.value=""; clearx.classList.remove("show"); backHome(); q.focus();
+    });
+
+    document.getElementById("back").addEventListener("click", function(){
+      backHome();
+      q.value=""; clearx.classList.remove("show");
+      document.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+    });
+
+    document.getElementById("shclose").addEventListener("click", closeSheet);
+    document.getElementById("scrim").addEventListener("click", closeSheet);
+
+    // event delegation for tiles / cards / rows
+    document.body.addEventListener("click", function(e){
+      var tile = e.target.closest(".tile");
+      if(tile){ openGroup(tile.getAttribute("data-group")); return; }
+      var card = e.target.closest("[data-id]");
+      if(card){ var d=byId(card.getAttribute("data-id")); if(d) openSheet(d); return; }
+    });
+
+    // bottom nav: Search/home resets
+    document.querySelectorAll(".bottomnav .nav").forEach(function(n){
+      n.addEventListener("click", function(){
+        document.querySelectorAll(".bottomnav .nav").forEach(function(x){x.classList.remove("on");});
+        n.classList.add("on");
+        if(n.getAttribute("data-home")){
+          backHome(); q.value=""; clearx.classList.remove("show");
+        }
+      });
+    });
+
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeSheet(); });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>

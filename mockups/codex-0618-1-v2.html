@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter - Best deals today</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #edf2ef;
+      --app: #fbfcf8;
+      --ink: #111813;
+      --text: #28342c;
+      --muted: #657267;
+      --quiet: #879287;
+      --line: #d9e2d9;
+      --line-strong: #bdcabc;
+      --card: #ffffff;
+      --wash: #f1f5ef;
+      --wash-strong: #e8eee6;
+      --green: #14723f;
+      --green-dark: #0c512c;
+      --green-soft: #e1f0e6;
+      --blue: #245a87;
+      --blue-soft: #e4eef5;
+      --plum: #6f3c74;
+      --plum-soft: #f0e8f2;
+      --shadow: 0 22px 70px rgba(16, 24, 18, 0.16);
+      --soft-shadow: 0 12px 30px rgba(16, 24, 18, 0.09);
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        linear-gradient(135deg, rgba(20, 114, 63, 0.10), transparent 38%),
+        linear-gradient(180deg, #f3f6f2 0%, #e9f0ea 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 22px 14px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .phone {
+      width: min(100%, 390px);
+      min-height: 844px;
+      overflow: hidden;
+      border: 1px solid rgba(17, 24, 19, 0.12);
+      border-radius: 34px;
+      background: var(--app);
+      box-shadow: var(--shadow);
+    }
+
+    .screen {
+      min-height: 844px;
+      background: linear-gradient(180deg, #fbfcf8 0%, #f7faf4 52%, #edf4ee 100%);
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid rgba(217, 226, 217, 0.82);
+      background: rgba(251, 252, 248, 0.94);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.05;
+      font-weight: 850;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .store-pill {
+      flex: 0 0 auto;
+      min-height: 36px;
+      max-width: 136px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 7px 17px rgba(16, 24, 18, 0.06);
+    }
+
+    main {
+      padding: 15px 15px 26px;
+    }
+
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--card);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .hero-photo-wrap {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 310px;
+      padding: 20px 20px 16px;
+      background:
+        linear-gradient(180deg, #f6f8f4 0%, #e9efe7 100%);
+      text-align: left;
+    }
+
+    .photo-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 258px;
+      border: 1px solid rgba(189, 202, 188, 0.7);
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(231, 238, 229, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-photo {
+      width: min(82%, 270px);
+      max-height: 230px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 16px 20px rgba(18, 28, 21, 0.16));
+    }
+
+    .hero-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 850;
+      box-shadow: 0 8px 22px rgba(18, 28, 21, 0.12);
+    }
+
+    .hero-price-chip {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      border: 1px solid rgba(20, 114, 63, 0.2);
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--green);
+      box-shadow: 0 14px 32px rgba(18, 28, 21, 0.16);
+    }
+
+    .hero-price-chip strong {
+      font-size: 35px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .hero-copy {
+      padding: 17px 17px 18px;
+    }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+
+    .verified,
+    .reported {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .verified {
+      background: var(--green-soft);
+      color: var(--green-dark);
+    }
+
+    .reported {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .store-name {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    h1 {
+      font-size: 31px;
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .hook {
+      margin-top: 9px;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.34;
+      font-weight: 720;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .price {
+      color: var(--green);
+      font-size: 58px;
+      line-height: 0.88;
+      font-weight: 950;
+    }
+
+    .was {
+      padding-bottom: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.22;
+      font-weight: 750;
+    }
+
+    .was s {
+      color: var(--quiet);
+      text-decoration-thickness: 2px;
+    }
+
+    .how {
+      margin-top: 12px;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.38;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .primary,
+    .secondary {
+      min-height: 49px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .primary {
+      background: var(--ink);
+      color: #ffffff;
+      box-shadow: 0 11px 24px rgba(17, 24, 19, 0.18);
+    }
+
+    .secondary {
+      padding: 0 15px;
+      border: 1px solid var(--line-strong);
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    .honest-line {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .quick-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 14px 2px 2px;
+    }
+
+    .quick {
+      min-height: 50px;
+      padding: 9px 8px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.78);
+      text-align: center;
+    }
+
+    .quick strong {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .quick span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.15;
+      font-weight: 750;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 24px 2px 12px;
+    }
+
+    .section-head h2 {
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .deal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .deal-card {
+      overflow: hidden;
+      min-height: 234px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      text-align: left;
+      box-shadow: 0 9px 22px rgba(16, 24, 18, 0.06);
+    }
+
+    .deal-photo-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      height: 128px;
+      margin: 9px 9px 0;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #f7f9f5, var(--wash-strong));
+      overflow: hidden;
+    }
+
+    .deal-card img {
+      width: 88%;
+      height: 108px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 10px 13px rgba(18, 28, 21, 0.12));
+    }
+
+    .mini-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 6px 14px rgba(18, 28, 21, 0.08);
+    }
+
+    .deal-card-copy {
+      padding: 10px 11px 12px;
+    }
+
+    .deal-card h3 {
+      min-height: 39px;
+      font-size: 14px;
+      line-height: 1.18;
+      font-weight: 850;
+    }
+
+    .mini-price {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .mini-price strong {
+      color: var(--green);
+      font-size: 25px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .mini-price span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .retailer {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.18;
+      font-weight: 760;
+    }
+
+    .stores {
+      display: grid;
+      gap: 10px;
+    }
+
+    .store-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 11px;
+      min-height: 68px;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      text-align: left;
+      box-shadow: 0 8px 20px rgba(16, 24, 18, 0.05);
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .store-row:nth-child(2) .mark {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .store-row:nth-child(3) .mark {
+      background: var(--plum-soft);
+      color: var(--plum);
+    }
+
+    .store-copy strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.18;
+      font-weight: 900;
+    }
+
+    .store-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .store-count {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: end center;
+      padding: 14px;
+      background: rgba(16, 23, 18, 0.36);
+    }
+
+    .sheet[aria-hidden="false"] {
+      display: grid;
+    }
+
+    .detail {
+      width: min(100%, 390px);
+      max-height: min(92vh, 824px);
+      overflow: auto;
+      border-radius: 28px 28px 24px 24px;
+      background: var(--app);
+      box-shadow: 0 26px 76px rgba(10, 15, 12, 0.3);
+    }
+
+    .detail-top {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px;
+      background: rgba(251, 252, 248, 0.88);
+      backdrop-filter: blur(12px);
+    }
+
+    .close {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      box-shadow: 0 5px 14px rgba(16, 24, 18, 0.08);
+    }
+
+    .detail-photo-stage {
+      display: grid;
+      place-items: center;
+      min-height: 296px;
+      margin: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #f7f9f5, var(--wash-strong));
+    }
+
+    .detail-photo {
+      width: min(82%, 300px);
+      max-height: 258px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 14px 18px rgba(18, 28, 21, 0.14));
+    }
+
+    .detail-copy {
+      padding: 16px 18px 22px;
+    }
+
+    .detail-copy h2 {
+      margin-top: 10px;
+      font-size: 27px;
+      line-height: 1.05;
+      font-weight: 900;
+    }
+
+    .detail-section {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .detail-section h3 {
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .detail-section p {
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.42;
+    }
+
+    .sku-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 13px 14px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 16px;
+      background: var(--wash);
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .sku-line span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .fallback {
+      display: grid;
+      place-items: center;
+      min-height: 280px;
+      padding: 32px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 430px) {
+      body {
+        padding: 0;
+        background: var(--app);
+      }
+
+      .phone {
+        width: 100%;
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .screen {
+        min-height: 100vh;
+      }
+
+      .sheet {
+        padding: 0;
+      }
+
+      .detail {
+        width: 100%;
+        max-height: 96vh;
+        border-radius: 26px 26px 0 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <header class="top">
+        <div class="brand">
+          <strong>Deal Hunter</strong>
+          <span>The best few from real shoppers</span>
+        </div>
+        <button class="store-pill" type="button">Your stores</button>
+      </header>
+
+      <main id="app">
+        <div class="fallback">Loading real deal photos.</div>
+      </main>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet" aria-hidden="true">
+    <article class="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+      <div class="detail-top">
+        <button class="close" type="button" id="closeDetail" aria-label="Close">×</button>
+      </div>
+      <div class="detail-photo-stage">
+        <img class="detail-photo" id="detailPhoto" alt="" onerror="this.style.visibility='hidden'">
+      </div>
+      <div class="detail-copy">
+        <span class="verified" id="detailTrust">✓ Verified product</span>
+        <h2 id="detail-title"></h2>
+        <div class="price-row">
+          <div class="price" id="detailPrice"></div>
+          <div class="was" id="detailWas"></div>
+        </div>
+        <div class="detail-section">
+          <h3>How to get it</h3>
+          <p id="detailHow"></p>
+        </div>
+        <div class="detail-section">
+          <h3>How to find it in the store</h3>
+          <p id="detailFind"></p>
+          <div class="sku-line"><span>Scan in store</span><strong id="detailSku"></strong></div>
+        </div>
+        <p class="honest-line">Prices change - check the tag in store.</p>
+      </div>
+    </article>
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const DEALS = (window.STAGING_DEALS || []);
+    const imageBase = "../deal-hunter-staging/";
+    const photoDeals = DEALS.filter((deal) => deal.image);
+
+    const friendlyNames = {
+      "396424": "X-Men logo crew socks",
+      "404079": "Kids licensed Smurfs crew socks",
+      "397599": "Smurfs Grumpy crew socks",
+      "379530": "Baby Shark baby shampoo 1 oz",
+      "412418": "Silicone snack topper tray",
+      "280018": "Wood beads",
+      "367385": "Bathroom cleaner kit",
+      "397121": "Mountain Dew crew socks",
+      "300724": "Color alphabet stickers",
+      "382620": "Hot or cold face mask",
+      "296803": "Long handle candle lighter"
+    };
+
+    const findTips = {
+      "396424": "Check the sock pegs in apparel. Look for bright yellow X-Men crew socks, then scan the SKU before buying.",
+      "404079": "Check kids socks in apparel. Match the Smurfs photo first, then scan the SKU before buying.",
+      "397599": "Check the sock pegs in apparel. Look for the Smurfs Grumpy crew socks and compare the SKU.",
+      "379530": "Check travel-size baby care and bath items. Look for the small Baby Shark shampoo bottle.",
+      "412418": "Check checkout lanes, end caps, and summer drinkware displays. Look for the flower-shaped tray that sits on top of a tumbler.",
+      "280018": "Check crafts and bead kits. Match the colored wood bead packs to the photo before scanning.",
+      "367385": "Check household cleaners. Look for the bathroom cleaner kit, then check the shelf tag and scan.",
+      "397121": "Check the sock pegs in apparel. Look for Mountain Dew crew socks and compare the SKU.",
+      "300724": "Check the craft aisle and sticker pegs. Match the alphabet sticker pack to the photo.",
+      "382620": "Check personal care and beauty tools. Match the face mask packaging to the photo."
+    };
+
+    const dealOrder = ["396424", "379530", "412418", "280018", "367385", "382620", "397599"];
+
+    function normalizeSku(value) {
+      return String(value || "").trim();
+    }
+
+    function dealForSku(sku) {
+      return photoDeals.find((deal) => normalizeSku(deal.sku) === sku)
+        || photoDeals.find((deal) => String(deal.image || "").includes(sku));
+    }
+
+    function isPenny(deal) {
+      return deal.price === "$0.01" || deal.dealType === "penny" || deal.dealType === "dt-penny-list";
+    }
+
+    function displayPrice(deal) {
+      if (deal.price === "$0.01") return "1¢";
+      return deal.price || "See price";
+    }
+
+    function displayWas(deal) {
+      if (deal.was) return deal.was;
+      if (isPenny(deal)) return "$1.25";
+      return "";
+    }
+
+    function cleanTitle(deal) {
+      const sku = normalizeSku(deal.sku);
+      if (friendlyNames[sku]) return friendlyNames[sku];
+      return String(deal.title || "Shopper-reported deal")
+        .replace(/\bLic\b/g, "licensed")
+        .replace(/\bQtr\b/g, "quarter")
+        .replace(/\bBlk\b/g, "black")
+        .replace(/\bGry\b/g, "gray")
+        .replace(/\b1oz\b/gi, "1 oz")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function trustText(deal) {
+      return isPenny(deal) ? "✓ Verified product" : "Shoppers reported this";
+    }
+
+    function imageSrc(deal) {
+      return imageBase + deal.image;
+    }
+
+    function howText(deal) {
+      if (isPenny(deal)) {
+        return `Scan in store (SKU ${deal.sku}). If it rings up at 1¢, it is the deal shoppers reported.`;
+      }
+      if (deal.dealType === "glitch") {
+        return "Might not ring up - worth a look, don't count on it.";
+      }
+      return "Check the shelf tag, then scan in store before buying.";
+    }
+
+    function cardTemplate(deal, index) {
+      const was = displayWas(deal);
+      return `
+        <button class="deal-card" type="button" data-deal-index="${index + 1}">
+          <div class="deal-photo-wrap">
+            <img src="${imageSrc(deal)}" alt="${cleanTitle(deal)}" onerror="this.style.visibility='hidden'">
+            <span class="mini-tag">${displayPrice(deal)}</span>
+          </div>
+          <div class="deal-card-copy">
+            <h3>${cleanTitle(deal)}</h3>
+            <div class="mini-price"><strong>${displayPrice(deal)}</strong>${was ? `<span>${was}</span>` : ""}</div>
+            <div class="retailer">${deal.retailer || "Store deal"}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    const chosenDeals = dealOrder.map(dealForSku).filter(Boolean);
+    const hero = chosenDeals[0];
+    const cards = chosenDeals.slice(1, 7);
+    const app = document.getElementById("app");
+    const sheet = document.getElementById("sheet");
+
+    function render() {
+      if (!hero) {
+        app.innerHTML = '<div class="fallback">No real product photos are available right now.</div>';
+        return;
+      }
+
+      app.innerHTML = `
+        <section class="hero">
+          <button class="hero-photo-wrap" type="button" data-deal-index="0" aria-label="See deal">
+            <div class="photo-stage">
+              <img class="hero-photo" src="${imageSrc(hero)}" alt="${cleanTitle(hero)}" onerror="this.style.visibility='hidden'">
+              <span class="hero-badge">1¢ at Dollar Tree</span>
+              <span class="hero-price-chip"><strong>1¢</strong></span>
+            </div>
+          </button>
+          <div class="hero-copy">
+            <div class="trust-row">
+              <span class="verified">${trustText(hero)}</span>
+              <span class="store-name">${hero.retailer || "Dollar Tree"}</span>
+            </div>
+            <h1>${cleanTitle(hero)}</h1>
+            <p class="hook">A licensed sock find - now a penny.</p>
+            <div class="price-row">
+              <div class="price">${displayPrice(hero)}</div>
+              <div class="was">Was <s>${displayWas(hero)}</s></div>
+            </div>
+            <p class="how">Scan in store (SKU ${hero.sku}). Match the bright yellow X-Men socks before buying.</p>
+            <div class="action-row">
+              <button class="primary" type="button" data-deal-index="0">Find in store</button>
+              <button class="secondary" type="button" data-deal-index="0">See deal</button>
+            </div>
+            <p class="honest-line">Prices change - check the tag in store.</p>
+          </div>
+        </section>
+
+        <div class="quick-strip" aria-label="Quick summary">
+          <div class="quick"><strong>1¢</strong><span>Best price</span></div>
+          <div class="quick"><strong>SKU</strong><span>Scan in store</span></div>
+          <div class="quick"><strong>Photos</strong><span>Real finds</span></div>
+        </div>
+
+        <section>
+          <div class="section-head">
+            <h2>Best deals today</h2>
+            <span>${cards.length} real photos</span>
+          </div>
+          <div class="deal-grid">
+            ${cards.map(cardTemplate).join("")}
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Your stores</h2>
+            <span>More deals</span>
+          </div>
+          <div class="stores">
+            <button class="store-row" type="button">
+              <span class="mark">DT</span>
+              <span class="store-copy"><strong>Dollar Tree</strong><span>Lots of 1¢ finds with real photos</span></span>
+              <span class="store-count">1¢ finds</span>
+            </button>
+            <button class="store-row" type="button">
+              <span class="mark">H</span>
+              <span class="store-copy"><strong>H-E-B</strong><span>Bathroom cleaner deal reported for $1.00</span></span>
+              <span class="store-count">$1 deal</span>
+            </button>
+            <button class="store-row" type="button">
+              <span class="mark">W</span>
+              <span class="store-copy"><strong>Walgreens</strong><span>Cleaner and household deals to check</span></span>
+              <span class="store-count">Check tag</span>
+            </button>
+          </div>
+        </section>
+      `;
+
+      app.querySelectorAll("[data-deal-index]").forEach((button) => {
+        button.addEventListener("click", () => openDetail(chosenDeals[Number(button.dataset.dealIndex)]));
+      });
+    }
+
+    function openDetail(deal) {
+      const title = cleanTitle(deal);
+      const was = displayWas(deal);
+      document.getElementById("detailPhoto").src = imageSrc(deal);
+      document.getElementById("detailPhoto").alt = title;
+      const trust = document.getElementById("detailTrust");
+      trust.textContent = trustText(deal);
+      trust.className = isPenny(deal) ? "verified" : "reported";
+      document.getElementById("detail-title").textContent = title;
+      document.getElementById("detailPrice").textContent = displayPrice(deal);
+      document.getElementById("detailWas").innerHTML = was ? `Was <s>${was}</s>` : "";
+      document.getElementById("detailHow").textContent = howText(deal);
+      document.getElementById("detailFind").textContent = findTips[normalizeSku(deal.sku)] || "Match the photo first, then scan the SKU in store before buying.";
+      document.getElementById("detailSku").textContent = deal.sku ? `SKU ${deal.sku}` : "Check photo";
+      sheet.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDetail() {
+      sheet.setAttribute("aria-hidden", "true");
+    }
+
+    document.getElementById("closeDetail").addEventListener("click", closeDetail);
+    sheet.addEventListener("click", (event) => {
+      if (event.target === sheet) closeDetail();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeDetail();
+    });
+
+    render();
+  </script>
+</body>
+</html>

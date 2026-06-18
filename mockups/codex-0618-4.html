@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter</title>
+  <style>
+    :root {
+      --bg: #eef3ef;
+      --panel: #ffffff;
+      --ink: #18342d;
+      --soft-ink: #51615b;
+      --muted: #78847f;
+      --line: #dce6e0;
+      --green: #13765d;
+      --green-deep: #0d5848;
+      --green-soft: #e0f2ec;
+      --blue: #2f5f92;
+      --blue-soft: #e3edf8;
+      --violet: #5c579f;
+      --violet-soft: #eceafa;
+      --rose: #a94b68;
+      --rose-soft: #f6e8ee;
+      --shadow: 0 24px 70px rgba(25, 51, 45, 0.18);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(47, 95, 146, 0.10), transparent 32%),
+        linear-gradient(180deg, #f7f9f7 0%, var(--bg) 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .phone {
+      width: min(100%, 430px);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 18px 18px 14px;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid rgba(220, 230, 224, 0.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    .brand span {
+      font-size: 13px;
+      color: var(--soft-ink);
+    }
+
+    .store-pill {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green-deep);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      transform: translateY(-58%);
+    }
+
+    .search-wrap::after {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 55%;
+      width: 8px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--green);
+      transform: rotate(45deg);
+    }
+
+    #searchInput {
+      width: 100%;
+      height: 52px;
+      padding: 0 44px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8fbf8;
+      color: var(--ink);
+      outline: none;
+      font-size: 15px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+
+    #searchInput:focus {
+      border-color: rgba(19, 118, 93, 0.58);
+      box-shadow: 0 0 0 4px rgba(19, 118, 93, 0.12);
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1;
+      display: none;
+    }
+
+    .clear-search.show {
+      display: grid;
+      place-items: center;
+    }
+
+    main {
+      padding: 18px;
+    }
+
+    .notice {
+      margin: 0 0 18px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--soft-ink);
+      background: #fbfcfb;
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 24px 0 12px;
+    }
+
+    .section-head:first-child {
+      margin-top: 0;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .category-tile {
+      position: relative;
+      min-height: 148px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #edf4ef;
+      text-align: left;
+      border: 1px solid var(--line);
+      isolation: isolate;
+    }
+
+    .category-tile img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.01);
+      filter: saturate(0.96) contrast(1.02);
+    }
+
+    .category-tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(9, 35, 29, 0.02) 20%, rgba(9, 35, 29, 0.78) 100%);
+      z-index: 1;
+    }
+
+    .tile-copy {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2;
+      color: #fff;
+      display: grid;
+      gap: 4px;
+    }
+
+    .tile-copy strong {
+      font-size: 18px;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .tile-copy span {
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .deal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .deal-card {
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fff;
+      text-align: left;
+      min-width: 0;
+    }
+
+    .deal-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #eef4f0;
+      overflow: hidden;
+    }
+
+    .deal-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .price-badge {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--green-deep);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(18, 42, 36, 0.14);
+    }
+
+    .deal-copy {
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .deal-title {
+      margin: 0;
+      min-height: 38px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.32;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .deal-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .deal-meta span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .was {
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+    }
+
+    .quick-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 0 16px;
+    }
+
+    .quick-card {
+      border-radius: var(--radius);
+      padding: 13px;
+      min-height: 86px;
+      display: grid;
+      gap: 4px;
+      align-content: center;
+      border: 1px solid transparent;
+    }
+
+    .quick-card strong {
+      font-size: 21px;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .quick-card span {
+      color: var(--soft-ink);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .green-card {
+      background: var(--green-soft);
+      border-color: #cbe8dd;
+      color: var(--green-deep);
+    }
+
+    .blue-card {
+      background: var(--blue-soft);
+      border-color: #ccdff3;
+      color: #264f7d;
+    }
+
+    .result-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 13px;
+    }
+
+    .result-bar h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .result-bar span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .back-btn,
+    .text-btn {
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: var(--radius);
+      color: var(--green-deep);
+      background: var(--green-soft);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .empty {
+      margin: 28px 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfb;
+      text-align: center;
+      color: var(--soft-ink);
+      line-height: 1.38;
+    }
+
+    .text-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .text-deal {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfb;
+      display: grid;
+      gap: 4px;
+    }
+
+    .text-deal strong {
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .text-deal span {
+      color: var(--soft-ink);
+      font-size: 12px;
+    }
+
+    .detail {
+      display: grid;
+      gap: 16px;
+    }
+
+    .detail-hero {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #eef4f0;
+      border: 1px solid var(--line);
+    }
+
+    .detail-hero img {
+      width: 100%;
+      aspect-ratio: 1 / 0.84;
+      object-fit: cover;
+      display: block;
+    }
+
+    .detail h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .trust {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green-deep);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .price-story {
+      display: grid;
+      grid-template-columns: 106px 1fr;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .big-price {
+      display: grid;
+      place-items: center;
+      min-height: 92px;
+      border-radius: var(--radius);
+      background: var(--green-deep);
+      color: #fff;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .price-note {
+      padding: 13px;
+      border-radius: var(--radius);
+      background: #f8fbf8;
+      border: 1px solid var(--line);
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      color: var(--soft-ink);
+      font-size: 13px;
+      line-height: 1.32;
+    }
+
+    .price-note strong {
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .help-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: grid;
+      gap: 9px;
+      background: #fff;
+    }
+
+    .help-card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .help-card p {
+      margin: 0;
+      color: var(--soft-ink);
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .sku-btn {
+      width: 100%;
+      min-height: 48px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-weight: 850;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .store-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--soft-ink);
+      font-size: 13px;
+      line-height: 1.28;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--violet);
+      flex: 0 0 auto;
+    }
+
+    @media (min-width: 620px) {
+      body {
+        padding: 28px 0;
+      }
+
+      .phone {
+        min-height: 844px;
+        border: 1px solid rgba(24, 52, 45, 0.10);
+        border-radius: 30px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .top,
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .tile-grid,
+      .deal-grid,
+      .quick-row {
+        gap: 10px;
+      }
+
+      .brand h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <header class="top">
+      <div class="brand-row">
+        <div class="brand">
+          <h1>Deal Hunter</h1>
+          <span>Find real deals near you</span>
+        </div>
+        <div class="store-pill">Your stores</div>
+      </div>
+      <div class="search-wrap">
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search for soap, socks, a store..." aria-label="Search deals">
+        <button class="clear-search" id="clearSearch" aria-label="Clear search">&times;</button>
+      </div>
+    </header>
+
+    <main id="app" aria-live="polite"></main>
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const DEALS = window.STAGING_DEALS || [];
+    const app = document.getElementById('app');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const imageRoot = '../deal-hunter-staging/';
+
+    const categoryOrder = ['Cleaning', 'Kids', 'Socks', 'Kitchen', 'Baby', 'Beauty', 'Pantry', 'Health', 'Household', 'Crafts', 'Pets', 'Drinks', 'More'];
+    const categoryLooks = {
+      Cleaning: 'green-card',
+      Kids: 'violet-card',
+      Socks: 'blue-card',
+      Kitchen: 'green-card',
+      Baby: 'rose-card',
+      Beauty: 'violet-card',
+      Pantry: 'blue-card',
+      Health: 'green-card',
+      Household: 'blue-card',
+      Crafts: 'violet-card',
+      Pets: 'rose-card',
+      Drinks: 'green-card',
+      More: 'blue-card'
+    };
+
+    const photoDeals = DEALS.filter(deal => deal.image);
+    let selectedCategory = '';
+
+    function cleanText(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function sentenceCase(value) {
+      const text = cleanText(value);
+      if (!text) return 'Untitled deal';
+      const lower = text.toLowerCase();
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }
+
+    function priceText(deal) {
+      const price = cleanText(deal.price);
+      if (price === '$0.01') return '1¢';
+      return price || 'See price';
+    }
+
+    function priceStory(deal) {
+      const price = priceText(deal);
+      const was = cleanText(deal.was);
+      if (was) return `Was ${was} → now ${price}`;
+      if (price === '1¢') return 'Marked down to 1¢';
+      return `Reported at ${price}`;
+    }
+
+    function dealKind(deal) {
+      const type = cleanText(deal.dealType).toLowerCase();
+      if (type === 'glitch') return 'Might not ring up — worth a look, don’t count on it.';
+      if (type === 'coupon') return 'Use the store coupon if it is still available.';
+      if (type === 'bogo') return 'Check the shelf sign for the buy one, get one offer.';
+      if (type === 'clearance') return 'Look for clearance tags and scan the item in store.';
+      if (type === 'sale') return 'Check the sale tag before you buy.';
+      return 'Look for the item and scan it in store.';
+    }
+
+    function categoryName(deal) {
+      const raw = cleanText(deal.category).toLowerCase();
+      const title = cleanText(deal.title).toLowerCase();
+      const both = `${raw} ${title}`;
+      if (both.includes('sock') || both.includes('apparel') || both.includes('underwear') || both.includes('legging')) return 'Socks';
+      if (both.includes('toy') || both.includes('kid') || both.includes('girls') || both.includes('boys') || both.includes('elmo') || both.includes('smurf')) return 'Kids';
+      if (both.includes('baby')) return 'Baby';
+      if (both.includes('kitchen') || both.includes('tray') || both.includes('bowl') || both.includes('container')) return 'Kitchen';
+      if (both.includes('clean') || both.includes('bathroom') || both.includes('detergent')) return 'Cleaning';
+      if (both.includes('personal care') || both.includes('beauty') || both.includes('body wash') || both.includes('lotion') || both.includes('shampoo')) return 'Beauty';
+      if (both.includes('food') || both.includes('candy') || both.includes('pantry')) return 'Pantry';
+      if (both.includes('beverage') || both.includes('drink')) return 'Drinks';
+      if (both.includes('health')) return 'Health';
+      if (both.includes('household') || both.includes('fragrance') || both.includes('disposable') || both.includes('home decor')) return 'Household';
+      if (both.includes('craft')) return 'Crafts';
+      if (both.includes('pet')) return 'Pets';
+      return 'More';
+    }
+
+    function searchHaystack(deal) {
+      return [
+        deal.title,
+        deal.category,
+        deal.retailer,
+        deal.price,
+        deal.was,
+        deal.sku,
+        categoryName(deal)
+      ].map(cleanText).join(' ').toLowerCase();
+    }
+
+    function categories() {
+      const map = new Map();
+      photoDeals.forEach(deal => {
+        const name = categoryName(deal);
+        if (!map.has(name)) map.set(name, []);
+        map.get(name).push(deal);
+      });
+      return categoryOrder
+        .filter(name => map.has(name))
+        .map(name => ({ name, deals: map.get(name), hero: map.get(name)[0] }));
+    }
+
+    function bestDeals() {
+      return photoDeals
+        .slice()
+        .sort((a, b) => {
+          const pennyA = a.price === '$0.01' ? 1 : 0;
+          const pennyB = b.price === '$0.01' ? 1 : 0;
+          const wasA = cleanText(a.was) ? 1 : 0;
+          const wasB = cleanText(b.was) ? 1 : 0;
+          return (pennyB - pennyA) || (wasB - wasA) || cleanText(a.title).localeCompare(cleanText(b.title));
+        })
+        .slice(0, 6);
+    }
+
+    function imageTag(deal, alt) {
+      return `<img src="${imageRoot}${deal.image}" alt="${alt}" loading="lazy" onerror="this.style.visibility='hidden'">`;
+    }
+
+    function dealCard(deal) {
+      const title = sentenceCase(deal.title);
+      const was = cleanText(deal.was);
+      return `
+        <button class="deal-card" data-deal-id="${deal.id}" type="button">
+          <div class="deal-photo">
+            ${imageTag(deal, title)}
+            <span class="price-badge">${priceText(deal)}</span>
+          </div>
+          <div class="deal-copy">
+            <p class="deal-title">${title}</p>
+            <div class="deal-meta">
+              <span>${cleanText(deal.retailer) || 'Store deal'}</span>
+              ${was ? `<span class="was">${was}</span>` : `<span>${categoryName(deal)}</span>`}
+            </div>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderHome() {
+      selectedCategory = '';
+      const cats = categories();
+      const photoCount = photoDeals.length;
+      const pennyCount = photoDeals.filter(deal => deal.price === '$0.01').length;
+      app.innerHTML = `
+        <p class="notice">Prices change — check the tag in store. These are deals shoppers reported, not live stock.</p>
+        <div class="quick-row">
+          <div class="quick-card green-card">
+            <strong>${pennyCount}</strong>
+            <span>Photo deals at 1¢</span>
+          </div>
+          <div class="quick-card blue-card">
+            <strong>${photoCount}</strong>
+            <span>Deals with real photos</span>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Browse by category</h2>
+          <p>${cats.length} groups</p>
+        </div>
+        <div class="tile-grid">
+          ${cats.map(cat => `
+            <button class="category-tile" data-category="${cat.name}" type="button">
+              ${imageTag(cat.hero, cat.name)}
+              <span class="tile-copy">
+                <strong>${cat.name}</strong>
+                <span>${cat.deals.length} deals</span>
+              </span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="section-head">
+          <h2>Best deals today</h2>
+          <p>Real photos</p>
+        </div>
+        <div class="deal-grid">
+          ${bestDeals().map(dealCard).join('')}
+        </div>
+      `;
+      bindCards();
+      bindCategories();
+    }
+
+    function renderList(options = {}) {
+      const query = cleanText(options.query || searchInput.value).toLowerCase();
+      const cat = options.category || selectedCategory;
+      selectedCategory = cat || '';
+
+      const photoMatches = photoDeals.filter(deal => {
+        const matchesQuery = !query || searchHaystack(deal).includes(query);
+        const matchesCategory = !cat || categoryName(deal) === cat;
+        return matchesQuery && matchesCategory;
+      });
+
+      const textMatches = DEALS.filter(deal => {
+        if (deal.image) return false;
+        if (!query) return false;
+        return searchHaystack(deal).includes(query);
+      }).slice(0, 5);
+
+      const title = cat || (query ? 'Search results' : 'More deals');
+      const countText = `${photoMatches.length} with photos`;
+
+      app.innerHTML = `
+        <div class="result-bar">
+          <button class="back-btn" id="backHome" type="button">Back</button>
+          <span>${countText}</span>
+        </div>
+        <div class="section-head">
+          <h2>${title}</h2>
+          <p>${query ? 'Filtered' : 'All'}</p>
+        </div>
+        ${photoMatches.length ? `<div class="deal-grid">${photoMatches.map(dealCard).join('')}</div>` : `<div class="empty">No photo deals found. Try socks, cleaning, baby, kitchen, or Dollar Tree.</div>`}
+        ${textMatches.length ? `
+          <div class="section-head">
+            <h2>Also reported</h2>
+            <p>No photo yet</p>
+          </div>
+          <div class="text-list">
+            ${textMatches.map(deal => `
+              <div class="text-deal">
+                <strong>${sentenceCase(deal.title)}</strong>
+                <span>${cleanText(deal.retailer) || 'Store deal'} · ${priceText(deal)}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+      document.getElementById('backHome').addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearch.classList.remove('show');
+        renderHome();
+      });
+      bindCards();
+    }
+
+    function renderDetail(deal) {
+      const title = sentenceCase(deal.title);
+      const sku = cleanText(deal.sku);
+      const retailer = cleanText(deal.retailer) || 'Store deal';
+      app.innerHTML = `
+        <div class="result-bar">
+          <button class="back-btn" id="backList" type="button">Back</button>
+          <span>${categoryName(deal)}</span>
+        </div>
+        <article class="detail">
+          <div class="detail-hero">${imageTag(deal, title)}</div>
+          <span class="trust">✓ Verified product</span>
+          <h2>${title}</h2>
+          <div class="store-line"><span class="dot"></span><span>${retailer}</span></div>
+          <div class="price-story">
+            <div class="big-price">${priceText(deal)}</div>
+            <div class="price-note">
+              <strong>${priceStory(deal)}</strong>
+              <span>Prices change — check the tag in store.</span>
+            </div>
+          </div>
+          <section class="help-card">
+            <h3>How to get it</h3>
+            <p>${dealKind(deal)}</p>
+          </section>
+          <section class="help-card">
+            <h3>How to find it in the store</h3>
+            <p>Use the photo first. Check nearby shelves, end caps, and top shelves. Scan the item before you buy.</p>
+            ${sku ? `<button class="sku-btn" type="button">Scan in store (SKU ${sku})</button>` : `<button class="sku-btn" type="button">Find in store</button>`}
+          </section>
+        </article>
+      `;
+      document.getElementById('backList').addEventListener('click', () => {
+        const query = cleanText(searchInput.value);
+        if (query || selectedCategory) renderList({ query, category: selectedCategory });
+        else renderHome();
+      });
+    }
+
+    function bindCards() {
+      app.querySelectorAll('[data-deal-id]').forEach(card => {
+        card.addEventListener('click', () => {
+          const deal = DEALS.find(item => item.id === card.dataset.dealId);
+          if (deal) renderDetail(deal);
+        });
+      });
+    }
+
+    function bindCategories() {
+      app.querySelectorAll('[data-category]').forEach(tile => {
+        tile.addEventListener('click', () => {
+          searchInput.value = '';
+          clearSearch.classList.remove('show');
+          renderList({ category: tile.dataset.category });
+        });
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = cleanText(searchInput.value);
+      clearSearch.classList.toggle('show', Boolean(query));
+      if (query) renderList({ query });
+      else renderHome();
+    });
+
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearch.classList.remove('show');
+      searchInput.focus();
+      renderHome();
+    });
+
+    renderHome();
+  </script>
+</body>
+</html>

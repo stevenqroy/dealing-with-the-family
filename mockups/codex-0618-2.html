@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter - Pick a store</title>
+  <style>
+    :root {
+      --ink: #15231f;
+      --muted: #66756f;
+      --soft: #f4f7f4;
+      --card: #ffffff;
+      --line: #dce5df;
+      --green: #0d6b54;
+      --green-soft: #e6f2ee;
+      --blue: #235c8f;
+      --blue-soft: #e7f0f8;
+      --pink: #8b3a62;
+      --pink-soft: #f7e9f0;
+      --shadow: 0 18px 50px rgba(21, 35, 31, 0.14);
+      --radius: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: #e8eee9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(13, 107, 84, 0.12), transparent 32rem),
+        linear-gradient(180deg, #edf3ef 0%, #dfe8e2 100%);
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .phone {
+      width: min(100%, 414px);
+      min-height: 860px;
+      border-radius: 36px;
+      background: var(--soft);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      position: relative;
+    }
+
+    .screen {
+      min-height: 860px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(244, 247, 244, 0.98) 28%),
+        var(--soft);
+      padding: 18px 16px 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 2px 16px;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand h1,
+    .page-title h1 {
+      margin: 0;
+      font-size: 29px;
+      line-height: 1.04;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .brand p,
+    .page-title p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.32;
+    }
+
+    .round-button {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(21, 35, 31, 0.08);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .quiet-line {
+      margin: 0 0 18px;
+      padding: 11px 13px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(220, 229, 223, 0.86);
+      color: #4d5e57;
+      font-size: 13px;
+      line-height: 1.32;
+    }
+
+    .store-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .store-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 15px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid rgba(220, 229, 223, 0.95);
+      box-shadow: 0 10px 24px rgba(21, 35, 31, 0.06);
+    }
+
+    .store-card.featured {
+      background:
+        linear-gradient(135deg, rgba(230, 242, 238, 0.92), rgba(255, 255, 255, 0.94) 52%),
+        var(--card);
+      border-color: rgba(13, 107, 84, 0.25);
+    }
+
+    .store-copy {
+      min-width: 0;
+    }
+
+    .store-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .store-name {
+      font-size: 19px;
+      line-height: 1.1;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .headline {
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.28;
+      color: #41534c;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .meta-chip {
+      min-height: 25px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f0f4f1;
+      color: #55665f;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 650;
+    }
+
+    .photo-strip {
+      width: 96px;
+      height: 96px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+    }
+
+    .photo-strip img,
+    .deal-photo,
+    .detail-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #edf2ef;
+    }
+
+    .photo-strip img {
+      border-radius: 13px;
+      border: 1px solid rgba(220, 229, 223, 0.95);
+    }
+
+    .photo-strip img:first-child {
+      grid-row: span 2;
+    }
+
+    .plain-count {
+      width: 96px;
+      min-height: 96px;
+      border-radius: 18px;
+      background: #f1f5f2;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .plain-count strong {
+      display: block;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 22px 2px 11px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.12;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 0 13px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: #4d5d57;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .deal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .deal-card {
+      width: 100%;
+      min-width: 0;
+      padding: 9px;
+      border-radius: 19px;
+      background: var(--card);
+      border: 1px solid rgba(220, 229, 223, 0.94);
+      box-shadow: 0 8px 18px rgba(21, 35, 31, 0.055);
+    }
+
+    .deal-photo-wrap {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #edf2ef;
+      border: 1px solid rgba(220, 229, 223, 0.95);
+    }
+
+    .price-badge {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      min-height: 32px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--green);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 850;
+      box-shadow: 0 8px 18px rgba(21, 35, 31, 0.14);
+    }
+
+    .deal-name {
+      margin: 9px 1px 0;
+      font-size: 13px;
+      line-height: 1.23;
+      font-weight: 760;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 32px;
+    }
+
+    .deal-sub {
+      margin: 6px 1px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .text-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .text-deal {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+
+    .text-deal strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.22;
+      margin-bottom: 5px;
+    }
+
+    .text-deal span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.24;
+    }
+
+    .small-price {
+      color: var(--green);
+      font-size: 18px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .detail-hero {
+      border-radius: 28px;
+      background: var(--card);
+      border: 1px solid rgba(220, 229, 223, 0.94);
+      overflow: hidden;
+      box-shadow: 0 12px 26px rgba(21, 35, 31, 0.08);
+    }
+
+    .detail-photo {
+      aspect-ratio: 1 / 1;
+      background: #edf2ef;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-copy {
+      padding: 16px;
+    }
+
+    .trust {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 27px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .detail-title {
+      margin: 12px 0 0;
+      font-size: 25px;
+      line-height: 1.08;
+      letter-spacing: 0;
+      font-weight: 850;
+    }
+
+    .price-story {
+      display: flex;
+      align-items: baseline;
+      gap: 11px;
+      margin-top: 13px;
+    }
+
+    .big-price {
+      color: var(--green);
+      font-size: 48px;
+      line-height: 0.96;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .was {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .was s {
+      text-decoration-thickness: 2px;
+    }
+
+    .action-card {
+      margin-top: 13px;
+      padding: 14px;
+      border-radius: 19px;
+      background: #f8faf8;
+      border: 1px solid var(--line);
+    }
+
+    .action-card h2 {
+      margin: 0 0 9px;
+      font-size: 16px;
+      line-height: 1.1;
+    }
+
+    .action-card p {
+      margin: 0;
+      color: #465850;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .sku-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 11px;
+      padding: 10px 12px;
+      border-radius: 15px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .sku-row strong {
+      color: var(--ink);
+      font-size: 15px;
+      letter-spacing: 0.4px;
+    }
+
+    .empty {
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 430px) {
+      body {
+        padding: 0;
+        background: var(--soft);
+      }
+
+      .phone {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .screen {
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone" aria-label="Deal Hunter">
+    <section id="home" class="screen">
+      <header class="topbar">
+        <div class="brand">
+          <h1>Your stores</h1>
+          <p>Pick one store and see the deals shoppers found there.</p>
+        </div>
+      </header>
+
+      <p class="quiet-line">Prices change - check the tag in store. These are shopper reports, not live stock.</p>
+
+      <div class="section-head">
+        <h2>Best deals today</h2>
+        <span id="homeCount">Loading deals</span>
+      </div>
+      <div id="storeList" class="store-list"></div>
+    </section>
+
+    <section id="storePage" class="screen" hidden>
+      <header class="topbar">
+        <button class="round-button" type="button" data-back-home aria-label="Back to stores">‹</button>
+        <div class="page-title">
+          <h1 id="storeTitle">Store</h1>
+          <p id="storeSubtitle"></p>
+        </div>
+      </header>
+
+      <p class="quiet-line" id="storeNote">Prices change - check the tag in store.</p>
+
+      <div class="section-head">
+        <h2>Browse by category</h2>
+        <span id="storeDealCount"></span>
+      </div>
+      <div id="categoryTabs" class="tabs"></div>
+
+      <div id="dealArea"></div>
+    </section>
+
+    <section id="detailPage" class="screen" hidden>
+      <header class="topbar">
+        <button class="round-button" type="button" data-back-store aria-label="Back to store">‹</button>
+        <div class="page-title">
+          <h1>See deal</h1>
+          <p id="detailStore"></p>
+        </div>
+      </header>
+
+      <article class="detail-hero">
+        <div class="detail-photo" id="detailPhoto"></div>
+        <div class="detail-copy">
+          <div id="detailTrust" class="trust">Verified product</div>
+          <h1 id="detailTitle" class="detail-title"></h1>
+          <div class="price-story">
+            <div id="detailPrice" class="big-price"></div>
+            <div id="detailWas" class="was"></div>
+          </div>
+
+          <section class="action-card">
+            <h2>How to get it</h2>
+            <p id="detailGet"></p>
+          </section>
+
+          <section class="action-card">
+            <h2>How to find it in the store</h2>
+            <p id="detailFind"></p>
+            <div id="detailSku" class="sku-row"></div>
+          </section>
+
+          <p class="quiet-line" style="margin:13px 0 0;">Prices change - check the tag in store.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const DEALS = (window.STAGING_DEALS || []);
+    const state = {
+      store: null,
+      category: "All",
+      lastStore: null
+    };
+
+    const storeList = document.getElementById("storeList");
+    const homeCount = document.getElementById("homeCount");
+    const storePage = document.getElementById("storePage");
+    const home = document.getElementById("home");
+    const detailPage = document.getElementById("detailPage");
+    const storeTitle = document.getElementById("storeTitle");
+    const storeSubtitle = document.getElementById("storeSubtitle");
+    const storeDealCount = document.getElementById("storeDealCount");
+    const categoryTabs = document.getElementById("categoryTabs");
+    const dealArea = document.getElementById("dealArea");
+
+    const preferredStores = [
+      "Dollar Tree",
+      "H-E-B",
+      "Walgreens",
+      "Walmart",
+      "Dollar General",
+      "Target",
+      "CVS",
+      "Publix",
+      "Family Dollar",
+      "Home Depot"
+    ];
+
+    function moneyLabel(value) {
+      if (!value) return "Price varies";
+      return value === "$0.01" ? "1¢" : value;
+    }
+
+    function titleCasePlain(text) {
+      return String(text || "Untitled deal")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase()
+        .replace(/\b([a-z])/g, (match) => match.toUpperCase())
+        .replace(/\bOz\b/g, "oz")
+        .replace(/\bQt\b/g, "qt")
+        .replace(/\bCt\b/g, "ct")
+        .replace(/\bPk\b/g, "pk")
+        .replace(/\bLic\b/g, "licensed")
+        .replace(/\bSmurfs\b/g, "Smurfs")
+        .replace(/\bHeb\b/g, "H-E-B")
+        .replace(/\bCvs\b/g, "CVS");
+    }
+
+    function productTitle(text) {
+      const cleaned = String(text || "Untitled deal").replace(/\s+/g, " ").trim();
+      if (!cleaned) return "Untitled deal";
+      let title = cleaned.toLowerCase()
+        .replace(/\blic\b/g, "licensed")
+        .replace(/\boz\b/g, "oz")
+        .replace(/\bqt\b/g, "qt")
+        .replace(/\bct\b/g, "ct")
+        .replace(/\bpk\b/g, "pk")
+        .replace(/\bsmurfs\b/g, "Smurfs")
+        .replace(/\belmo\b/g, "Elmo")
+        .replace(/\bbaby shark\b/g, "Baby Shark")
+        .replace(/\bh-e-b\b/g, "H-E-B")
+        .replace(/\bcvs\b/g, "CVS");
+      return title.charAt(0).toUpperCase() + title.slice(1);
+    }
+
+    function dealScore(deal) {
+      let score = Number(deal.worthScore || 0);
+      if (deal.image) score += 7;
+      if (deal.price === "$0.01") score += 10;
+      if (deal.was) score += 2;
+      if (deal.freshness === "fresh-today") score += 3;
+      if (deal.dealType === "penny" || deal.dealType === "dt-penny-list") score += 3;
+      return score;
+    }
+
+    function sortedDeals(deals) {
+      return deals.slice().sort((a, b) => dealScore(b) - dealScore(a));
+    }
+
+    function groupByStore() {
+      const map = new Map();
+      DEALS.forEach((deal) => {
+        const retailer = deal.retailer || "Other";
+        if (!map.has(retailer)) map.set(retailer, []);
+        map.get(retailer).push(deal);
+      });
+      return map;
+    }
+
+    function imagePath(deal) {
+      return deal && deal.image ? "../deal-hunter-staging/" + deal.image : "";
+    }
+
+    function createImg(deal, className) {
+      const img = document.createElement("img");
+      img.className = className || "";
+      img.alt = productTitle(deal.title);
+      img.src = imagePath(deal);
+      img.loading = "eager";
+      img.onerror = function () {
+        this.style.visibility = "hidden";
+      };
+      return img;
+    }
+
+    function storeHeadline(name, deals) {
+      const photos = deals.filter((deal) => deal.image).length;
+      const pennies = deals.filter((deal) => deal.price === "$0.01" || deal.dealType === "penny" || deal.dealType === "dt-penny-list").length;
+      const clearance = deals.filter((deal) => deal.dealType === "clearance").length;
+      const coupons = deals.filter((deal) => deal.dealType === "coupon").length;
+
+      if (name === "Dollar Tree") return `${pennies}+ penny deals with ${photos}+ real photos`;
+      if (photos > 1) return `${deals.length} shopper deals with real photos`;
+      if (photos === 1) return `${deals.length} shopper deals, one real photo`;
+      if (clearance > 0) return `${deals.length} deals, including clearance finds`;
+      if (coupons > 0) return `${deals.length} deals, mostly coupons`;
+      if (deals.length <= 5) return "A few shopper finds";
+      return `${deals.length} shopper deals`;
+    }
+
+    function storeChips(deals) {
+      const chips = [];
+      const photos = deals.filter((deal) => deal.image).length;
+      const pennies = deals.filter((deal) => deal.price === "$0.01" || deal.dealType === "penny" || deal.dealType === "dt-penny-list").length;
+      const oneDollar = deals.filter((deal) => deal.price === "$1.00" || deal.price === "$1.01").length;
+      if (pennies) chips.push(`${pennies} penny deals`);
+      if (oneDollar) chips.push(`${oneDollar} near $1`);
+      if (photos) chips.push(`${photos} photos`);
+      if (!photos) chips.push("Text reports");
+      return chips.slice(0, 3);
+    }
+
+    function renderStores() {
+      const map = groupByStore();
+      const stores = Array.from(map.keys())
+        .sort((a, b) => {
+          const ia = preferredStores.indexOf(a);
+          const ib = preferredStores.indexOf(b);
+          if (ia !== -1 || ib !== -1) return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+          return map.get(b).length - map.get(a).length;
+        })
+        .slice(0, 10);
+
+      const totalPhotos = DEALS.filter((deal) => deal.image).length;
+      homeCount.textContent = `${DEALS.length} deals, ${totalPhotos} photos`;
+      storeList.innerHTML = "";
+
+      stores.forEach((store) => {
+        const deals = sortedDeals(map.get(store));
+        const photos = deals.filter((deal) => deal.image).slice(0, 3);
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "store-card" + (store === "Dollar Tree" ? " featured" : "");
+        card.addEventListener("click", () => openStore(store));
+
+        const copy = document.createElement("div");
+        copy.className = "store-copy";
+        copy.innerHTML = `
+          <div class="store-name-row">
+            <div class="store-name">${store}</div>
+            <div class="count-pill">${deals.length}</div>
+          </div>
+          <p class="headline">${storeHeadline(store, deals)}</p>
+          <div class="meta-row">${storeChips(deals).map((chip) => `<span class="meta-chip">${chip}</span>`).join("")}</div>
+        `;
+
+        const side = document.createElement("div");
+        if (photos.length) {
+          side.className = "photo-strip";
+          photos.forEach((deal) => side.appendChild(createImg(deal)));
+        } else {
+          side.className = "plain-count";
+          side.innerHTML = `<strong>${deals.length}</strong><span>Deals shoppers reported</span>`;
+        }
+
+        card.appendChild(copy);
+        card.appendChild(side);
+        storeList.appendChild(card);
+      });
+    }
+
+    function openStore(store) {
+      state.store = store;
+      state.lastStore = store;
+      state.category = "All";
+      home.hidden = true;
+      detailPage.hidden = true;
+      storePage.hidden = false;
+      renderStore();
+      window.scrollTo(0, 0);
+    }
+
+    function renderStore() {
+      const deals = sortedDeals(groupByStore().get(state.store) || []);
+      const photos = deals.filter((deal) => deal.image).length;
+      storeTitle.textContent = state.store;
+      storeSubtitle.textContent = storeHeadline(state.store, deals);
+      storeDealCount.textContent = `${deals.length} deals`;
+
+      const categories = ["All"].concat(Array.from(new Set(deals.map((deal) => deal.category || "Other"))).sort().slice(0, 12));
+      categoryTabs.innerHTML = "";
+      categories.forEach((category) => {
+        const tab = document.createElement("button");
+        tab.type = "button";
+        tab.className = "tab" + (category === state.category ? " active" : "");
+        tab.textContent = category === "All" ? "All deals" : titleCasePlain(category);
+        tab.addEventListener("click", () => {
+          state.category = category;
+          renderStore();
+        });
+        categoryTabs.appendChild(tab);
+      });
+
+      const filtered = state.category === "All" ? deals : deals.filter((deal) => (deal.category || "Other") === state.category);
+      const photoDeals = filtered.filter((deal) => deal.image);
+      dealArea.innerHTML = "";
+
+      if (photos >= 4 && photoDeals.length) {
+        const grid = document.createElement("div");
+        grid.className = "deal-grid";
+        photoDeals.slice(0, 24).forEach((deal) => grid.appendChild(renderDealCard(deal)));
+        dealArea.appendChild(grid);
+
+        const textOnly = filtered.filter((deal) => !deal.image).slice(0, 8);
+        if (textOnly.length) {
+          const head = document.createElement("div");
+          head.className = "section-head";
+          head.innerHTML = "<h2>More deals</h2><span>No photo yet</span>";
+          dealArea.appendChild(head);
+          dealArea.appendChild(renderTextList(textOnly));
+        }
+      } else if (filtered.length) {
+        dealArea.appendChild(renderTextList(filtered.slice(0, 30)));
+      } else {
+        dealArea.innerHTML = `<div class="empty">No deals in this category yet.</div>`;
+      }
+    }
+
+    function renderDealCard(deal) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "deal-card";
+      card.addEventListener("click", () => openDetail(deal));
+
+      const wrap = document.createElement("div");
+      wrap.className = "deal-photo-wrap";
+      wrap.appendChild(createImg(deal, "deal-photo"));
+
+      const badge = document.createElement("div");
+      badge.className = "price-badge";
+      badge.textContent = moneyLabel(deal.price);
+      wrap.appendChild(badge);
+
+      const name = document.createElement("div");
+      name.className = "deal-name";
+      name.textContent = productTitle(deal.title);
+
+      const sub = document.createElement("div");
+      sub.className = "deal-sub";
+      sub.textContent = deal.sku ? `SKU ${deal.sku}` : deal.retailer || "Shopper report";
+
+      card.appendChild(wrap);
+      card.appendChild(name);
+      card.appendChild(sub);
+      return card;
+    }
+
+    function renderTextList(deals) {
+      const list = document.createElement("div");
+      list.className = "text-list";
+      deals.forEach((deal) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "text-deal";
+        row.addEventListener("click", () => openDetail(deal));
+        row.innerHTML = `
+          <div>
+            <strong>${productTitle(deal.title)}</strong>
+            <span>${deal.category ? titleCasePlain(deal.category) : "Shopper report"}${deal.sku ? ` - SKU ${deal.sku}` : ""}</span>
+          </div>
+          <div class="small-price">${moneyLabel(deal.price)}</div>
+        `;
+        list.appendChild(row);
+      });
+      return list;
+    }
+
+    function openDetail(deal) {
+      state.lastStore = deal.retailer || state.store || "Stores";
+      home.hidden = true;
+      storePage.hidden = true;
+      detailPage.hidden = false;
+      renderDetail(deal);
+      window.scrollTo(0, 0);
+    }
+
+    function renderDetail(deal) {
+      document.getElementById("detailStore").textContent = deal.retailer || "Shopper report";
+      document.getElementById("detailTitle").textContent = productTitle(deal.title);
+      document.getElementById("detailPrice").textContent = moneyLabel(deal.price);
+
+      const was = document.getElementById("detailWas");
+      if (deal.was && deal.price) {
+        was.innerHTML = `Was <s>${deal.was}</s><br>now ${moneyLabel(deal.price)}`;
+      } else if (deal.price) {
+        was.textContent = "Reported price";
+      } else {
+        was.textContent = "Check price in store";
+      }
+
+      const detailPhoto = document.getElementById("detailPhoto");
+      detailPhoto.innerHTML = "";
+      if (deal.image) {
+        detailPhoto.appendChild(createImg(deal));
+        detailPhoto.hidden = false;
+      } else {
+        detailPhoto.hidden = true;
+      }
+
+      const trust = document.getElementById("detailTrust");
+      trust.textContent = deal.image || deal.sku ? "✓ Verified product" : "Shoppers reported this";
+
+      const get = document.getElementById("detailGet");
+      if (deal.dealType === "glitch") {
+        get.textContent = "This might not ring up - worth a look, don't count on it.";
+      } else if (deal.price === "$0.01" || deal.dealType === "penny" || deal.dealType === "dt-penny-list") {
+        get.textContent = "Look for the exact item, then check the tag or scan it in store.";
+      } else if (deal.dealType === "coupon") {
+        get.textContent = "Check the store coupon and final price before you buy.";
+      } else {
+        get.textContent = "Check the shelf tag and final price before you buy.";
+      }
+
+      const find = document.getElementById("detailFind");
+      const category = deal.category ? titleCasePlain(deal.category) : "the matching aisle";
+      find.textContent = `Start in ${category}. Match the photo and product name before scanning.`;
+
+      const sku = document.getElementById("detailSku");
+      if (deal.sku) {
+        sku.innerHTML = `<span>Scan in store</span><strong>SKU ${deal.sku}</strong>`;
+      } else {
+        sku.innerHTML = `<span>No SKU shown</span><strong>Check the tag</strong>`;
+      }
+    }
+
+    document.querySelector("[data-back-home]").addEventListener("click", () => {
+      storePage.hidden = true;
+      detailPage.hidden = true;
+      home.hidden = false;
+      window.scrollTo(0, 0);
+    });
+
+    document.querySelector("[data-back-store]").addEventListener("click", () => {
+      if (state.lastStore) {
+        openStore(state.lastStore);
+      } else {
+        detailPage.hidden = true;
+        home.hidden = false;
+      }
+    });
+
+    renderStores();
+  </script>
+</body>
+</html>

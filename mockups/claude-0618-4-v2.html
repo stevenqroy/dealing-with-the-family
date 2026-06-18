@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Find what you need</title>
+<style>
+  :root{
+    --bg:#f4f6f7;
+    --card:#ffffff;
+    --ink:#16181d;
+    --ink-2:#565c64;
+    --ink-3:#878d96;
+    --line:#e8ebee;
+    --line-2:#eef0f3;
+    /* a calm, trustworthy teal/indigo — explicitly NOT orange */
+    --brand:#0f7d6e;
+    --brand-soft:#e6f4f1;
+    --brand-ink:#0a5e53;
+    --win:#0f7d6e;            /* the 1¢ win color */
+    --penny-bg:#eafaf3;
+    /* light neutral background sitting BEHIND product photos so packaging stays fully visible */
+    --photo-bg:#f5f7f8;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+    --shadow-lg:0 10px 40px rgba(16,24,40,.16);
+    --r:18px;
+    --r-sm:13px;
+    --maxw:430px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 520px at 50% -240px, #eaf3f1 0%, rgba(234,243,241,0) 70%),
+      var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;justify-content:center;
+    min-height:100vh;
+  }
+  .phone{
+    width:100%;max-width:var(--maxw);
+    background:transparent;
+    min-height:100vh;
+    position:relative;
+    padding-bottom:96px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    padding:14px 18px 12px;
+    background:linear-gradient(180deg, #f6f8f7 74%, rgba(246,248,247,.0) 100%);
+    backdrop-filter:saturate(1.2) blur(6px);
+  }
+  .brandrow{display:flex;align-items:center;gap:10px;margin:2px 2px 12px}
+  .mark{
+    width:30px;height:30px;border-radius:9px;flex:0 0 auto;
+    background:linear-gradient(150deg,var(--brand),#16a08c);
+    display:grid;place-items:center;color:#fff;
+    box-shadow:0 4px 12px rgba(15,125,110,.35);
+  }
+  .mark svg{width:17px;height:17px}
+  .brandname{font-size:18px;font-weight:800;letter-spacing:-.02em}
+  .brandname span{color:var(--brand-ink)}
+  .loc{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-2);
+    background:#fff;border:1px solid var(--line);padding:6px 11px;border-radius:999px;font-weight:600;box-shadow:var(--shadow)}
+  .loc svg{width:13px;height:13px;color:var(--brand)}
+
+  /* ---------- search ---------- */
+  .searchwrap{position:relative}
+  .search{
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border:1px solid var(--line);
+    border-radius:15px;padding:0 14px;height:52px;
+    box-shadow:var(--shadow);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .search:focus-within{border-color:#bfe2db;box-shadow:0 0 0 4px var(--brand-soft), var(--shadow)}
+  .search svg.mag{width:19px;height:19px;color:var(--ink-3);flex:0 0 auto}
+  .search input{
+    border:0;outline:0;flex:1;background:transparent;
+    font-size:16px;color:var(--ink);font-weight:500;min-width:0;
+  }
+  .search input::placeholder{color:var(--ink-3);font-weight:500}
+  .clearx{
+    border:0;background:#eef1f0;color:var(--ink-2);
+    width:24px;height:24px;border-radius:999px;display:none;place-items:center;cursor:pointer;flex:0 0 auto;font-size:13px;
+  }
+  .clearx.show{display:grid}
+
+  /* live preview dropdown (shown under the search bar for short/partial queries) */
+  .preview{
+    position:absolute;left:0;right:0;top:58px;z-index:60;
+    background:#fff;border:1px solid var(--line);border-radius:15px;
+    box-shadow:0 12px 34px rgba(16,24,40,.16);overflow:hidden;display:none;
+  }
+  .preview.show{display:block}
+  .preview .phead{
+    font-size:11.5px;font-weight:700;color:var(--ink-3);
+    padding:11px 14px 6px;letter-spacing:.01em;
+  }
+  .prow{
+    display:flex;align-items:center;gap:11px;padding:8px 13px;cursor:pointer;
+    border-top:1px solid var(--line-2);
+  }
+  .prow:first-of-type{border-top:0}
+  .prow:active{background:#f6f8f7}
+  .prow .pthumb{
+    width:42px;height:42px;border-radius:10px;flex:0 0 auto;
+    background:var(--photo-bg);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;
+  }
+  .prow .pthumb img{width:100%;height:100%;object-fit:contain;display:block;padding:3px}
+  .prow .pmid{flex:1;min-width:0}
+  .prow .pnm{font-size:13.5px;font-weight:650;color:var(--ink);line-height:1.25;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prow .psub{font-size:11.5px;color:var(--ink-2);font-weight:600;margin-top:1px}
+  .prow .ppr{font-size:14px;font-weight:850;color:var(--win);flex:0 0 auto;letter-spacing:-.02em}
+  .prow .ppr.muted{color:var(--ink-2)}
+  .preview .pall{
+    display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line-2);
+    background:#fbfcfc;color:var(--brand-ink);font-size:13px;font-weight:750;
+    padding:12px 14px;cursor:pointer;
+  }
+  .preview .pall:active{background:#f1f4f3}
+  .preview .pnone{padding:14px 14px 16px;font-size:13px;color:var(--ink-2);font-weight:500}
+
+  /* quick chips */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink-2);
+    font-size:13px;font-weight:600;padding:8px 13px;border-radius:999px;cursor:pointer;
+    box-shadow:var(--shadow);transition:.12s;white-space:nowrap;
+  }
+  .chip:active{transform:scale(.97)}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(15,125,110,.3)}
+
+  /* ---------- scroll body ---------- */
+  .body{padding:6px 18px 0}
+
+  .section-h{display:flex;align-items:baseline;gap:8px;margin:22px 2px 13px}
+  .section-h h2{font-size:17px;font-weight:800;letter-spacing:-.02em;margin:0}
+  .section-h .sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-left:auto}
+
+  /* ---------- hero strip (best 1¢ today) ---------- */
+  .heroscroll{display:flex;gap:13px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;scroll-snap-type:x mandatory}
+  .heroscroll::-webkit-scrollbar{display:none}
+  .herocard{
+    flex:0 0 76%;scroll-snap-align:start;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    overflow:hidden;box-shadow:var(--shadow);cursor:pointer;position:relative;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .herocard:active{transform:scale(.985)}
+  .herocard .ph{
+    position:relative;width:100%;aspect-ratio:1.42/1;background:var(--photo-bg);overflow:hidden;
+    display:grid;place-items:center;
+  }
+  /* CONTAIN so packaging is never cropped */
+  .herocard .ph img{width:100%;height:100%;object-fit:contain;display:block;padding:14px}
+  .pennytag{
+    position:absolute;top:11px;left:11px;z-index:2;
+    background:rgba(255,255,255,.94);backdrop-filter:blur(4px);
+    color:var(--brand-ink);font-weight:800;font-size:12px;
+    padding:5px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;
+    box-shadow:0 2px 8px rgba(16,24,40,.12);
+  }
+  .pennytag b{font-size:13px}
+  .herobody{padding:12px 14px 14px}
+  .herobody .nm{font-size:14.5px;font-weight:700;line-height:1.3;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px}
+  .herobody .pr{display:flex;align-items:baseline;gap:8px;margin-top:7px}
+  .herobody .pr .now{font-size:21px;font-weight:850;color:var(--win);letter-spacing:-.02em}
+  .herobody .pr .was{font-size:13px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .herobody .store{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-2);margin-top:8px;font-weight:600}
+  .herobody .sku{font-size:11.5px;color:var(--ink-3);font-weight:600;margin-top:5px;font-variant-numeric:tabular-nums}
+  .dot{width:4px;height:4px;border-radius:999px;background:var(--ink-3);display:inline-block}
+  .vtick{display:inline-flex;align-items:center;gap:3px;color:var(--brand-ink);font-weight:700}
+  .vtick svg{width:12px;height:12px}
+
+  /* ---------- category tiles ---------- */
+  .tilegrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .tile{
+    position:relative;border-radius:var(--r);overflow:hidden;cursor:pointer;
+    background:var(--photo-bg);border:1px solid var(--line);box-shadow:var(--shadow);
+    aspect-ratio:1.16/1;display:block;transition:transform .12s, box-shadow .12s;
+  }
+  .tile:active{transform:scale(.98)}
+  /* CONTAIN: the full package shows; the tile drama comes from a BOTTOM-ONLY text gradient */
+  .tile .timg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;padding:16px 16px 30px}
+  .tile .scrim{position:absolute;left:0;right:0;bottom:0;height:58%;
+    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(247,249,250,.86) 56%, rgba(247,249,250,.98) 100%);}
+  .tile .tmeta{position:absolute;left:0;right:0;bottom:0;padding:11px 13px;z-index:2}
+  .tile .tname{font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+  .tile .tcount{font-size:11.5px;font-weight:650;color:var(--ink-2);margin-top:1px}
+  .tile .pennychip{
+    position:absolute;top:9px;right:9px;z-index:2;
+    background:var(--brand-soft);color:var(--brand-ink);font-size:11px;font-weight:800;
+    padding:3px 8px;border-radius:999px;box-shadow:0 1px 4px rgba(16,24,40,.08);
+  }
+
+  /* ---------- results view ---------- */
+  .results-head{display:flex;align-items:center;gap:11px;margin:18px 2px 4px}
+  .backbtn{
+    border:1px solid var(--line);background:#fff;color:var(--ink);
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;cursor:pointer;
+    box-shadow:var(--shadow);flex:0 0 auto;
+  }
+  .backbtn svg{width:18px;height:18px}
+  .results-head h2{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.15}
+  .results-head .cnt{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:1px}
+
+  .honest{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#fff;border:1px solid var(--line);border-radius:13px;
+    padding:11px 13px;margin:14px 0 4px;box-shadow:var(--shadow);
+  }
+  .honest svg{width:16px;height:16px;color:var(--brand);flex:0 0 auto;margin-top:1px}
+  .honest p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.45;font-weight:500}
+
+  .subhead{display:flex;align-items:baseline;gap:8px;margin:20px 2px 11px}
+  .subhead h3{font-size:14.5px;font-weight:800;letter-spacing:-.01em;margin:0;color:var(--ink)}
+  .subhead .scount{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:auto}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:6px 0 4px}
+  .gcard{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);
+    overflow:hidden;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .gcard:active{transform:scale(.98)}
+  .gcard .gph{position:relative;width:100%;aspect-ratio:1/1;background:var(--photo-bg);overflow:hidden;display:grid;place-items:center}
+  .gcard .gph img{width:100%;height:100%;object-fit:contain;display:block;padding:11px}
+  .gcard .gpenny{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.94);color:var(--brand-ink);
+    font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:999px;box-shadow:0 1px 5px rgba(16,24,40,.1)}
+  .gcard .gbody{padding:10px 11px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .gcard .gnm{font-size:12.8px;font-weight:650;line-height:1.32;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:33px}
+  .gcard .gpr{display:flex;align-items:baseline;gap:7px;margin-top:auto}
+  .gcard .gpr .now{font-size:17px;font-weight:850;color:var(--win);letter-spacing:-.02em}
+  .gcard .gpr .was{font-size:11.5px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .gcard .gstore{font-size:11px;color:var(--ink-2);font-weight:600;display:flex;align-items:center;gap:5px}
+
+  .empty{padding:54px 20px;text-align:center;color:var(--ink-3)}
+  .empty .big{font-size:15px;font-weight:700;color:var(--ink-2);margin-bottom:5px}
+  .empty .small{font-size:13px}
+
+  /* ---------- non-photo (text) deals from other stores ---------- */
+  .otherstores{margin:6px 0 2px}
+  .orow{
+    display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);
+    border-radius:13px;padding:12px 13px;margin-bottom:9px;box-shadow:var(--shadow);cursor:pointer;
+  }
+  .orow .oprice{flex:0 0 auto;min-width:62px;text-align:center}
+  .orow .oprice .on{font-size:16px;font-weight:850;color:var(--ink);letter-spacing:-.02em;display:block}
+  .orow .oprice .ow{font-size:11px;color:var(--ink-3);text-decoration:line-through;font-weight:600}
+  .orow .odiv{width:1px;align-self:stretch;background:var(--line)}
+  .orow .obody{flex:1;min-width:0}
+  .orow .onm{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .orow .ometa{font-size:11.5px;color:var(--ink-2);font-weight:600;margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .pill{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:#eef1f0;color:var(--ink-2)}
+  .pill.save{background:var(--brand-soft);color:var(--brand-ink)}
+  .pill.nophoto{background:#f1f3f4;color:var(--ink-3)}
+
+  /* ---------- detail sheet ---------- */
+  .sheet-scrim{position:fixed;inset:0;background:rgba(16,18,22,.46);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s}
+  .sheet-scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;left:50%;transform:translateX(-50%) translateY(100%);
+    bottom:0;width:100%;max-width:var(--maxw);z-index:100;
+    background:var(--bg);border-radius:24px 24px 0 0;
+    box-shadow:var(--shadow-lg);transition:transform .28s cubic-bezier(.32,.72,0,1);
+    max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .sheet.open{transform:translateX(-50%) translateY(0)}
+  .grab{width:38px;height:5px;border-radius:999px;background:#d4d8dd;margin:9px auto 2px}
+  .sheet .shclose{position:absolute;top:14px;right:16px;z-index:3;width:32px;height:32px;border-radius:999px;
+    border:0;background:rgba(255,255,255,.9);backdrop-filter:blur(4px);display:grid;place-items:center;cursor:pointer;color:var(--ink-2);box-shadow:var(--shadow)}
+  .sheet .shclose svg{width:16px;height:16px}
+  .sh-photo{position:relative;margin:10px 16px 0;border-radius:18px;overflow:hidden;background:var(--photo-bg);aspect-ratio:1.12/1;display:grid;place-items:center;border:1px solid var(--line)}
+  .sh-photo img{width:100%;height:100%;object-fit:contain;display:block;padding:20px}
+  .sh-penny{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.95);color:var(--brand-ink);font-weight:800;font-size:12.5px;padding:6px 11px;border-radius:999px;box-shadow:0 2px 8px rgba(16,24,40,.12);display:flex;gap:6px;align-items:center}
+
+  /* distinct NO-PHOTO panel — clearly intentional, not a failed image */
+  .sh-nophoto{
+    margin:10px 16px 0;border-radius:18px;border:1px dashed #cfd6da;background:#fbfcfc;
+    padding:22px 18px;display:flex;align-items:center;gap:14px;
+  }
+  .sh-nophoto .npicon{
+    width:48px;height:48px;border-radius:13px;flex:0 0 auto;
+    background:#eef1f3;color:var(--ink-3);display:grid;place-items:center;
+  }
+  .sh-nophoto .npicon svg{width:25px;height:25px}
+  .sh-nophoto .nptx .nph{font-size:14.5px;font-weight:800;color:var(--ink-2)}
+  .sh-nophoto .nptx .nps{font-size:12.5px;font-weight:600;color:var(--ink-3);margin-top:3px;line-height:1.4}
+
+  .sh-body{padding:16px 18px 28px}
+  .sh-title{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.22;margin:0}
+  .sh-verified{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--brand-ink);background:var(--brand-soft);padding:4px 9px;border-radius:999px;margin-top:10px}
+  .sh-verified svg{width:12px;height:12px}
+  .sh-reported{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink-2);background:#eef1f0;padding:4px 9px;border-radius:999px;margin-top:10px}
+  .sh-reported svg{width:12px;height:12px}
+
+  .pricebox{
+    display:flex;align-items:center;gap:14px;
+    background:var(--penny-bg);border:1px solid #c9ecdf;border-radius:16px;padding:16px 17px;margin:16px 0 6px;
+  }
+  .pricebox.plain{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .pricebox .pbnow{font-size:34px;font-weight:850;color:var(--win);letter-spacing:-.03em;line-height:1}
+  .pricebox.plain .pbnow{color:var(--ink)}
+  .pricebox .pbcol{display:flex;flex-direction:column;gap:3px}
+  .pricebox .pbwas{font-size:13px;color:var(--ink-2);font-weight:600}
+  .pricebox .pbwas s{color:var(--ink-3)}
+  .pricebox .pbsave{font-size:12.5px;font-weight:800;color:var(--brand-ink)}
+  .pricebox .pbicon{margin-left:auto;width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--win);box-shadow:var(--shadow)}
+  .pricebox.plain .pbicon{background:#f5f7f8}
+  .pricebox .pbicon svg{width:22px;height:22px}
+
+  .infoblock{background:#fff;border:1px solid var(--line);border-radius:15px;padding:4px 16px;margin:14px 0;box-shadow:var(--shadow)}
+  .inforow{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+  .inforow:last-child{border-bottom:0}
+  .inforow .ic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;flex:0 0 auto}
+  .inforow .ic svg{width:18px;height:18px}
+  .inforow .tx{flex:1;min-width:0}
+  .inforow .tx .lab{font-size:12px;font-weight:700;color:var(--ink-3);margin-bottom:2px}
+  .inforow .tx .val{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.4}
+  .inforow .tx .val .skucode{font-variant-numeric:tabular-nums;background:#f1f3f4;padding:2px 8px;border-radius:7px;font-weight:800;letter-spacing:.02em}
+
+  .ctarow{display:flex;gap:11px;margin-top:18px}
+  .btn{flex:1;border:0;border-radius:14px;height:52px;font-size:15.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em}
+  .btn svg{width:18px;height:18px}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(15,125,110,.32)}
+  .btn-primary:active{transform:scale(.985)}
+  .btn-ghost{flex:0 0 auto;width:52px;background:#fff;border:1px solid var(--line);color:var(--ink-2);box-shadow:var(--shadow)}
+
+  .scannote{font-size:12px;color:var(--ink-3);text-align:center;margin-top:14px;line-height:1.5;font-weight:500}
+
+  /* ---------- bottom nav ---------- */
+  .bottomnav{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:var(--maxw);z-index:50;
+    background:rgba(255,255,255,.92);backdrop-filter:saturate(1.3) blur(14px);
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;padding:9px 8px calc(9px + env(safe-area-inset-bottom));
+  }
+  .nav{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;cursor:pointer;color:var(--ink-3);font-size:10.5px;font-weight:700;padding:3px 14px}
+  .nav svg{width:23px;height:23px}
+  .nav.on{color:var(--brand)}
+
+  @media (max-width:360px){
+    .herocard{flex-basis:84%}
+    .tile .tname{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- TOP BAR + SEARCH -->
+  <div class="topbar">
+    <div class="brandrow">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="11" cy="11" r="2.4" fill="currentColor"/></svg>
+      </div>
+      <div class="brandname">Deal <span>Hunter</span></div>
+      <div class="loc">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
+        Your stores
+      </div>
+    </div>
+
+    <div class="searchwrap">
+      <label class="search" for="q">
+        <svg class="mag" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Search for soap, socks, a store…" enterkeyhint="search">
+        <button class="clearx" id="clearx" aria-label="Clear search">✕</button>
+      </label>
+      <!-- live preview dropdown -->
+      <div class="preview" id="preview"></div>
+    </div>
+
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <!-- HOME (search + categories) -->
+  <div class="body" id="home">
+
+    <div class="section-h">
+      <h2>Best deals today</h2>
+      <span class="sub">Shoppers found these</span>
+    </div>
+    <div class="heroscroll" id="hero"></div>
+
+    <div class="section-h">
+      <h2>Browse by category</h2>
+      <span class="sub" id="catcount"></span>
+    </div>
+    <div class="tilegrid" id="tiles"></div>
+
+    <div class="section-h">
+      <h2>More deals nearby</h2>
+      <span class="sub">Other stores reported</span>
+    </div>
+    <div class="otherstores" id="otherstores"></div>
+
+    <div class="honest" style="margin:16px 0 8px">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p>Prices change — always check the tag in store. We show what other shoppers reported, not live store stock.</p>
+    </div>
+
+  </div>
+
+  <!-- RESULTS (category tap or search) -->
+  <div class="body" id="results" style="display:none">
+    <div class="results-head">
+      <button class="backbtn" id="back" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div>
+        <h2 id="results-title">Results</h2>
+        <div class="cnt" id="results-count"></div>
+      </div>
+    </div>
+
+    <div class="honest" id="results-honest">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p>Most photo deals are 1¢ treasures at Dollar Tree. Prices change — check the tag in store.</p>
+    </div>
+
+    <div id="results-photo-wrap">
+      <div class="subhead" id="results-photo-head" style="display:none">
+        <h3 id="results-photo-title">Photo matches</h3>
+        <span class="scount" id="results-photo-count"></span>
+      </div>
+      <div class="grid" id="results-grid"></div>
+    </div>
+
+    <div id="results-other"></div>
+
+    <div class="empty" id="results-empty" style="display:none">
+      <div class="big">Nothing found yet</div>
+      <div class="small">Try another word, like “socks”, “cleaner”, or “Dollar Tree”.</div>
+    </div>
+  </div>
+
+  <!-- DETAIL SHEET -->
+  <div class="sheet-scrim" id="scrim"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <button class="shclose" id="shclose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="sheet-content"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomnav">
+    <button class="nav on" data-home="1">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Search
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" stroke="currentColor" stroke-width="2"/></svg>
+      Categories
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14M5 4v15l7-3 7 3V4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      Saved
+    </button>
+    <button class="nav">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
+      Stores
+    </button>
+  </nav>
+
+</div>
+
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var IMGBASE = "../deal-hunter-staging/";
+  var RAW = (window.STAGING_DEALS || []);
+
+  /* ================= helpers ================= */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function lc(s){ return String(s||"").toLowerCase(); }
+  function ttl(d){ return lc(d.title); }
+  function find(arr,fn){ for(var i=0;i<arr.length;i++){ if(fn(arr[i])) return arr[i]; } return null; }
+  function byId(id){ return find(RAW, function(d){return d.id===id;}); }
+
+  // Make raw retail titles read like plain English (gently — keep the brand & sizes)
+  function niceTitle(t){
+    if(!t || t==="(deal)") return "Shopper-reported deal";
+    var s = String(t);
+    var map = {
+      " Lic Crew ":" licensed crew socks — ", " Crew Socks":" crew socks",
+      " Wmn ":" women's ", " Men ":" men's ",
+      " Astd":" assorted", " Qtr ":" quarter ", " PK":"-pack", " CT":" count",
+      " Pwdr ":" powder ", " Lvnd ":" lavender ", " Clr ":" clear ",
+      " Sq":" square", " Grn ":" green ", " Blk ":" black ", " Gry ":" gray ",
+      " Pnk/Wht ":" pink & white ", " Strp ":" striped ", " Rnd ":" round ",
+      " Orig ":" original ", " w/ ":" with ", " LC ":" low-cut "
+    };
+    Object.keys(map).forEach(function(k){ s = s.split(k).join(map[k]); });
+    s = s.replace(/\s+/g," ").trim();
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    return s;
+  }
+
+  function priceLabel(d){
+    if(d.price==="$0.01") return "1¢";
+    return d.price || "See in store";
+  }
+  // numeric value of a "$x.xx" price string (used to spot true 1¢)
+  function priceNum(d){ var m=/([\d.]+)/.exec(d.price||""); return m?parseFloat(m[1]):NaN; }
+  function isPenny(d){ var n=priceNum(d); return n===0.01 || d.price==="$0.01"; }
+  // dollars saved (was - now); 0 if unknown
+  function savedNum(d){
+    var nm = priceNum(d); var wm=/([\d.]+)/.exec(d.was||""); var w=wm?parseFloat(wm[1]):NaN;
+    if(isNaN(nm)||isNaN(w)) return 0;
+    return Math.max(0, w-nm);
+  }
+
+  /* ============================================================
+     CATEGORY PIPELINE  (Codex fix #3)
+     Build shopper categories from NORMALIZED d.category data, not
+     hand-authored regex. Every raw category string is normalized,
+     then mapped to ONE plain shopper bucket. This catches real but
+     easily-missed categories like "Laundry Detergent", "oral care",
+     "Laundry", "household disposables / fragrance", etc.
+     ============================================================ */
+
+  // normalize a raw category: lowercase, strip parentheticals & slashes -> tokens
+  function normCat(c){
+    var s = lc(c);
+    s = s.replace(/[()]/g," ").replace(/[\/&,]/g," ").replace(/\s+/g," ").trim();
+    return s;
+  }
+
+  // Bucket definitions: plain shopper name + keyword tests over the normalized
+  // category string (primary) with a light title fallback for the "(none)" rows.
+  // Order matters only for ties; we assign by best keyword hit.
+  var BUCKETS = [
+    { key:"cleaning", name:"Cleaning & laundry",
+      cat:["laundry","detergent","fabric","dryer sheet","softener","scent boost","scent bead",
+           "cleaning","cleaner","dish soap","disposable","household consumable","household product",
+           "paper towel","paper product","fabric refresher","fabric enhancer","household cleaning"],
+      ttl:["detergent","laundry","fabric softener","dryer sheet","cleaner","dish soap","bleach",
+           "mr. clean","gain","tide","arm & hammer","febreze","lysol","clorox"] },
+
+    { key:"oralcare", name:"Oral care",
+      cat:["oral care","oral"],
+      ttl:["toothpaste","toothbrush","floss","mouthwash","denture","crest","colgate","oral-b","listerine","scope"] },
+
+    { key:"socks", name:"Socks & clothes",
+      cat:["apparel","sock","footwear","clothing","shoe","backpack","accessor","knee pad"],
+      ttl:["sock","boxer","legging","underwear","crew socks","shoe","sneaker","backpack","cap","hat"] },
+
+    { key:"kids", name:"Kids & toys",
+      cat:["toys","baby","kids","diaper","school supplies"],
+      ttl:["baby shark","peppa","elmo","cocomelon","bouncy","squish","harmonica","grow toy",
+           "fidget","sensory","eraser","crayon","diaper","sticker book"] },
+
+    { key:"beauty", name:"Beauty & personal care",
+      cat:["personal care","skin care","beauty","body wash","body mist","deodorant","feminine",
+           "hair","cosmetic","fragrance / cosmetic"],
+      ttl:["lipstick","makeup","maybelline","razor","face mask","scrunchie","wig","lotion","shampoo",
+           "body wash","deodorant","nail","mascara","perfume","mist"] },
+
+    { key:"health", name:"Health & first aid",
+      cat:["health"],
+      ttl:["bandage","first aid","antifungal","burn pad","cough","pain relief","vitamin","cold","allergy","medicine"] },
+
+    { key:"home", name:"Home & fresheners",
+      cat:["fragrance","home decor","home fragrance","candle","lighting","storage","organization",
+           "bathroom vanity","bathroom faucet","tools","electrical","networking","outdoor",
+           "promotional","seasonal","fuel","electronics"],
+      ttl:["diffuser","scented","tealight","candle","air freshener","wax","oil refill","lighter",
+           "frame","decor","cooler","fryer"] },
+
+    { key:"kitchen", name:"Kitchen",
+      cat:["kitchen","kitchenware","kitchen appliances"],
+      ttl:["plate","tray","crate","basket","bowl","cup","utensil","container","mug","storage tub"] },
+
+    { key:"food", name:"Snacks & drinks",
+      cat:["beverage","candy","food","dairy","frozen","snack","cereal","peanut butter","seafood",
+           "hot dog","pizza","protein","energy drink","fast food","beverage mix"],
+      ttl:["soda","cereal","soup","cookie","candy","protein","chips","drink","juice","water","coffee","snack","chocolate"] },
+
+    { key:"crafts", name:"Crafts & school",
+      cat:["craft","school"],
+      ttl:["bead","sticker","brush pen","glue","marker","paint","yarn","ribbon"] },
+
+    { key:"pets", name:"Pets",
+      cat:["pet"],
+      ttl:["puptart","biscuit","dog","cat food","pet "] }
+  ];
+
+  // score how strongly a deal matches a bucket (category hits weigh more than title hits)
+  function bucketScore(d, b){
+    var nc = normCat(d.category), t = ttl(d), s = 0;
+    for(var i=0;i<b.cat.length;i++){ if(nc.indexOf(b.cat[i])>-1){ s += 5; } }
+    for(var j=0;j<b.ttl.length;j++){ if(t.indexOf(b.ttl[j])>-1){ s += 2; } }
+    return s;
+  }
+  function bucketOf(d){
+    var best=null, bestScore=0;
+    for(var i=0;i<BUCKETS.length;i++){
+      var sc = bucketScore(d, BUCKETS[i]);
+      if(sc>bestScore){ bestScore=sc; best=BUCKETS[i].key; }
+    }
+    return best || "other";
+  }
+  function bucketDef(key){ return find(BUCKETS, function(b){return b.key===key;}); }
+
+  /* ================= prepare data ================= */
+  var PHOTO = RAW.filter(function(d){ return d.image; });            // ~105 real photos
+  // De-dupe by SKU within photo deals (some appear in 2 raw categories)
+  (function(){
+    var seen = {}; var out = [];
+    PHOTO.forEach(function(d){
+      var k = d.sku || d.id;
+      if(seen[k]) return; seen[k]=1; out.push(d);
+    });
+    PHOTO = out;
+  })();
+  PHOTO.forEach(function(d){ d._b = bucketOf(d); d._nice = niceTitle(d.title); });
+
+  // Non-photo deals from OTHER stores (present honestly as text headlines, not fake photos).
+  var OTHER = RAW.filter(function(d){
+    return !d.image && d.retailer && d.retailer!=="Dollar Tree"
+      && d.price && d.title && d.title!=="(deal)";
+  });
+  // de-dupe other by title+retailer
+  (function(){
+    var seen={}, out=[];
+    OTHER.forEach(function(d){ var k=lc(d.title)+"|"+d.retailer; if(seen[k])return; seen[k]=1; out.push(d); });
+    OTHER = out;
+  })();
+  OTHER.forEach(function(d){ d._b = bucketOf(d); d._nice = niceTitle(d.title); });
+
+  // counts per bucket: photo deals (drives tiles) and total (photo+other, drives subtext)
+  var BPHOTO = {}, BOTHER = {};
+  PHOTO.forEach(function(d){ BPHOTO[d._b]=(BPHOTO[d._b]||0)+1; });
+  OTHER.forEach(function(d){ BOTHER[d._b]=(BOTHER[d._b]||0)+1; });
+
+  /* ============================================================
+     VALUE SORT  (Codex fix #6)
+     Rank by what a shopper actually cares about. We build a scored
+     comparator parameterized by the active query / category so that:
+       1. exact query/title match floats up
+       2. retailer or category match next
+       3. penny / strong dealType
+       4. dollars saved (was - now)
+       5. worthScore (weak in this data, used as a tiebreaker)
+       6. freshness (fresh/current above expired)
+       7. has a photo
+     ============================================================ */
+  function freshRank(d){
+    var f = lc(d.freshness);
+    if(f==="expired") return 0;
+    if(f==="fresh" || f==="today" || f==="new") return 2;
+    return 1; // unknown / "(none)" treated as current-ish, above expired
+  }
+  function dealRank(d){
+    var t = lc(d.dealType);
+    if(t==="penny" || t==="dt-penny-list") return 3;
+    if(t==="glitch") return 1;            // de-prioritized; we never coach exploiting it
+    if(t==="clearance" || t==="bogo") return 2;
+    return 1;
+  }
+  function valueScore(d, ctx){
+    ctx = ctx || {};
+    var q = ctx.q||"", retailer = ctx.retailer||"", catKey = ctx.catKey||"";
+    var s = 0;
+    var hay = (d._nice+" "+d.title+" "+d.category+" "+(d.retailer||"")).toLowerCase();
+    if(q){
+      if(lc(d._nice).indexOf(q)===0 || lc(d.title).indexOf(q)===0) s += 4000; // starts-with
+      else if(hay.indexOf(q)>-1) s += 1500;                                    // contains
+      if(lc(d.retailer).indexOf(q)>-1) s += 600;                              // store name match
+    }
+    if(retailer && d.retailer===retailer) s += 1200;
+    if(catKey && d._b===catKey) s += 800;
+    if(isPenny(d)) s += 500;
+    s += dealRank(d)*120;
+    s += Math.min(savedNum(d), 30) * 14;     // dollars saved (capped)
+    s += (d.worthScore||0) * 40;             // weak signal, tiebreaker
+    s += freshRank(d) * 30;
+    if(d.image) s += 25;
+    return s;
+  }
+  function sortByValue(list, ctx){
+    return list.slice().sort(function(a,b){ return valueScore(b,ctx)-valueScore(a,ctx); });
+  }
+
+  /* ============================================================
+     SEARCH  (Codex fix #1 + #6)
+     - debounced ~150ms
+     - 1-char query keeps HOME visible and shows nothing heavy
+     - 2+ chars show a live PREVIEW dropdown under the search bar
+     - Enter / "See all" switches to the full results view
+     ============================================================ */
+  function searchPhoto(q){
+    var qq = lc(q);
+    return PHOTO.filter(function(d){
+      return (d._nice+" "+d.title+" "+d.category+" "+(d.retailer||"")).toLowerCase().indexOf(qq)>-1;
+    });
+  }
+  function searchOther(q){
+    var qq = lc(q);
+    return OTHER.filter(function(d){
+      return (d._nice+" "+d.title+" "+d.category+" "+(d.retailer||"")).toLowerCase().indexOf(qq)>-1;
+    });
+  }
+
+  function renderPreview(q){
+    var pv = document.getElementById("preview");
+    var photoHits = sortByValue(searchPhoto(q), {q:lc(q)});
+    var otherHits = sortByValue(searchOther(q), {q:lc(q)});
+    var total = photoHits.length + otherHits.length;
+    if(!total){
+      pv.innerHTML = '<div class="pnone">No matches for “'+esc(q)+'” yet. Try “socks”, “cleaner”, or a store name.</div>';
+      pv.classList.add("show");
+      return;
+    }
+    // top 4 photo previews + (if room) 1 other-store preview, then "see all"
+    var rows = photoHits.slice(0,4).map(function(d){
+      return '<div class="prow" data-id="'+esc(d.id)+'">'
+        + '<div class="pthumb"><img src="'+esc(IMGBASE+d.image)+'" alt="" onerror="this.style.visibility=\'hidden\'"></div>'
+        + '<div class="pmid"><div class="pnm">'+esc(d._nice)+'</div>'
+        +   '<div class="psub">'+esc(d.retailer||"Dollar Tree")+'</div></div>'
+        + '<div class="ppr'+(isPenny(d)?"":" muted")+'">'+esc(priceLabel(d))+'</div>'
+        + '</div>';
+    });
+    if(photoHits.length<4 && otherHits.length){
+      var o = otherHits[0];
+      rows.push('<div class="prow" data-id="'+esc(o.id)+'">'
+        + '<div class="pthumb" style="color:#aab0b8"><svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.8"/><path d="m4 16 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="1.8"/></svg></div>'
+        + '<div class="pmid"><div class="pnm">'+esc(o._nice)+'</div>'
+        +   '<div class="psub">'+esc(o.retailer)+' · reported, no photo</div></div>'
+        + '<div class="ppr muted">'+esc(o.price||"")+'</div>'
+        + '</div>');
+    }
+    pv.innerHTML =
+      '<div class="phead">Top matches</div>'
+      + rows.join("")
+      + '<button class="pall" data-seeall="1">See all '+total+' result'+(total===1?"":"s")+' for “'+esc(q)+'” →</button>';
+    pv.classList.add("show");
+  }
+  function hidePreview(){ document.getElementById("preview").classList.remove("show"); }
+
+  function runFullSearch(qRaw){
+    var q = String(qRaw||"").trim();
+    if(!q){ backHome(); return; }
+    hidePreview();
+    var photoHits = sortByValue(searchPhoto(q), {q:lc(q)});
+    var otherHits = sortByValue(searchOther(q), {q:lc(q)});
+    showResults('“'+q+'”', "Photo matches", photoHits, "Other store reports", otherHits, {search:true});
+  }
+
+  /* ============================================================
+     RESULTS VIEW
+     Two clearly separated sections:
+       • Photo matches (real product photos first)
+       • Other store reports (text rows, "no photo yet")
+     ============================================================ */
+  function showResults(title, photoLabel, photoList, otherLabel, otherList, opts){
+    opts = opts||{};
+    document.getElementById("home").style.display="none";
+    document.getElementById("results").style.display="block";
+    document.getElementById("results-title").textContent = title;
+
+    var pCount = photoList.length, oCount = otherList?otherList.length:0, total=pCount+oCount;
+    document.getElementById("results-count").textContent =
+      total ? (total + " deal" + (total===1?"":"s") + (opts.search?" found":"")) : "";
+
+    // honest line: tailor to whether we actually have photos here
+    var honest = document.getElementById("results-honest");
+    if(pCount){
+      honest.style.display="";
+      honest.querySelector("p").textContent =
+        "Photo deals are mostly 1¢ treasures at Dollar Tree. Prices change — check the tag in store.";
+    } else if(oCount){
+      honest.style.display="";
+      honest.querySelector("p").textContent =
+        "These are shopper reports from other stores — no photo yet. Prices change, so check in store.";
+    } else { honest.style.display="none"; }
+
+    // photo section
+    var head = document.getElementById("results-photo-head");
+    var grid = document.getElementById("results-grid");
+    if(pCount){
+      head.style.display = oCount ? "flex" : "none"; // only label when both sections exist
+      document.getElementById("results-photo-title").textContent = photoLabel;
+      document.getElementById("results-photo-count").textContent = pCount+"";
+      grid.innerHTML = photoList.map(gridCard).join("");
+    } else {
+      head.style.display="none";
+      grid.innerHTML="";
+    }
+
+    // other-store section
+    var otherWrap = document.getElementById("results-other");
+    if(oCount){
+      otherWrap.innerHTML =
+        '<div class="subhead"><h3>'+esc(otherLabel)+'</h3><span class="scount">'+oCount+'</span></div>'
+        + '<p style="font-size:12.5px;color:var(--ink-2);font-weight:500;margin:0 2px 11px;line-height:1.45">'
+        +   'Shoppers reported these at other stores. No photo yet — the price is the find.</p>'
+        + '<div class="otherstores" id="ro-inner"></div>';
+      renderOtherInto("ro-inner", otherList);
+    } else {
+      otherWrap.innerHTML = "";
+    }
+
+    document.getElementById("results-empty").style.display = total ? "none" : "block";
+    window.scrollTo(0,0);
+  }
+
+  function gridCard(d){
+    var penny = isPenny(d);
+    return '<div class="gcard" data-id="'+esc(d.id)+'">'
+      + '<div class="gph"><img src="'+esc(IMGBASE+d.image)+'" alt="" loading="lazy" '
+      +    'onerror="this.style.visibility=\'hidden\'">'
+      +    (penny?'<span class="gpenny">1¢</span>':'')+'</div>'
+      + '<div class="gbody">'
+      +   '<div class="gnm">'+esc(d._nice)+'</div>'
+      +   '<div class="gpr"><span class="now">'+esc(priceLabel(d))+'</span>'
+      +     (d.was?'<span class="was">'+esc(d.was)+'</span>':'')+'</div>'
+      +   '<div class="gstore">'+esc(d.retailer||"Dollar Tree")+'</div>'
+      + '</div></div>';
+  }
+
+  function renderOtherInto(id,list){
+    var el=document.getElementById(id);
+    el.innerHTML = list.slice(0,8).map(function(d){
+      var save = d.off ? d.off+" off" : (savedNum(d)>0 ? "Save $"+savedNum(d).toFixed(2) : null);
+      return '<div class="orow" data-id="'+esc(d.id)+'">'
+        + '<div class="oprice"><span class="on">'+esc(d.price||"—")+'</span>'
+        +   (d.was?'<span class="ow">'+esc(d.was)+'</span>':'')+'</div>'
+        + '<div class="odiv"></div>'
+        + '<div class="obody"><div class="onm">'+esc(d._nice)+'</div>'
+        +   '<div class="ometa"><span>'+esc(d.retailer||"Local store")+'</span>'
+        +     (save?'<span class="pill save">'+esc(save)+'</span>':'')
+        +     '<span class="pill nophoto">No photo yet</span>'
+        +   '</div></div></div>';
+    }).join("");
+  }
+
+  /* ---------- home other-store rows ---------- */
+  function renderOther(targetId, list){
+    var el = document.getElementById(targetId);
+    if(!list.length){ el.innerHTML=""; return; }
+    el.innerHTML = list.slice(0,5).map(function(d){
+      var save = d.off ? d.off+" off" : (savedNum(d)>0 ? "Save $"+savedNum(d).toFixed(2) : null);
+      return '<div class="orow" data-id="'+esc(d.id)+'">'
+        + '<div class="oprice"><span class="on">'+esc(d.price)+'</span>'
+        +   (d.was?'<span class="ow">'+esc(d.was)+'</span>':'')+'</div>'
+        + '<div class="odiv"></div>'
+        + '<div class="obody"><div class="onm">'+esc(d._nice)+'</div>'
+        +   '<div class="ometa"><span>'+esc(d.retailer)+'</span>'
+        +     (save?'<span class="pill save">'+esc(save)+'</span>':'')
+        +     '<span class="pill nophoto">No photo yet</span>'
+        +   '</div></div>'
+        + '</div>';
+    }).join("");
+  }
+
+  function backHome(){
+    document.getElementById("results").style.display="none";
+    document.getElementById("home").style.display="block";
+    window.scrollTo(0,0);
+  }
+
+  /* ================= category tiles ================= */
+  // pick a photogenic representative photo for a bucket: prefer a penny item with a 'was'
+  function heroForBucket(key){
+    var inBucket = PHOTO.filter(function(d){ return d._b===key; });
+    if(!inBucket.length) return null;
+    var sorted = sortByValue(inBucket, {catKey:key});
+    // prefer one that has a 'was' (more interesting tile), else best by value
+    var withWas = sorted.filter(function(d){return d.was;});
+    return (withWas[0]||sorted[0]);
+  }
+  function renderTiles(){
+    var tiles = document.getElementById("tiles");
+    var html = "";
+    var shown = 0;
+    BUCKETS.forEach(function(b){
+      var nPhoto = BPHOTO[b.key]||0;
+      var nOther = BOTHER[b.key]||0;
+      if(nPhoto===0 && nOther===0) return;     // skip empty buckets entirely
+      shown++;
+      var hd = heroForBucket(b.key);
+      // subtext: lean on photo count; mention other-store reports when there are no photos
+      var sub;
+      if(nPhoto>0){ sub = nPhoto + " photo deal" + (nPhoto===1?"":"s"); }
+      else { sub = nOther + " store report" + (nOther===1?"":"s"); }
+      var showPenny = PHOTO.some(function(d){ return d._b===b.key && isPenny(d); });
+      var img = hd
+        ? '<img class="timg" src="'+esc(IMGBASE+hd.image)+'" alt="" loading="lazy" '
+          + 'onerror="this.style.display=\'none\'">'
+        : '';
+      html += '<a class="tile" data-bucket="'+esc(b.key)+'">'
+        + img
+        + '<span class="scrim"></span>'
+        + (showPenny?'<span class="pennychip">1¢ finds</span>':'')
+        + '<span class="tmeta"><div class="tname">'+esc(b.name)+'</div>'
+        +   '<div class="tcount">'+esc(sub)+'</div></span>'
+        + '</a>';
+    });
+    tiles.innerHTML = html;
+    // Codex fix #2: "categories", not "groups"
+    document.getElementById("catcount").textContent = shown + " categories";
+  }
+
+  function openBucket(key){
+    var b = bucketDef(key);
+    var photoList = sortByValue(PHOTO.filter(function(d){return d._b===key;}), {catKey:key});
+    var otherList = sortByValue(OTHER.filter(function(d){return d._b===key;}), {catKey:key});
+    showResults(b?b.name:"Deals", "Photo deals", photoList, "Other store reports", otherList, {});
+  }
+
+  /* ================= hero strip (best 1¢ today) ================= */
+  function renderHero(){
+    // value-ranked penny items with a 'was' first (real savings story), varied across buckets
+    var pennies = PHOTO.filter(function(d){ return isPenny(d); });
+    var ranked = sortByValue(pennies, {});
+    // spread across buckets so the strip isn't eight socks in a row
+    var picked=[], usedBucket={}, leftover=[];
+    ranked.forEach(function(d){
+      if(picked.length>=8) return;
+      if(!usedBucket[d._b]){ usedBucket[d._b]=1; picked.push(d); }
+      else leftover.push(d);
+    });
+    for(var i=0;i<leftover.length && picked.length<8;i++) picked.push(leftover[i]);
+    var el = document.getElementById("hero");
+    el.innerHTML = picked.slice(0,8).map(heroCard).join("");
+  }
+  function heroCard(d){
+    var penny = isPenny(d);
+    return '<div class="herocard" data-id="'+esc(d.id)+'">'
+      + '<div class="ph"><img src="'+esc(IMGBASE+d.image)+'" alt="" loading="lazy" '
+      +    'onerror="this.style.visibility=\'hidden\'">'
+      +    (penny?'<span class="pennytag"><b>1¢</b> deal</span>':'')
+      + '</div>'
+      + '<div class="herobody">'
+      +   '<div class="nm">'+esc(d._nice)+'</div>'
+      +   '<div class="pr"><span class="now">'+esc(priceLabel(d))+'</span>'
+      +     (d.was?'<span class="was">was '+esc(d.was)+'</span>':'')+'</div>'
+      +   '<div class="store"><span>'+esc(d.retailer||"Dollar Tree")+'</span>'
+      +     '<span class="dot"></span><span class="vtick">'
+      +       '<svg viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified product</span>'
+      +   '</div>'
+      +   (d.sku?'<div class="sku">Scan in store · SKU '+esc(d.sku)+'</div>':'')
+      + '</div></div>';
+  }
+
+  /* ================= detail sheet ================= */
+  function openSheet(d){
+    var penny = isPenny(d);
+    var glitch = lc(d.dealType)==="glitch";
+    var hasPhoto = !!d.image;
+    var store = d.retailer || "Dollar Tree";
+
+    var saveLine = "";
+    if(d.was && penny){ saveLine = "Was "+esc(d.was)+" → now 1¢"; }
+    else if(d.was){ saveLine = "Was "+esc(d.was)+" → now "+esc(d.price); }
+    else if(d.off){ saveLine = esc(d.off)+" off"; }
+    else if(penny){ saveLine = "Reported at 1¢"; }
+
+    // ---- photo OR distinct no-photo panel (Codex fix #7) ----
+    var topHTML;
+    if(hasPhoto){
+      topHTML = '<div class="sh-photo"><img src="'+esc(IMGBASE+d.image)+'" alt="" onerror="this.style.visibility=\'hidden\'">'
+        + (penny?'<span class="sh-penny"><b>1¢</b> at '+esc(store)+'</span>':'')
+        + '</div>';
+    } else {
+      topHTML = '<div class="sh-nophoto">'
+        + '<div class="npicon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.9"/><path d="m4 16 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="9" cy="9" r="1.6" fill="currentColor"/></svg></div>'
+        + '<div class="nptx"><div class="nph">No product photo yet</div>'
+        +   '<div class="nps">Shoppers reported this at '+esc(store)+'. The price is the find.</div></div>'
+        + '</div>';
+    }
+
+    // honest line
+    var honest = glitch
+      ? "This looks like a price mistake. It might not ring up — worth a look, but don’t count on it."
+      : (hasPhoto
+          ? "Shoppers reported this deal. Prices change, so check the tag in store before you buy."
+          : "A shopper reported this price at "+esc(store)+". We don’t have a photo, and prices change — check in store.");
+
+    // trust pill
+    var trust = hasPhoto
+      ? '<span class="sh-verified"><svg viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified product</span>'
+      : '<span class="sh-reported"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Shoppers reported this</span>';
+
+    // scan line (store-agnostic — Codex fix #5)
+    var scanLine = d.sku
+      ? "Scan in store (SKU "+esc(d.sku)+") to check the price."
+      : "Check the price at the shelf or at self-checkout if available.";
+
+    var html = topHTML
+      + '<div class="sh-body">'
+      +   '<h1 class="sh-title">'+esc(d._nice||niceTitle(d.title))+'</h1>'
+      +   trust
+
+      // price box (plain styling when not a penny win)
+      +   '<div class="pricebox'+(penny?'':' plain')+'">'
+      +     '<div class="pbnow">'+esc(priceLabel(d))+'</div>'
+      +     '<div class="pbcol">'
+      +       (d.was?'<div class="pbwas"><s>'+esc(d.was)+'</s></div>':'')
+      +       (saveLine?'<div class="pbsave">'+saveLine+'</div>':'<div class="pbsave">Great find</div>')
+      +     '</div>'
+      +     '<div class="pbicon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v10M9.5 14c0 1.2 1.1 2 2.5 2s2.5-.8 2.5-2-1.1-1.7-2.5-2-2.5-.8-2.5-2 1.1-2 2.5-2 2.5.8 2.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>'
+      +   '</div>'
+
+      // info rows
+      +   '<div class="infoblock">'
+      +     row("store", "Where to get it", esc(store))
+      +     row("aisle", "How to find it in the store", findText(d))
+      +     (d.sku ? row("scan", "Scan in store", '<span class="skucode">SKU '+esc(d.sku)+'</span>') : "")
+      +   '</div>'
+
+      // honest line
+      +   '<div class="honest" style="margin:0 0 2px">'
+      +     '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.3 7.8 8 9 4.7-1.2 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.9"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      +     '<p>'+honest+'</p>'
+      +   '</div>'
+
+      // CTAs
+      +   '<div class="ctarow">'
+      +     '<button class="btn btn-primary">'
+      +       '<svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="2"/></svg>'
+      +       'Find in store</button>'
+      +     '<button class="btn btn-ghost" aria-label="Save">'
+      +       '<svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12v16l-6-3-6 3V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'
+      +     '</button>'
+      +   '</div>'
+      +   '<div class="scannote">'+scanLine+'</div>'
+      + '</div>';
+
+    document.getElementById("sheet-content").innerHTML = html;
+    document.getElementById("scrim").classList.add("open");
+    document.getElementById("sheet").classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function row(icon, lab, val){
+    var ics = {
+      store:'<path d="M4 9 5.5 5h13L20 9M4 9v10h16V9M4 9h16M9 19v-5h6v5" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>',
+      aisle:'<path d="M3 7h7v13H3zM14 4h7v16h-7" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>',
+      scan:'<path d="M4 7V5h3M20 7V5h-3M4 17v2h3M20 17v2h-3M7 9v6M10 9v6M13 9v6M16 9v6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>'
+    };
+    return '<div class="inforow"><span class="ic"><svg viewBox="0 0 24 24" fill="none">'+ics[icon]+'</svg></span>'
+      + '<div class="tx"><div class="lab">'+lab+'</div><div class="val">'+val+'</div></div></div>';
+  }
+  // store-agnostic find guidance (Codex fix #5: no "team member")
+  function findText(d){
+    var t = ttl(d), c = normCat(d.category), b = d._b;
+    if(b==="socks") return "Look on the sock and clothing racks, often near the front.";
+    if(b==="health") return "Check the health and first-aid aisle.";
+    if(b==="oralcare") return "Look in the toothpaste and personal-care aisle.";
+    if(b==="kitchen") return "Look in the kitchen and dishware aisle.";
+    if(b==="kids") return "Try the toy aisle, or the bins by the registers.";
+    if(b==="crafts") return "Head to the crafts and school-supply aisle.";
+    if(b==="food") return "Look in the food and drinks aisles.";
+    if(b==="cleaning") return "Look in the cleaning and laundry aisle.";
+    if(b==="beauty") return "Check the beauty and personal-care aisle.";
+    if(b==="home") return "Check the home, candle, and air-freshener aisle.";
+    if(b==="pets") return "Look in the pet-supply aisle.";
+    if(c.indexOf("checkout")>-1) return "These sit in the bins right by the registers.";
+    return "Look on the regular shelf, end caps, and top stock — penny items are often being pulled.";
+  }
+  function closeSheet(){
+    document.getElementById("scrim").classList.remove("open");
+    document.getElementById("sheet").classList.remove("open");
+    document.body.style.overflow="";
+  }
+
+  /* ================= quick chips ================= */
+  function renderChips(){
+    var defs = [
+      {label:"Best 1¢ today", q:"__penny"},
+      {label:"Socks & clothes", b:"socks"},
+      {label:"Kids & toys", b:"kids"},
+      {label:"Cleaning & laundry", b:"cleaning"},
+      {label:"Kitchen", b:"kitchen"},
+      {label:"Snacks & drinks", b:"food"},
+      {label:"Beauty", b:"beauty"}
+    ];
+    var el = document.getElementById("chips");
+    // only show chips whose bucket actually has deals
+    defs = defs.filter(function(c){ return c.q || (BPHOTO[c.b]||BOTHER[c.b]); });
+    el.innerHTML = defs.map(function(c,i){
+      return '<button class="chip" data-chip="'+i+'">'+esc(c.label)+'</button>';
+    }).join("");
+    el.querySelectorAll(".chip").forEach(function(btn,i){
+      btn.addEventListener("click", function(){
+        el.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+        btn.classList.add("on");
+        var c = defs[i];
+        if(c.b){ openBucket(c.b); }
+        else if(c.q==="__penny"){
+          var list = sortByValue(PHOTO.filter(function(d){return isPenny(d);}), {});
+          showResults("Best 1¢ today", "Photo deals", list, "Other store reports", [], {});
+        }
+      });
+    });
+  }
+
+  /* ================= wire up ================= */
+  function init(){
+    renderChips();
+    renderHero();
+    renderTiles();
+    renderOther("otherstores", OTHER);
+
+    var q = document.getElementById("q");
+    var clearx = document.getElementById("clearx");
+    var debounce;
+
+    function onInput(){
+      clearx.classList.toggle("show", !!q.value);
+      // typing clears any active chip
+      document.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+      var v = q.value.trim();
+      clearTimeout(debounce);
+      // 0 chars: home, no preview.  1 char: keep home visible, no heavy switch.
+      if(v.length===0){ hidePreview(); if(document.getElementById("results").style.display!=="none") backHome(); return; }
+      if(v.length===1){ hidePreview(); return; }   // wait for a meaningful query
+      // 2+ chars: debounce, then show the live preview (home stays visible behind it)
+      debounce = setTimeout(function(){ renderPreview(v); }, 150);
+    }
+    q.addEventListener("input", onInput);
+
+    // Enter / search key -> full results view
+    q.addEventListener("keydown", function(e){
+      if(e.key==="Enter"){ e.preventDefault(); if(q.value.trim().length>=1) runFullSearch(q.value); }
+    });
+
+    clearx.addEventListener("click", function(){
+      q.value=""; clearx.classList.remove("show"); hidePreview(); backHome(); q.focus();
+    });
+
+    // hide preview when tapping outside the search area
+    document.addEventListener("click", function(e){
+      if(!e.target.closest(".searchwrap")) hidePreview();
+    });
+
+    document.getElementById("back").addEventListener("click", function(){
+      backHome();
+      q.value=""; clearx.classList.remove("show"); hidePreview();
+      document.querySelectorAll(".chip").forEach(function(b){b.classList.remove("on");});
+    });
+
+    document.getElementById("shclose").addEventListener("click", closeSheet);
+    document.getElementById("scrim").addEventListener("click", closeSheet);
+
+    // event delegation: preview "see all", preview rows, tiles, cards, rows
+    document.body.addEventListener("click", function(e){
+      var seeall = e.target.closest("[data-seeall]");
+      if(seeall){ runFullSearch(q.value); return; }
+      var tile = e.target.closest(".tile");
+      if(tile){ hidePreview(); openBucket(tile.getAttribute("data-bucket")); return; }
+      var card = e.target.closest("[data-id]");
+      if(card){ var d=byId(card.getAttribute("data-id")); if(d){ hidePreview(); openSheet(d); } return; }
+    });
+
+    // bottom nav: Search/home resets
+    document.querySelectorAll(".bottomnav .nav").forEach(function(n){
+      n.addEventListener("click", function(){
+        document.querySelectorAll(".bottomnav .nav").forEach(function(x){x.classList.remove("on");});
+        n.classList.add("on");
+        if(n.getAttribute("data-home")){
+          backHome(); q.value=""; clearx.classList.remove("show"); hidePreview();
+        }
+      });
+    });
+
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ closeSheet(); hidePreview(); } });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>

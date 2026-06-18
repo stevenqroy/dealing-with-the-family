@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Hunter — Today</title>
+<style>
+  /* ============================================================
+     Deal Hunter — v2 "Everything on one calm screen"
+     One gentle scroll. Nothing hidden. Plain words. Real photos.
+
+     v2 palette change (off beige): cool neutral canvas, white cards,
+     deep ink text, one calm green for the win, one restrained blue
+     for quiet links. No orange. No brown. No beige/cream/sand.
+     ============================================================ */
+
+  :root{
+    --canvas:       #f5f7f8;   /* cool neutral app background (was beige #f6f4ef) */
+    --card:         #ffffff;   /* card surface */
+    --tile:         #eef2f4;   /* soft cool tile behind product photos (contain) */
+    --tile-top:     #ffffff;
+    --ink:          #1a1d21;   /* deep near-black text */
+    --ink-soft:     #535a61;   /* secondary text */
+    --ink-faint:    #8a9298;   /* tertiary / captions */
+    --hair:         #e4e9ec;   /* hairlines / borders (cool) */
+    --hair-soft:    #edf1f3;
+    --win:          #1f7a5a;   /* calm deep green — the price win */
+    --win-soft:     #e8f3ee;   /* green wash */
+    --win-line:     #cfe7dc;
+    --win-ink:      #155c43;
+    --blue:         #2f6f8f;   /* restrained secondary blue — quiet links/badges */
+    --blue-soft:    #e9f1f5;
+    --blue-line:    #d4e3ea;
+    --shadow:       0 1px 2px rgba(20,26,32,.05), 0 10px 28px rgba(20,26,32,.07);
+    --shadow-soft:  0 1px 2px rgba(20,26,32,.04), 0 5px 16px rgba(20,26,32,.055);
+    --radius:       20px;
+    --radius-sm:    14px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:#e7ecee;
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    line-height:1.45;
+  }
+
+  /* ---- phone frame (subtle, optional) ---- */
+  .phone{
+    max-width:430px;
+    margin:0 auto;
+    background:var(--canvas);
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---- top app bar ---- */
+  .appbar{
+    position:sticky; top:0; z-index:40;
+    background:rgba(245,247,248,.86);
+    backdrop-filter:saturate(150%) blur(14px);
+    -webkit-backdrop-filter:saturate(150%) blur(14px);
+    border-bottom:1px solid var(--hair-soft);
+    padding:14px 20px 12px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .brand .mark{
+    width:30px; height:30px; border-radius:9px; flex:0 0 auto;
+    background:linear-gradient(150deg, #2a8c68, #1f7a5a 60%, #155c43);
+    position:relative; box-shadow:0 2px 6px rgba(31,122,90,.28);
+  }
+  .brand .mark::after{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(255,255,255,.95) 0 13%, transparent 14%),
+      radial-gradient(circle at 50% 42%, transparent 0 22%, rgba(255,255,255,.9) 23% 26%, transparent 27%);
+  }
+  .brand .name{ font-weight:700; font-size:17px; letter-spacing:-.2px; }
+  .brand .sub{ font-size:11.5px; color:var(--ink-faint); margin-top:-2px; }
+  .loc{
+    display:flex; align-items:center; gap:5px;
+    font-size:12.5px; color:var(--ink-soft); font-weight:600;
+    background:var(--card); border:1px solid var(--hair);
+    padding:7px 11px; border-radius:999px; white-space:nowrap;
+    box-shadow:var(--shadow-soft); cursor:pointer;
+  }
+  .loc svg{ width:13px; height:13px; }
+
+  /* ---- generic section scaffolding ---- */
+  section{ padding:0 20px; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    margin:26px 0 12px;
+  }
+  .section-head.tight{ margin-top:22px; }
+  h2.section-title{
+    font-size:19px; font-weight:750; letter-spacing:-.3px; margin:0;
+  }
+  .section-note{ font-size:12.5px; color:var(--ink-faint); margin:3px 0 0; }
+  .seeall{
+    font-size:13px; font-weight:650; color:var(--blue);
+    text-decoration:none; white-space:nowrap; cursor:pointer;
+    display:inline-flex; align-items:center; gap:3px;
+  }
+  .seeall svg{ width:13px; height:13px; }
+
+  /* ============================================================
+     HERO — "Today's best deal"
+     ============================================================ */
+  .hero-wrap{ margin-top:8px; }
+  .hero{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--hair);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+  }
+  .hero-photo{
+    position:relative;
+    background:
+      radial-gradient(120% 90% at 50% 16%, var(--tile-top) 0%, var(--tile) 80%);
+    aspect-ratio: 5 / 4;
+    display:flex; align-items:center; justify-content:center;
+    padding:26px 26px 22px;
+  }
+  .hero-photo img{
+    max-width:100%; max-height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 14px 22px rgba(20,26,32,.15));
+  }
+  .hero-flag{
+    position:absolute; top:16px; left:16px;
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,.94);
+    border:1px solid var(--hair);
+    color:var(--win-ink);
+    font-size:12px; font-weight:700;
+    padding:6px 11px; border-radius:999px;
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  }
+  .hero-flag .dot{ width:7px; height:7px; border-radius:50%; background:var(--win); }
+  .hero-body{ padding:18px 20px 20px; }
+  .hero-cat{
+    font-size:12px; font-weight:650; color:var(--ink-faint);
+    letter-spacing:.2px; margin-bottom:4px;
+  }
+  .hero-title{
+    font-size:23px; font-weight:760; letter-spacing:-.4px; line-height:1.18;
+    margin:0 0 3px;
+  }
+  .hero-size{ font-size:13.5px; color:var(--ink-soft); margin:0 0 6px; font-weight:560; }
+  .hero-storeline{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .hero-store{ font-size:14px; color:var(--ink-soft); font-weight:560; }
+
+  /* quiet trust chip (inline, calm — never alarming) */
+  .vchip{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:12px; font-weight:650; color:var(--ink-soft);
+    background:#f0f3f5; border:1px solid var(--hair);
+    padding:4px 9px 4px 7px; border-radius:999px; white-space:nowrap;
+  }
+  .vchip svg{ width:13px; height:13px; }
+  .vchip.ok{ color:var(--win-ink); background:var(--win-soft); border-color:var(--win-line); }
+
+  .price-row{ display:flex; align-items:flex-end; gap:12px; margin:14px 0 2px; flex-wrap:wrap; }
+  .price-now{
+    font-size:40px; font-weight:800; letter-spacing:-1.4px;
+    color:var(--win-ink); line-height:.95;
+  }
+  .price-now .cent{ font-size:24px; font-weight:760; vertical-align:6px; margin-left:1px; }
+  .price-meta{ display:flex; flex-direction:column; gap:2px; padding-bottom:3px; }
+  .price-was{ font-size:14px; color:var(--ink-faint); }
+  .price-was s{ text-decoration-thickness:1.5px; }
+  .price-save{
+    font-size:12.5px; font-weight:700; color:var(--win-ink);
+    background:var(--win-soft); border:1px solid var(--win-line);
+    padding:2px 9px; border-radius:999px; align-self:flex-start;
+  }
+
+  /* SKU line — visible BEFORE tap (Marcus needs the scan id) */
+  .sku-line{
+    display:inline-flex; align-items:center; gap:6px; margin-top:12px;
+    font-size:12.5px; font-weight:650; color:var(--ink-soft);
+    background:#f0f3f5; border:1px solid var(--hair);
+    padding:5px 10px; border-radius:8px;
+  }
+  .sku-line svg{ width:13px; height:13px; color:var(--ink-faint); }
+  .sku-line b{ color:var(--ink); letter-spacing:.3px; font-weight:700; }
+
+  .hero-actions{ display:flex; gap:10px; margin-top:16px; }
+  .btn{
+    flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-size:15px; font-weight:680; padding:13px 14px; border-radius:13px;
+    border:1px solid var(--hair); background:var(--card); color:var(--ink);
+    cursor:pointer; transition:transform .08s ease;
+  }
+  .btn:active{ transform:scale(.985); }
+  .btn svg{ width:16px; height:16px; }
+  .btn.primary{
+    background:var(--win); border-color:var(--win); color:#fff;
+    box-shadow:0 6px 16px rgba(31,122,90,.26);
+  }
+  .btn.primary svg{ stroke:#fff; }
+
+  /* ============================================================
+     MORE GREAT DEALS — horizontal swipe row of real photos
+     ============================================================ */
+  .rail{
+    display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+    padding:4px 20px 6px; margin:0 -20px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .rail::-webkit-scrollbar{ display:none; }
+  .rail::after{ content:""; flex:0 0 6px; }
+
+  .pcard{
+    flex:0 0 158px; scroll-snap-align:start;
+    background:var(--card); border:1px solid var(--hair);
+    border-radius:var(--radius-sm); overflow:hidden; cursor:pointer;
+    box-shadow:var(--shadow-soft); transition:transform .08s ease;
+  }
+  .pcard:active{ transform:scale(.985); }
+  .pcard .ph{
+    position:relative; aspect-ratio:1/1;
+    background:radial-gradient(110% 90% at 50% 20%, var(--tile-top) 0%, var(--tile) 84%);
+    display:flex; align-items:center; justify-content:center; padding:16px;
+  }
+  .pcard .ph img{ max-width:100%; max-height:100%; object-fit:contain;
+    filter:drop-shadow(0 6px 10px rgba(20,26,32,.12)); }
+  .pcard .pb{ padding:11px 12px 13px; }
+  .pcard .pt{
+    font-size:13.5px; font-weight:640; line-height:1.25; letter-spacing:-.2px;
+    margin:0 0 2px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .pcard .psize{ font-size:11.5px; color:var(--ink-faint); margin:0 0 6px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pcard .pprice{ display:flex; align-items:baseline; gap:7px; }
+  .pcard .pnow{ font-size:18px; font-weight:780; color:var(--win-ink); letter-spacing:-.4px; }
+  .pcard .pnow .cent{ font-size:12px; vertical-align:3px; }
+  .pcard .pwas{ font-size:11.5px; color:var(--ink-faint); }
+  .pcard .pstore{ font-size:11.5px; color:var(--ink-soft); margin-top:5px; font-weight:560; }
+
+  /* ============================================================
+     YOUR STORES — plain headlines (data-driven, real navigation)
+     ============================================================ */
+  .stores{ display:flex; flex-direction:column; gap:10px; }
+  .store{
+    display:flex; align-items:center; gap:14px;
+    background:var(--card); border:1px solid var(--hair);
+    border-radius:var(--radius-sm); padding:14px 15px; cursor:pointer;
+    box-shadow:var(--shadow-soft); transition:transform .08s ease;
+  }
+  .store:active{ transform:scale(.99); }
+  .store .ico{
+    width:44px; height:44px; flex:0 0 auto; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:15px; color:#fff; letter-spacing:-.5px;
+  }
+  .store .meta{ min-width:0; flex:1; }
+  .store .sname{ font-size:15px; font-weight:700; letter-spacing:-.2px; }
+  .store .shead{ font-size:13px; color:var(--ink-soft); margin-top:1px; }
+  .store .schev{ color:var(--ink-faint); flex:0 0 auto; }
+  .store .schev svg{ width:18px; height:18px; }
+  .store .count{
+    font-size:12px; font-weight:700; color:var(--win-ink);
+    background:var(--win-soft); border:1px solid var(--win-line);
+    padding:3px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .store .count.blue{ color:var(--blue); background:var(--blue-soft); border-color:var(--blue-line); }
+
+  /* ============================================================
+     BROWSE BY CATEGORY — real-photo tiles
+     ============================================================ */
+  .cats{ display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .cat{
+    position:relative; border-radius:var(--radius-sm); overflow:hidden;
+    background:var(--card); border:1px solid var(--hair); cursor:pointer;
+    box-shadow:var(--shadow-soft); transition:transform .08s ease;
+  }
+  .cat:active{ transform:scale(.985); }
+  .cat .cph{
+    aspect-ratio:3/2;
+    background:radial-gradient(110% 90% at 50% 20%, var(--tile-top) 0%, var(--tile) 86%);
+    display:flex; align-items:center; justify-content:center; padding:16px 16px 10px;
+  }
+  .cat .cph img{ max-width:100%; max-height:100%; object-fit:contain;
+    filter:drop-shadow(0 6px 10px rgba(20,26,32,.10)); }
+  .cat .cmeta{ padding:0 13px 12px; }
+  .cat .cname{ font-size:14.5px; font-weight:700; letter-spacing:-.2px; }
+  .cat .ccount{ font-size:12px; color:var(--ink-faint); margin-top:1px; }
+
+  /* ============================================================
+     OTHER STORE REPORTS — honest text rows (no photos)
+     ============================================================ */
+  .reports{
+    background:var(--card); border:1px solid var(--hair);
+    border-radius:var(--radius-sm); overflow:hidden;
+    box-shadow:var(--shadow-soft);
+  }
+  .report{
+    display:flex; align-items:center; gap:13px;
+    padding:13px 15px; cursor:pointer; border-top:1px solid var(--hair-soft);
+    transition:background .12s ease;
+  }
+  .report:first-child{ border-top:0; }
+  .report:active{ background:var(--hair-soft); }
+  .report .rdot{
+    width:38px; height:38px; flex:0 0 auto; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:12px; color:#fff; letter-spacing:-.3px;
+  }
+  .report .rmeta{ min-width:0; flex:1; }
+  .report .rname{ font-size:14px; font-weight:650; letter-spacing:-.2px; line-height:1.25;
+    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+  .report .rsub{ font-size:12px; color:var(--ink-faint); margin-top:2px;
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .report .rstore{ color:var(--ink-soft); font-weight:560; }
+  .report .rnophoto{
+    display:inline-flex; align-items:center; gap:4px; color:var(--ink-faint);
+  }
+  .report .rnophoto svg{ width:11px; height:11px; }
+  .report .rprice{ text-align:right; flex:0 0 auto; }
+  .report .rprice .rp{ font-size:15px; font-weight:760; color:var(--ink); letter-spacing:-.3px; }
+  .report .rprice .rwas{ font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+
+  /* ============================================================
+     HONEST NOTE
+     ============================================================ */
+  .note{
+    margin:26px 20px 0;
+    background:var(--card); border:1px solid var(--hair);
+    border-radius:var(--radius-sm); padding:15px 16px;
+    display:flex; gap:12px; align-items:flex-start;
+    box-shadow:var(--shadow-soft);
+  }
+  .note .ni{
+    flex:0 0 auto; width:30px; height:30px; border-radius:9px;
+    background:var(--blue-soft); color:var(--blue);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .note .ni svg{ width:16px; height:16px; }
+  .note .nt b{ font-size:13.5px; font-weight:700; }
+  .note .nt p{ margin:3px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.5; }
+
+  .footer{
+    text-align:center; color:var(--ink-faint); font-size:11.5px;
+    padding:26px 24px 30px;
+  }
+
+  /* ============================================================
+     FILTERED VIEW (store list / category grid) — real navigation
+     Slides over the home screen; back button returns. Honest, not
+     a fake chevron.
+     ============================================================ */
+  .view{
+    position:fixed; inset:0; z-index:70; background:var(--canvas);
+    max-width:430px; left:50%; transform:translateX(-50%);
+    overflow-y:auto;
+    transform:translate(-50%, 100%); opacity:0; pointer-events:none;
+    transition:transform .3s cubic-bezier(.22,.61,.36,1), opacity .25s ease;
+  }
+  .view.open{ transform:translate(-50%, 0); opacity:1; pointer-events:auto; }
+  .view-bar{
+    position:sticky; top:0; z-index:5;
+    background:rgba(245,247,248,.9);
+    backdrop-filter:saturate(150%) blur(14px);
+    -webkit-backdrop-filter:saturate(150%) blur(14px);
+    border-bottom:1px solid var(--hair-soft);
+    padding:13px 16px; display:flex; align-items:center; gap:12px;
+  }
+  .view-back{
+    width:36px; height:36px; flex:0 0 auto; border-radius:50%;
+    background:var(--card); border:1px solid var(--hair); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--ink);
+    box-shadow:var(--shadow-soft);
+  }
+  .view-back svg{ width:17px; height:17px; }
+  .view-ttl{ min-width:0; }
+  .view-ttl .vt{ font-size:17px; font-weight:750; letter-spacing:-.3px; line-height:1.15;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .view-ttl .vsub{ font-size:12px; color:var(--ink-faint); margin-top:1px; }
+  .view-body{ padding:16px 20px 32px; }
+  .view-grid{ display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+
+  /* ============================================================
+     DETAIL SHEET (tap any deal)
+     ============================================================ */
+  .sheet-scrim{
+    position:fixed; inset:0; z-index:80; background:rgba(18,24,30,.44);
+    backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+    opacity:0; pointer-events:none; transition:opacity .22s ease;
+  }
+  .sheet-scrim.open{ opacity:1; pointer-events:auto; }
+  .sheet{
+    position:fixed; left:50%; bottom:0; transform:translate(-50%, 100%);
+    width:100%; max-width:430px; z-index:90;
+    background:var(--canvas); border-radius:24px 24px 0 0;
+    box-shadow:0 -12px 40px rgba(18,24,30,.28);
+    transition:transform .28s cubic-bezier(.22,.61,.36,1);
+    max-height:92vh; overflow-y:auto;
+  }
+  .sheet.open{ transform:translate(-50%, 0); }
+  .sheet .grab{ width:38px; height:5px; border-radius:3px; background:#d4dadf; margin:9px auto 2px; }
+  .sheet-photo{
+    position:relative; margin:6px 16px 0; border-radius:18px; overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 14%, var(--tile-top) 0%, var(--tile) 84%);
+    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; padding:24px;
+    border:1px solid var(--hair);
+  }
+  .sheet-photo img{ max-width:100%; max-height:100%; object-fit:contain;
+    filter:drop-shadow(0 14px 22px rgba(20,26,32,.15)); }
+  /* no-photo panel for text-only (other-store) deals */
+  .sheet-nophoto{
+    margin:6px 16px 0; border-radius:18px; aspect-ratio:5/3;
+    background:var(--blue-soft); border:1px dashed var(--blue-line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; text-align:center; padding:20px; position:relative;
+  }
+  .sheet-nophoto svg{ width:30px; height:30px; color:var(--blue); }
+  .sheet-nophoto .l1{ font-size:14px; font-weight:700; color:var(--blue); }
+  .sheet-nophoto .l2{ font-size:12.5px; color:var(--ink-soft); }
+  .sheet-close{
+    position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,.94); border:1px solid var(--hair); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
+  }
+  .sheet-close svg{ width:16px; height:16px; }
+  .sheet-body{ padding:18px 20px 4px; }
+  .sheet-cat{ font-size:12.5px; color:var(--ink-faint); font-weight:600; margin-bottom:4px; }
+  .sheet-title{ font-size:22px; font-weight:770; letter-spacing:-.4px; line-height:1.2; margin:0; }
+  .sheet-size{ font-size:13.5px; color:var(--ink-soft); margin-top:3px; font-weight:560; }
+  .sheet-store{ font-size:14px; color:var(--ink-soft); margin-top:3px; font-weight:560; }
+  .sheet-pricebox{
+    display:flex; align-items:center; gap:14px; margin:16px 0 4px;
+    background:var(--win-soft); border:1px solid var(--win-line); border-radius:16px; padding:15px 17px;
+  }
+  .sheet-pricebox .pn{ font-size:34px; font-weight:820; color:var(--win-ink); letter-spacing:-1px; line-height:1; }
+  .sheet-pricebox .pn .cent{ font-size:20px; vertical-align:5px; }
+  .sheet-pricebox .pm{ font-size:13px; color:var(--win-ink); }
+  .sheet-pricebox .pm s{ color:#6c9a88; }
+  .sheet-pricebox.plain{ background:var(--blue-soft); border-color:var(--blue-line); }
+  .sheet-pricebox.plain .pn{ color:var(--ink); }
+  .sheet-pricebox.plain .pm{ color:var(--ink-soft); }
+  .sheet-pricebox.plain .pm s{ color:var(--ink-faint); }
+
+  .howto{ margin-top:18px; }
+  .howto h3{ font-size:15px; font-weight:720; margin:0 0 10px; letter-spacing:-.2px; }
+  .step{ display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
+  .step .sn{
+    flex:0 0 auto; width:24px; height:24px; border-radius:50%;
+    background:var(--ink); color:#fff; font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step .sx{ font-size:14px; color:var(--ink-soft); line-height:1.5; padding-top:1px; }
+  .step .sx b{ color:var(--ink); font-weight:680; }
+
+  .scan{
+    display:flex; align-items:center; gap:13px; margin-top:6px;
+    background:var(--card); border:1px solid var(--hair); border-radius:14px; padding:13px 15px;
+  }
+  .scan .bars{ display:flex; gap:2px; align-items:center; height:34px; flex:0 0 auto; }
+  .scan .bars i{ display:block; width:2px; height:100%; background:var(--ink); }
+  .scan .bars i:nth-child(2n){ width:3px; opacity:.85; }
+  .scan .bars i:nth-child(3n){ height:78%; }
+  .scan .bars i:nth-child(5n){ width:1px; }
+  .scan .stext .l{ font-size:11.5px; color:var(--ink-faint); font-weight:600; }
+  .scan .stext .v{ font-size:16px; font-weight:740; letter-spacing:.3px; }
+
+  .sheet-honest{
+    display:flex; gap:11px; align-items:flex-start;
+    margin:16px 0 2px; padding:13px 15px;
+    background:#f3f6f7; border:1px dashed var(--hair); border-radius:14px;
+  }
+  .sheet-honest svg{ width:16px; height:16px; flex:0 0 auto; color:var(--blue); margin-top:1px; }
+  .sheet-honest p{ margin:0; font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+
+  .sheet-actions{ display:flex; gap:10px; padding:14px 20px 26px; position:sticky; bottom:0;
+    background:linear-gradient(to top, var(--canvas) 72%, rgba(245,247,248,0)); }
+
+  /* gentle entrance */
+  @media (prefers-reduced-motion: no-preference){
+    .reveal{ opacity:0; transform:translateY(8px); animation:rise .5s ease forwards; }
+    @keyframes rise{ to{ opacity:1; transform:none; } }
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== Top bar ===== -->
+  <header class="appbar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <div class="name">Deal Hunter</div>
+        <div class="sub">Real deals shoppers found near you</div>
+      </div>
+    </div>
+    <button class="loc" type="button" aria-label="Your area">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      Near you
+    </button>
+  </header>
+
+  <!-- ===== Greeting ===== -->
+  <section>
+    <div style="margin:18px 0 0;">
+      <div style="font-size:14px; color:var(--ink-soft); font-weight:600;" id="greet">Good afternoon</div>
+      <div style="font-size:24px; font-weight:780; letter-spacing:-.5px; margin-top:2px;">Here are today's best deals</div>
+      <div style="font-size:13.5px; color:var(--ink-faint); margin-top:4px;" id="intro-line">103 Dollar Tree photos, plus shopper reports from other stores.</div>
+    </div>
+  </section>
+
+  <!-- ===== Today's best deal (HERO) ===== -->
+  <section class="hero-wrap reveal">
+    <div class="section-head tight">
+      <div>
+        <h2 class="section-title">Today's best deal</h2>
+        <p class="section-note">The biggest saving we found right now</p>
+      </div>
+    </div>
+    <article class="hero" id="hero"></article>
+  </section>
+
+  <!-- ===== More great deals (swipe row) ===== -->
+  <section class="reveal" style="animation-delay:.05s">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">More great deals</h2>
+        <p class="section-note">Swipe sideways to see more</p>
+      </div>
+      <a class="seeall" id="seeall-rail">See all
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </section>
+  <div class="rail" id="rail"></div>
+
+  <!-- ===== Your stores ===== -->
+  <section class="reveal" style="animation-delay:.1s">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Your stores</h2>
+        <p class="section-note">Tap a store to see its deals</p>
+      </div>
+    </div>
+    <div class="stores" id="stores"></div>
+  </section>
+
+  <!-- ===== Browse by category ===== -->
+  <section class="reveal" style="animation-delay:.15s">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Browse by category</h2>
+        <p class="section-note">Tap one to see everything in it</p>
+      </div>
+    </div>
+    <div class="cats" id="cats"></div>
+  </section>
+
+  <!-- ===== Other store reports (honest text rows) ===== -->
+  <section class="reveal" style="animation-delay:.2s">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Other store reports</h2>
+        <p class="section-note">Shoppers reported these — no photo yet</p>
+      </div>
+    </div>
+    <div class="reports" id="reports"></div>
+  </section>
+
+  <!-- ===== Honest note ===== -->
+  <div class="note reveal" style="animation-delay:.24s">
+    <div class="ni">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+    </div>
+    <div class="nt">
+      <b>A friendly heads-up</b>
+      <p>These are deals shoppers reported — not a live count of what's on the shelf. Prices change, so check the tag in the store before you buy.</p>
+    </div>
+  </div>
+
+  <div class="footer">Deal Hunter · Real deals shoppers found near you.</div>
+
+</div>
+
+<!-- ===== Filtered view (store list / category grid) ===== -->
+<div class="view" id="view" role="region" aria-label="Filtered deals">
+  <div class="view-bar">
+    <button class="view-back" type="button" aria-label="Back" onclick="window.__closeView()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div class="view-ttl">
+      <div class="vt" id="view-title">All deals</div>
+      <div class="vsub" id="view-sub"></div>
+    </div>
+  </div>
+  <div class="view-body" id="view-body"></div>
+</div>
+
+<!-- ===== Detail sheet ===== -->
+<div class="sheet-scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Deal details"></div>
+
+<!-- Real product photos come from here -->
+<script src="../deal-hunter-staging/data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var IMG_BASE = "../deal-hunter-staging/";
+  var ALL = (window.STAGING_DEALS || []);
+
+  /* ---------- only deals that have a real photo ---------- */
+  var PHOTO = ALL.filter(function(d){ return d && d.image; });
+
+  /* ============================================================
+     PLAIN-LANGUAGE TITLE CLEANER  (v2)
+     Raw data uses retailer shorthand ("Kids Lic Crew Smurfs",
+     "Nat Sense Diffuser Clem Basil 30ML", "Gain Sort Orig 9/60 CT
+     B680"). HARD RULE #1: every label must read like plain English.
+
+     v2 CHANGE (Codex fix #5): KEEP identifying sizes — "1 oz",
+     "30 ct", "2-pack", "8.8 oz" — because that's how shoppers
+     identify the exact item. We split each title into a clean NAME
+     plus a SIZE string; the size shows as a quiet secondary line.
+     We still drop true noise: B680, PDQ, CS, BTS, CC, 9/60.
+     ============================================================ */
+  var WORD = {
+    "lic":"licensed","astd":"assorted","pwdr":"powder","lvnd":"lavender",
+    "lav":"lavender","cham":"chamomile","clem":"clementine","grn":"green",
+    "blk":"black","wht":"white","gry":"gray","clr":"clear","rnd":"round",
+    "sq":"square","mini":"mini","lrg":"large","sm":"small","orig":"original",
+    "sort":"sorting","refill":"refill","scented":"scented","wax":"wax",
+    "crew":"crew","qtr":"quarter","lc":"low-cut","plus":"plus","legging":"leggings",
+    "boxer":"boxer","briefs":"briefs","men":"men's","wmn":"women's","ladies":"ladies'",
+    "girls":"girls'","kids":"kids'","face":"face","faces":"faces","stripe":"stripe",
+    "strp":"stripe","character":"character","logo":"logo","tri-color":"tri-color",
+    "pnk":"pink","2-tone":"two-tone","plate":"plate",
+    "plates":"plates","dessert":"dessert","bandages":"bandages","sheer":"sheer",
+    "waterproof":"waterproof","neon":"neon","color":"color","colorful":"colorful",
+    "denture":"denture","brush":"brush","antifungal":"antifungal","spray":"spray",
+    "cooling":"cooling","burn":"burn","pads":"pads","razor":"razor","blades":"blades",
+    "wig":"wig","caps":"caps","mask":"mask","cold":"cold","hot":"hot",
+    "diffuser":"diffuser","tealight":"tealight","basil":"basil","amb":"amber",
+    "woods":"woods","grapefruit":"grapefruit","peppermint":"peppermint",
+    "pumpkin":"pumpkin","spice":"spice","oil":"oil","fidget":"fidget","spinning":"spinning",
+    "ballpoint":"ballpoint","pen":"pen","eraser":"eraser","jumbo":"jumbo","bouncy":"bouncy",
+    "ball":"ball","led":"LED","sensory":"sensory","bracelet":"bracelet","lighter":"lighter",
+    "candles":"candles","handle":"handle","long":"long","silicone":"silicone","snack":"snack",
+    "topper":"topper","tray":"tray","towel":"towel","scrunchie":"scrunchie","matte":"matte",
+    "lipstick":"lipstick","makeup":"makeup","beads":"beads","wood":"wood","metallic":"metallic",
+    "pony":"pony","heart":"heart","shaped":"shaped","alpha":"alphabet","stickers":"stickers",
+    "water":"water","soda":"soda","punch":"punch","fruit":"fruit","pineapple":"pineapple",
+    "blackberry":"blackberry","protein":"protein","shake":"shake","vanilla":"vanilla",
+    "chocolate":"chocolate","cereal":"cereal","rainbow":"rainbow","soup":"soup","tomato":"tomato",
+    "spicy":"spicy","sugar":"sugar","cookie":"cookie","mix":"mix","candy":"candy","sour":"sour",
+    "gel":"gel","squeeze":"squeeze","freeze":"freeze","dried":"dried","biscuit":"biscuit",
+    "peanut":"peanut","butter":"butter","grow":"grow","toys":"toys","squish":"squish","boba":"boba",
+    "animal":"animal","harmonica":"harmonica","crate":"crate","holes":"holes","wire":"wire",
+    "basket":"basket","hurricane":"hurricane vase","shampoo":"shampoo","lotion":"lotion","wash":"wash",
+    "baby":"baby","mustard":"mustard","yellow":"yellow","aerosol":"spray","killer":"spray",
+    "ant":"ant","roach":"roach","laundry":"laundry","detergent":"detergent","safety":"safety"
+  };
+
+  /* TRUE NOISE — warehouse / display / pallet codes → drop entirely.
+     (NOT sizes. Sizes are preserved below.) */
+  var NOISE = /^(b\d{2,}|pdq|bts|cs|cc|sc|ad|nat|carepak|care-us|care-pak|craftsq|wmn|\d+\/\d+)$/i;
+
+  /* SIZE token detector — these we KEEP (normalized into the size line).
+     Matches 1oz, 8.8oz, 30CT, 10PK, 2L, 360PCS, 30ML, .71oz, 2CT, etc. */
+  var SIZE_UNIT = /^(\.?\d+(\.\d+)?)\s*(oz|ml|ct|pk|pcs|pc|qt|l|g|in|"|lb)$/i;
+  var SIZE_NUM_THEN_UNIT = /^\d+(\.\d+)?$/;            /* "2" possibly followed by "PK"/"CT"/"L" */
+  var BARE_UNIT = /^(pk|ct|pcs|pc)$/i;                  /* a bare unit with no number → noise */
+
+  function normUnit(num, unit){
+    unit = unit.toLowerCase();
+    num = num.replace(/^\./,"0.");                      /* .71 -> 0.71 */
+    if(unit==="ct"||unit==="pcs"||unit==="pc") return num + " ct";
+    if(unit==="pk")  return num + "-pack";
+    if(unit==="oz")  return num + " oz";
+    if(unit==="ml")  return num + " ml";
+    if(unit==="l")   return num + " L";
+    if(unit==="qt")  return num + " qt";
+    if(unit==="g")   return num + " g";
+    if(unit==="lb")  return num + " lb";
+    if(unit==="in"||unit==='"') return num + '"';
+    return num + " " + unit;
+  }
+
+  var BRANDFIX = [
+    [/\bbaby shark\b/ig,"Baby Shark"],[/\bwelch'?s\b/ig,"Welch's"],
+    [/\bcampbell'?s\b/ig,"Campbell's"],[/\bpeppa pig\b/ig,"Peppa Pig"],
+    [/\bmaybelline\b/ig,"Maybelline"],[/\bgain\b/ig,"Gain"],[/\bheinz\b/ig,"Heinz"],
+    [/\bjell-?o\b/ig,"Jell-O"],[/\bgibson\b/ig,"Gibson"],[/\bclearly canadian\b/ig,"Clearly Canadian"],
+    [/\bhairitage\b/ig,"Hairitage"],[/\bvitality\b/ig,"Vitality"],[/\bsmurfs?\b/ig,"Smurfs"],
+    [/\belmo\b/ig,"Elmo"],[/\bx-?men\b/ig,"X-Men"],[/\bspider-?man\b/ig,"Spider-Man"],
+    [/\bmona lisa\b/ig,"Mona Lisa"],[/\bxoxo\b/ig,"XOXO"],[/\bkool-?aid\b/ig,"Kool-Aid"],
+    [/\bcheez-?it\b/ig,"Cheez-It"],[/\boscar mayer\b/ig,"Oscar Mayer"],
+    [/\boscar the grouch\b/ig,"Oscar the Grouch"],[/\bmountain dew\b/ig,"Mountain Dew"],
+    [/\brice krispies\b/ig,"Rice Krispies"],[/\bjurassic park\b/ig,"Jurassic Park"],
+    [/\bthe flash\b/ig,"The Flash"],[/\bbugs bunny\b/ig,"Bugs Bunny"],[/\bsesame street\b/ig,"Sesame Street"],
+    [/\blooney tunes\b/ig,"Looney Tunes"],[/\be\.?t\.?\b/ig,"E.T."],[/\btootsie roll\b/ig,"Tootsie Roll"],
+    [/\bhershey\b/ig,"Hershey"],[/\btwizzlers\b/ig,"Twizzlers"],[/\bblow pop\b/ig,"Blow Pop"],
+    [/\bjolly ranch(er)?\b/ig,"Jolly Rancher"],[/\breese'?s? pieces\b/ig,"Reese's Pieces"],
+    [/\bpaul frank\b/ig,"Paul Frank"],[/\bmonroe\b/ig,"Monroe"],[/\bpuptarts\b/ig,"Puptarts"],
+    [/\bxxl\b/ig,"XXL"],[/\barm & hammer\b/ig,"Arm & Hammer"],[/\bcolgate\b/ig,"Colgate"],
+    [/\bcrest\b/ig,"Crest"],[/\btide\b/ig,"Tide"],[/\bpersil\b/ig,"Persil"],[/\bfebreze\b/ig,"Febreze"],
+    [/\bozark trail\b/ig,"Ozark Trail"],[/\bigloo\b/ig,"Igloo"],[/\bscrubbing bubbles\b/ig,"Scrubbing Bubbles"],
+    [/\bair wick\b/ig,"Air Wick"],[/\bdove\b/ig,"Dove"],[/\bsoftsoap\b/ig,"Softsoap"],
+    [/\boral-?b\b/ig,"Oral-B"],[/\bstem\b/ig,"STEM"],[/\b7-?eleven\b/ig,"7-Eleven"],
+    [/\bryobi\b/ig,"Ryobi"],[/\bgain\b/ig,"Gain"],[/(\d)\s*ct\b/ig,"$1 ct"],
+    [/\bhe (\d+ loads?)\b/ig,"HE $1"]
+  ];
+
+  /* Split a raw title into { name, size }.
+     name = plain-English product words; size = "1 oz" / "30 ct" / etc. */
+  function parseTitle(raw){
+    if(!raw || String(raw).trim()==="" || /^\(deal\)$/i.test(String(raw).trim())){
+      return { name:"Penny-list find", size:"" };
+    }
+    var toks = String(raw).trim().split(/\s+/);
+    var nameToks = [];
+    var sizes = [];
+    for(var i=0;i<toks.length;i++){
+      var tk = toks[i].replace(/[.,]+$/,"");
+      if(!tk) continue;
+
+      /* combined size like "30CT", "8.8oz", "2L", ".71oz" */
+      var m = tk.match(SIZE_UNIT);
+      if(m){ sizes.push(normUnit(m[1], m[3])); continue; }
+
+      /* a lone number that pairs with the NEXT token as a unit ("2 PK", "10 PK", "2 CT") */
+      if(SIZE_NUM_THEN_UNIT.test(tk) && i+1<toks.length){
+        var nxt = toks[i+1].replace(/[.,]+$/,"");
+        if(BARE_UNIT.test(nxt) || /^(l|oz|ml|ct|qt|g)$/i.test(nxt)){
+          sizes.push(normUnit(tk, nxt)); i++; continue;
+        }
+      }
+
+      /* warehouse / display noise → drop */
+      if(NOISE.test(tk)) continue;
+      /* a bare unit with no number ("PK", "CT") → noise */
+      if(BARE_UNIT.test(tk)) continue;
+
+      /* expand known abbreviation */
+      var low = tk.toLowerCase().replace(/[^a-z'\-]/g,"");
+      if(WORD[low]){ nameToks.push(WORD[low]); continue; }
+      nameToks.push(tk);
+    }
+
+    var name = nameToks.join(" ").replace(/\s+/g," ").trim();
+    if(!name) name = "Penny-list find";
+    /* sentence case */
+    name = name.toLowerCase();
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    BRANDFIX.forEach(function(p){ name = name.replace(p[0], p[1]); });
+    name = name.replace(/\bled\b/g,"LED");
+    name = name.replace(/\s+/g," ").replace(/\s,/g,",").trim();
+
+    /* de-dupe size tokens, join */
+    var seen={}, sz=[];
+    sizes.forEach(function(s){ var k=s.toLowerCase(); if(!seen[k]){seen[k]=1; sz.push(s);} });
+    return { name:name, size: sz.join(" · ") };
+  }
+
+  /* convenience: full display title (name + size) for alt text & search */
+  function fullTitle(raw){
+    var p = parseTitle(raw);
+    return p.size ? (p.name + " " + p.size) : p.name;
+  }
+
+  /* friendlier category name */
+  function niceCat(c){
+    if(!c) return "Everyday finds";
+    var m = {
+      "APPAREL (socks / underwear / boxers)":"Socks & basics",
+      "HEALTH CARE":"Health & first aid","CHECKOUTS":"Fun little extras",
+      "HOUSEHOLD DISPOSABLES / FRAGRANCE":"Home scents","BEVERAGES":"Drinks",
+      "CRAFTS":"Crafts","HOUSEHOLD CONSUMABLES":"Household","FOOD":"Snacks & food",
+      "HOUSEHOLD PRODUCTS":"Storage & home","KITCHENWARE":"Kitchen","PERSONAL CARE":"Personal care",
+      "TOYS EVERYDAY":"Toys","CANDY / NON-CHOC / SEASONAL":"Candy","baby personal care":"Baby care",
+      "personal care":"Personal care","household cleaner":"Cleaning","Cleaning Products":"Cleaning",
+      "kitchen":"Kitchen","socks":"Socks & basics","HOME DECOR":"Home decor","PET SUPPLIES":"Pets"
+    };
+    if(m[c]) return m[c];
+    var s = c.toLowerCase().replace(/\s*\/.*$/,"").trim();
+    return s.charAt(0).toUpperCase()+s.slice(1);
+  }
+
+  /* price helpers */
+  function isPenny(d){ return d.price === "$0.01"; }
+  function priceNowHTML(p){
+    if(p === "$0.01") return '1<span class="cent">¢</span>';
+    if(!p) return '<span style="font-size:.7em;color:var(--ink-faint)">See in store</span>';
+    return p;
+  }
+  function savingPct(d){
+    if(d.was){
+      var w = parseFloat(d.was.replace(/[^0-9.]/g,""));
+      var n = parseFloat((d.price||"0").replace(/[^0-9.]/g,""));
+      if(w>0 && n>=0 && w>n){ return "Save $" + (w-n).toFixed(2); }
+    }
+    if(d.off) return d.off + " off";
+    return "";
+  }
+
+  function escapeAttr(s){ return String(s).replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+  /* image element with graceful fallback (never a broken icon) */
+  function imgTag(d, cls){
+    var src = IMG_BASE + d.image;
+    return '<img class="'+(cls||"")+'" src="'+src+'" alt="'+escapeAttr(fullTitle(d.title))+'" loading="lazy" '
+      + 'onerror="this.style.visibility=\'hidden\'">';
+  }
+
+  /* de-dupe by sku/title so the same item doesn't repeat across rows */
+  function dedupe(list){
+    var seen = {}, out = [];
+    list.forEach(function(d){
+      var key = (d.sku||"") + "|" + fullTitle(d.title).toLowerCase();
+      if(seen[key]) return; seen[key]=1; out.push(d);
+    });
+    return out;
+  }
+
+  // A couple of staged image files are actually saved error pages
+  // (e.g. a 556-byte "Access Denied" HTML stub at images/404079.jpg),
+  // so they'd never paint as a photo. Exclude them up front.
+  var BAD_IMAGES = { "images/404079.jpg": 1 };
+
+  var POOL = dedupe(PHOTO).filter(function(d){
+    if(BAD_IMAGES[d.image]) return false;
+    var t = parseTitle(d.title).name;
+    return t && t.toLowerCase() !== "deal" && t.length > 2;
+  });
+
+  /* ============================================================
+     CURATION
+     ============================================================ */
+  function pickBy(skuList){
+    var res = [];
+    skuList.forEach(function(sku){
+      var f = POOL.find(function(d){ return d.sku === sku; });
+      if(f) res.push(f);
+    });
+    return res;
+  }
+
+  var HERO = POOL.find(function(d){ return d.sku === "412418"; }) // silicone snack tray, was $1.25
+          || POOL.find(function(d){ return isPenny(d) && d.was; })
+          || POOL[0];
+
+  var RAIL_SKUS = ["284222","405736","413552","379530","416022","188749",
+                   "415203","392016","318526","388675","417795","296803",
+                   "382671","405498","333862"];
+  var RAIL = pickBy(RAIL_SKUS).filter(function(d){ return d.id !== HERO.id; });
+  if(RAIL.length < 12){
+    POOL.forEach(function(d){
+      if(RAIL.length>=14) return;
+      if(d.id===HERO.id) return;
+      if(RAIL.indexOf(d)>=0) return;
+      if(/socks/i.test(parseTitle(d.title).name)) return;
+      RAIL.push(d);
+    });
+  }
+
+  var CAT_DEFS = [
+    {name:"Snacks & food", sku:"405736", match:["FOOD","CANDY / NON-CHOC / SEASONAL"]},
+    {name:"Drinks",        sku:"284222", match:["BEVERAGES"]},
+    {name:"Socks & basics",sku:"396424", match:["APPAREL (socks / underwear / boxers)","socks"]},
+    {name:"Health & first aid", sku:"333862", match:["HEALTH CARE"]},
+    {name:"Crafts",        sku:"188749", match:["CRAFTS"]},
+    {name:"Kitchen",       sku:"318526", match:["KITCHENWARE","kitchen"]},
+    {name:"Home scents",   sku:"394682", match:["HOUSEHOLD DISPOSABLES / FRAGRANCE"]},
+    {name:"Toys",          sku:"392016", match:["TOYS EVERYDAY"]}
+  ];
+  function catItems(matchArr){
+    return POOL.filter(function(d){ return matchArr.indexOf(d.category) >= 0; });
+  }
+
+  /* ============================================================
+     YOUR STORES — built from the live data (Codex fix #4)
+     Rank by photo coverage, then penny count, then total. Show
+     real fresh/photo/total numbers. No hardcoded four stores; no
+     brown. Honest pills.
+     ============================================================ */
+  var STORE_COLORS = {
+    "Dollar Tree":"#1f7a5a", "Walmart":"#2f6f8f", "Dollar General":"#3a6a82",
+    "Walgreens":"#5a6b86", "Family Dollar":"#557089", "Publix":"#3f7a5e",
+    "CVS":"#7a5b86", "Home Depot":"#4a6a7a", "Kroger":"#356a82",
+    "Target":"#8a4a5a", "Amazon":"#445a6a", "Food Lion":"#3f6a55",
+    "H-E-B":"#2f6f8f", "Kroger ":"#356a82"
+  };
+  function initials(name){
+    var clean = name.replace(/[^A-Za-z ]/g,"").trim();
+    var parts = clean.split(/\s+/);
+    if(parts.length>=2) return (parts[0][0]+parts[1][0]).toUpperCase();
+    return clean.slice(0,2).toUpperCase();
+  }
+  function colorFor(name){ return STORE_COLORS[name] || "#4a5a6a"; }
+
+  function buildStores(){
+    var map = {};
+    ALL.forEach(function(d){
+      var r = (d.retailer||"").trim();
+      if(!r) return;
+      if(!map[r]) map[r] = {name:r, total:0, photo:0, penny:0, worth:0};
+      var s = map[r];
+      s.total++;
+      if(d.image && !BAD_IMAGES[d.image]) s.photo++;
+      if(isPenny(d)) s.penny++;
+      s.worth += (d.worthScore||0);
+    });
+    var arr = Object.keys(map).map(function(k){ return map[k]; });
+    // rank: photo coverage first (real treasures), then penny, then worth, then total
+    arr.sort(function(a,b){
+      return (b.photo-a.photo) || (b.penny-a.penny) || (b.worth-a.worth) || (b.total-a.total);
+    });
+    return arr.slice(0,5);
+  }
+  var STORES = buildStores();
+
+  function storeHeadline(s){
+    var deals = s.total + (s.total===1?" deal":" deals");
+    if(s.photo>0 && s.penny>0){
+      return s.photo + " photos · " + s.penny + " at 1¢ · " + deals;
+    }
+    if(s.photo>0){
+      return s.photo + " photo" + (s.photo>1?"s":"") + " · " + deals + " reported";
+    }
+    if(s.penny>0){
+      return s.penny + " at 1¢ · " + deals + " · no photos yet";
+    }
+    return deals + " reported · no photos yet";
+  }
+  function storePill(s){
+    if(s.penny>0) return '<span class="count">'+s.penny+' at 1¢</span>';
+    if(s.total>0) return '<span class="count blue">'+s.total+(s.total===1?' deal':' deals')+'</span>';
+    return '';
+  }
+
+  /* ============================================================
+     OTHER STORE REPORTS — honest text rows (Codex fix #7)
+     Best non-photo deals with a real price + a "was", so the
+     one-screen promise stays honest about what other stores have.
+     ============================================================ */
+  function buildReports(){
+    var cand = ALL.filter(function(d){
+      return !d.image && d.retailer && d.price && d.price!=="" && (d.was||d.off)
+        && !isPenny(d)                       // penny finds live in the rest of the app
+        && !/^\(deal\)$/i.test((d.title||"").trim())
+        && parseTitle(d.title).name.length > 3
+        && d.retailer !== "Dollar Tree"      // Dollar Tree has its own sections above
+        && d.retailer !== "Amazon";          // Amazon glitch rows aren't in-store shopper finds
+    });
+    // de-dupe by clean title so variants don't repeat
+    var seen={}, uniq=[];
+    cand.forEach(function(d){ var k=fullTitle(d.title).toLowerCase(); if(!seen[k]){seen[k]=1; uniq.push(d);} });
+    uniq.sort(function(a,b){ return savePct(b)-savePct(a); });
+    // keep variety — at most one per store
+    var perStore = {}, out = [];
+    uniq.forEach(function(d){
+      if(perStore[d.retailer]) return;
+      perStore[d.retailer]=1; out.push(d);
+    });
+    return out.slice(0,5);
+  }
+  function savePct(d){
+    var w = parseFloat((d.was||"0").replace(/[^0-9.]/g,""));
+    var n = parseFloat((d.price||"0").replace(/[^0-9.]/g,""));
+    if(w>0 && n>=0 && w>n) return Math.round((1-n/w)*100);
+    if(d.off) return parseInt(d.off,10)||0;
+    return 0;
+  }
+  var REPORTS = buildReports();
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
+  function render(){
+    renderHero();
+    renderRail();
+    renderStores();
+    renderCats();
+    renderReports();
+    greet();
+    wireSeeAll();
+  }
+
+  function greet(){
+    var h = new Date().getHours();
+    var g = h<12 ? "Good morning" : (h<18 ? "Good afternoon" : "Good evening");
+    var el = document.getElementById("greet"); if(el) el.textContent = g;
+  }
+
+  function verifiedChip(d){
+    var isCatalog = !!d.sku || d.dealType === "dt-penny-list" || d.dealType === "penny";
+    if(isCatalog){
+      return '<span class="vchip ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Verified product</span>';
+    }
+    return '<span class="vchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>Shoppers reported this</span>';
+  }
+
+  function renderHero(){
+    var d = HERO;
+    var p = parseTitle(d.title);
+    var save = savingPct(d);
+    var wasLine = d.was ? '<div class="price-was">Was <s>'+d.was+'</s></div>' : '<div class="price-was">Reported at 1¢</div>';
+    var sizeLine = p.size ? '<p class="hero-size">'+p.size+'</p>' : '';
+    var skuLine = d.sku
+      ? '<div class="sku-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M7 9v6M10 9v6M13.5 9v6M17 9v6"/></svg>Scan in store · SKU <b>'+d.sku+'</b></div>'
+      : '';
+    var html =
+      '<div data-card data-id="'+d.id+'">'+
+      '  <div class="hero-photo">'+
+      '    <span class="hero-flag"><span class="dot"></span>1¢ at Dollar Tree</span>'+
+             imgTag(d)+
+      '  </div>'+
+      '  <div class="hero-body">'+
+      '    <div class="hero-cat">'+niceCat(d.category)+'</div>'+
+      '    <h3 class="hero-title">'+p.name+'</h3>'+
+             sizeLine+
+      '    <div class="hero-storeline">'+
+      '      <span class="hero-store">'+ (d.retailer||"Dollar Tree") +'</span>'+
+             verifiedChip(d)+
+      '    </div>'+
+      '    <div class="price-row">'+
+      '      <div class="price-now">'+priceNowHTML(d.price)+'</div>'+
+      '      <div class="price-meta">'+ wasLine +
+               (save?'<span class="price-save">'+save+'</span>':'')+
+      '      </div>'+
+      '    </div>'+
+             skuLine+
+      '    <div class="hero-actions">'+
+      '      <button class="btn primary" type="button">'+
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>'+
+              'Find in store</button>'+
+      '      <button class="btn" type="button">See deal</button>'+
+      '    </div>'+
+      '  </div>'+
+      '</div>';
+    var hero = document.getElementById("hero");
+    hero.innerHTML = html;
+    hero.addEventListener("click", function(){ openSheet(d); });
+  }
+
+  function railCard(d){
+    var p = parseTitle(d.title);
+    var sizeLine = p.size ? '<p class="psize">'+p.size+'</p>' : '<p class="psize">&nbsp;</p>';
+    return '<article class="pcard" data-card data-id="'+d.id+'">'+
+      '<div class="ph">'+ imgTag(d) +'</div>'+
+      '<div class="pb">'+
+        '<p class="pt">'+p.name+'</p>'+
+        sizeLine+
+        '<div class="pprice">'+
+          '<span class="pnow">'+priceNowHTML(d.price)+'</span>'+
+          (d.was?'<span class="pwas"><s>'+d.was+'</s></span>':'')+
+        '</div>'+
+        '<div class="pstore">'+(d.retailer||"Dollar Tree")+'</div>'+
+      '</div></article>';
+  }
+  function renderRail(){
+    var rail = document.getElementById("rail");
+    rail.innerHTML = RAIL.slice(0,14).map(railCard).join("");
+    Array.prototype.forEach.call(rail.querySelectorAll(".pcard"), function(el){
+      var id = el.getAttribute("data-id");
+      el.addEventListener("click", function(){ openSheet(byId(id)); });
+    });
+  }
+
+  function renderStores(){
+    var wrap = document.getElementById("stores");
+    wrap.innerHTML = STORES.map(function(s){
+      return '<div class="store" data-store="'+escapeAttr(s.name)+'">'+
+        '<div class="ico" style="background:'+colorFor(s.name)+'">'+initials(s.name)+'</div>'+
+        '<div class="meta">'+
+          '<div class="sname">'+s.name+'</div>'+
+          '<div class="shead">'+storeHeadline(s)+'</div>'+
+        '</div>'+
+        storePill(s)+
+        '<span class="schev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>'+
+      '</div>';
+    }).join("");
+    Array.prototype.forEach.call(wrap.querySelectorAll(".store"), function(el){
+      el.addEventListener("click", function(){ openStore(el.getAttribute("data-store")); });
+    });
+  }
+
+  function renderCats(){
+    var wrap = document.getElementById("cats");
+    wrap.innerHTML = CAT_DEFS.map(function(c){
+      var items = catItems(c.match);
+      var d = POOL.find(function(x){ return x.sku === c.sku; }) || items[0];
+      var n = items.length;
+      var photo = d ? imgTag(d) : '';
+      return '<div class="cat" data-cat="'+escapeAttr(c.name)+'">'+
+        '<div class="cph">'+photo+'</div>'+
+        '<div class="cmeta">'+
+          '<div class="cname">'+c.name+'</div>'+
+          '<div class="ccount">'+ (n>0? n+' at 1¢' : 'See finds') +'</div>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+    Array.prototype.forEach.call(wrap.querySelectorAll(".cat"), function(el){
+      el.addEventListener("click", function(){ openCategory(el.getAttribute("data-cat")); });
+    });
+  }
+
+  function reportRow(d){
+    var save = savePct(d);
+    var p = parseTitle(d.title);
+    var disp = p.size ? (p.name + " " + p.size) : p.name;   // keep full size inline here
+    return '<div class="report" data-id="'+d.id+'">'+
+      '<div class="rdot" style="background:'+colorFor(d.retailer)+'">'+initials(d.retailer)+'</div>'+
+      '<div class="rmeta">'+
+        '<div class="rname">'+disp+'</div>'+
+        '<div class="rsub">'+
+          '<span class="rstore">'+d.retailer+'</span>'+
+          '<span class="rnophoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="m21 16-5-5L5 19"/></svg>No photo yet</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="rprice">'+
+        '<div class="rp">'+(d.price||'—')+'</div>'+
+        (d.was?'<div class="rwas"><s>'+d.was+'</s>'+(save?' · '+save+'% off':'')+'</div>':(save?'<div class="rwas">'+save+'% off</div>':''))+
+      '</div>'+
+    '</div>';
+  }
+  function renderReports(){
+    var wrap = document.getElementById("reports");
+    wrap.innerHTML = REPORTS.map(reportRow).join("");
+    Array.prototype.forEach.call(wrap.querySelectorAll(".report"), function(el){
+      var id = el.getAttribute("data-id");
+      el.addEventListener("click", function(){ openSheet(byId(id, true)); });
+    });
+  }
+
+  function wireSeeAll(){
+    var el = document.getElementById("seeall-rail");
+    if(el) el.addEventListener("click", function(e){ e.preventDefault(); openAllPhotos(); });
+  }
+
+  function byId(id, includeAll){
+    var d = POOL.find(function(x){return x.id===id;}) || (HERO.id===id?HERO:null);
+    if(d) return d;
+    if(includeAll) return ALL.find(function(x){return x.id===id;}) || null;
+    return null;
+  }
+
+  /* ============================================================
+     FILTERED VIEW — store list, category grid, all photos
+     (Codex fix #3: stores & categories actually navigate)
+     ============================================================ */
+  var view = document.getElementById("view");
+  var viewBody = document.getElementById("view-body");
+  var viewTitle = document.getElementById("view-title");
+  var viewSub = document.getElementById("view-sub");
+
+  function photoGridHTML(list){
+    return '<div class="view-grid">'+ list.map(railCard).join("") +'</div>';
+  }
+  function reportListHTML(list){
+    return '<div class="reports">'+ list.map(reportRow).join("") +'</div>';
+  }
+
+  function wireViewCards(){
+    Array.prototype.forEach.call(viewBody.querySelectorAll(".pcard"), function(el){
+      var id = el.getAttribute("data-id");
+      el.addEventListener("click", function(){ openSheet(byId(id, true)); });
+    });
+    Array.prototype.forEach.call(viewBody.querySelectorAll(".report"), function(el){
+      var id = el.getAttribute("data-id");
+      el.addEventListener("click", function(){ openSheet(byId(id, true)); });
+    });
+  }
+  function showView(title, sub, bodyHTML){
+    viewTitle.textContent = title;
+    viewSub.textContent = sub || "";
+    viewBody.innerHTML = bodyHTML;
+    wireViewCards();
+    view.scrollTop = 0;
+    view.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  window.__closeView = function(){
+    view.classList.remove("open");
+    if(!document.getElementById("sheet").classList.contains("open"))
+      document.body.style.overflow = "";
+  };
+
+  function openStore(name){
+    var photos = POOL.filter(function(d){ return d.retailer===name; });
+    var reports = ALL.filter(function(d){
+      return d.retailer===name && (!d.image || BAD_IMAGES[d.image])
+        && d.price && d.price!=="" && !/^\(deal\)$/i.test((d.title||"").trim());
+    });
+    // de-dupe report titles
+    var seen={}, rclean=[];
+    reports.forEach(function(d){ var k=fullTitle(d.title).toLowerCase(); if(!seen[k]){seen[k]=1; rclean.push(d);} });
+    rclean.sort(function(a,b){ return savePct(b)-savePct(a); });
+
+    var body = "";
+    if(photos.length){
+      body += '<div style="font-size:13px;font-weight:700;color:var(--ink-soft);margin:2px 0 11px;">'+
+              photos.length+' deal'+(photos.length>1?'s':'')+' with photos</div>';
+      body += photoGridHTML(photos.slice(0,40));
+    }
+    if(rclean.length){
+      body += '<div style="font-size:13px;font-weight:700;color:var(--ink-soft);margin:'+(photos.length?'22px':'2px')+' 0 11px;">'+
+              'More reports · no photo yet</div>';
+      body += reportListHTML(rclean.slice(0,20));
+    }
+    if(!photos.length && !rclean.length){
+      body = '<div style="text-align:center;color:var(--ink-faint);font-size:14px;padding:40px 10px;">No deals reported here yet.</div>';
+    }
+    var s = STORES.find(function(x){return x.name===name;}) ||
+            {photo:photos.length, total:photos.length+rclean.length, penny:photos.filter(isPenny).length};
+    showView(name, storeHeadline(s), body);
+  }
+
+  function openCategory(name){
+    var def = CAT_DEFS.find(function(c){ return c.name===name; });
+    var items = def ? catItems(def.match) : [];
+    var body = items.length
+      ? '<div style="font-size:13px;font-weight:700;color:var(--ink-soft);margin:2px 0 11px;">'+
+        items.length+' find'+(items.length>1?'s':'')+' at 1¢ — Dollar Tree</div>'+ photoGridHTML(items.slice(0,60))
+      : '<div style="text-align:center;color:var(--ink-faint);font-size:14px;padding:40px 10px;">Nothing here yet.</div>';
+    showView(name, "Dollar Tree · 1¢ finds", body);
+  }
+
+  function openAllPhotos(){
+    var list = POOL.slice();
+    // hero first, then the rail order, then the rest
+    var ordered = [HERO].concat(RAIL).filter(function(d,i,a){ return a.indexOf(d)===i; });
+    POOL.forEach(function(d){ if(ordered.indexOf(d)<0) ordered.push(d); });
+    showView("All photo deals", ordered.length+" deals with real photos · mostly Dollar Tree 1¢",
+             photoGridHTML(ordered));
+  }
+
+  /* ============================================================
+     DETAIL SHEET
+     ============================================================ */
+  var scrim = document.getElementById("scrim");
+  var sheet = document.getElementById("sheet");
+
+  function openSheet(d){
+    if(!d) return;
+    var p = parseTitle(d.title);
+    var save = savingPct(d);
+    var aisleGuess = guessAisle(d);
+    var glitch = (d.dealType === "glitch");
+    var hasPhoto = d.image && !BAD_IMAGES[d.image];
+    var penny = isPenny(d);
+
+    var honest = glitch
+      ? "This one looks like a price mistake. It might not ring up at this price — worth a quick look, but don't count on it."
+      : "The app shows what shoppers reported, not a live shelf count. Prices change — check the tag in the store before you buy.";
+
+    var photoBlock = hasPhoto
+      ? '<div class="sheet-photo">'+
+          '<button class="sheet-close" type="button" aria-label="Close" onclick="window.__closeSheet()">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'+
+          '</button>'+
+          imgTag(d)+
+        '</div>'
+      : '<div class="sheet-nophoto">'+
+          '<button class="sheet-close" type="button" aria-label="Close" onclick="window.__closeSheet()">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'+
+          '</button>'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="m21 16-5-5L5 19"/></svg>'+
+          '<div class="l1">No product photo yet</div>'+
+          '<div class="l2">A shopper reported this at '+(d.retailer||"a store")+'.</div>'+
+        '</div>';
+
+    var sizeLine = p.size ? '<div class="sheet-size">'+p.size+'</div>' : '';
+
+    var wasRow = d.was
+      ? '<div class="pm">Was <s>'+d.was+'</s>'+(save?' · '+save:'')+'</div>'
+      : (penny ? '<div class="pm">Reported at 1¢</div>' : '');
+
+    var priceBoxClass = penny ? '' : 'plain';
+
+    var skuBlock = d.sku
+      ? '<div class="scan">'+
+          '<div class="bars">'+ Array(22).join("<i></i>") +'</div>'+
+          '<div class="stext"><div class="l">Scan in store to check today\'s price</div>'+
+          '<div class="v">SKU '+d.sku+'</div></div>'+
+        '</div>'
+      : '';
+
+    var step3 = d.sku
+      ? 'Scan the SKU below in store (SKU '+d.sku+') to check today\'s price.'
+      : 'Check the shelf tag in store to confirm the price.';
+
+    sheet.innerHTML =
+      '<div class="grab"></div>'+
+      photoBlock+
+      '<div class="sheet-body">'+
+        '<div class="sheet-cat">'+niceCat(d.category)+'</div>'+
+        '<h2 class="sheet-title">'+p.name+'</h2>'+
+        sizeLine+
+        '<div class="sheet-store">'+(d.retailer||"Dollar Tree")+'</div>'+
+
+        '<div class="sheet-pricebox '+priceBoxClass+'">'+
+          '<div class="pn">'+priceNowHTML(d.price)+'</div>'+
+          '<div>'+ wasRow +'</div>'+
+        '</div>'+
+
+        '<div class="howto">'+
+          '<h3>How to find it in the store</h3>'+
+          '<div class="step"><div class="sn">1</div><div class="sx">Head to <b>'+(d.retailer||"Dollar Tree")+'</b> near you.</div></div>'+
+          '<div class="step"><div class="sn">2</div><div class="sx">Look in the <b>'+aisleGuess+'</b> area.</div></div>'+
+          '<div class="step"><div class="sn">3</div><div class="sx">'+step3+'</div></div>'+
+          skuBlock+
+        '</div>'+
+
+        '<div class="sheet-honest">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>'+
+          '<p>'+honest+'</p>'+
+        '</div>'+
+      '</div>'+
+      '<div class="sheet-actions">'+
+        '<button class="btn primary" type="button" onclick="window.__closeSheet()">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>'+
+          'Find in store</button>'+
+        '<button class="btn" type="button" onclick="window.__closeSheet()">Save for later</button>'+
+      '</div>';
+
+    sheet.scrollTop = 0;
+    scrim.classList.add("open");
+    sheet.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function guessAisle(d){
+    var c = (d.category||"").toLowerCase();
+    var t = (d.title||"").toLowerCase();
+    if(/apparel|sock/.test(c)) return "socks and clothing";
+    if(/baby/.test(c) || /baby shark/.test(t)) return "baby and personal care";
+    if(/health|care/.test(c)) return "health and personal care";
+    if(/bever/.test(c)) return "drinks";
+    if(/food|candy/.test(c)) return "food and snacks";
+    if(/craft/.test(c)) return "crafts";
+    if(/kitchen/.test(c)) return "kitchen and dishes";
+    if(/fragrance|disposable/.test(c)) return "home and candles";
+    if(/toy/.test(c)) return "toys";
+    if(/checkout/.test(c)) return "checkout";
+    if(/laundry|detergent/.test(c) || /detergent/.test(t)) return "laundry";
+    if(/oral/.test(c) || /toothpaste|floss/.test(t)) return "oral care";
+    if(/cleaner|cleaning|consumable|product/.test(c)) return "cleaning and household";
+    if(/pet/.test(c)) return "pet";
+    if(/decor/.test(c)) return "home decor";
+    return "seasonal and everyday";
+  }
+
+  window.__closeSheet = function(){
+    scrim.classList.remove("open");
+    sheet.classList.remove("open");
+    if(!view.classList.contains("open")) document.body.style.overflow = "";
+  };
+  window.closeSheet = window.__closeSheet;
+
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape"){
+      if(sheet.classList.contains("open")) window.__closeSheet();
+      else if(view.classList.contains("open")) window.__closeView();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

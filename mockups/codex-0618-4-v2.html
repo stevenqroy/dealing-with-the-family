@@ -1,0 +1,1117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Hunter</title>
+  <style>
+    :root {
+      --page: #e9eee9;
+      --phone: #fbfcfb;
+      --card: #ffffff;
+      --wash: #f2f5f1;
+      --ink: #14241f;
+      --soft: #56615d;
+      --muted: #7b8581;
+      --line: #dce4df;
+      --green: #087451;
+      --green-dark: #075a41;
+      --green-soft: #dff3ea;
+      --blue: #315f8d;
+      --blue-soft: #e4edf7;
+      --plum: #6c548e;
+      --plum-soft: #eee9f5;
+      --rose: #95516e;
+      --rose-soft: #f6e8ef;
+      --shadow: 0 22px 70px rgba(18, 36, 31, 0.16);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% -8%, rgba(8, 116, 81, 0.10), transparent 36%),
+        linear-gradient(180deg, #f7f9f6 0%, var(--page) 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .phone {
+      width: min(100%, 430px);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--phone);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 18px 18px 13px;
+      background: rgba(251, 252, 251, 0.95);
+      border-bottom: 1px solid rgba(220, 228, 223, 0.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.06;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .store-pill {
+      flex: 0 0 auto;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      width: 13px;
+      height: 13px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      transform: translateY(-58%);
+    }
+
+    .search-wrap::after {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 56%;
+      width: 8px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--green);
+      transform: rotate(45deg);
+    }
+
+    #searchInput {
+      width: 100%;
+      height: 52px;
+      padding: 0 45px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      outline: none;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 15px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    #searchInput:focus {
+      border-color: rgba(8, 116, 81, 0.55);
+      box-shadow: 0 0 0 4px rgba(8, 116, 81, 0.12);
+    }
+
+    .clear-search {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: none;
+      place-items: center;
+      color: var(--muted);
+      background: transparent;
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .clear-search.show {
+      display: grid;
+    }
+
+    .popular {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 0 1px;
+      scrollbar-width: none;
+    }
+
+    .popular::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #edf3ef;
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 760;
+      white-space: nowrap;
+      border: 1px solid rgba(8, 116, 81, 0.12);
+    }
+
+    main {
+      padding: 16px 18px 24px;
+    }
+
+    .honest-line {
+      margin: 10px 0 17px;
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .hero {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 44% 1fr;
+      gap: 14px;
+      padding: 13px;
+      border: 1px solid rgba(8, 116, 81, 0.16);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, #ffffff 0%, #f2f8f4 100%);
+      text-align: left;
+      box-shadow: 0 16px 44px rgba(18, 36, 31, 0.10);
+    }
+
+    .hero-photo {
+      position: relative;
+      min-height: 188px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: linear-gradient(180deg, #eef4f0, #ffffff);
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-photo img,
+    .photo-tile img,
+    .deal-photo img,
+    .detail-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hero-copy {
+      min-width: 0;
+      display: grid;
+      align-content: center;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 820;
+      line-height: 1.2;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.08;
+      font-weight: 880;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .price {
+      color: var(--green);
+      font-size: 36px;
+      line-height: 0.95;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .price.small {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .was {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+      white-space: nowrap;
+    }
+
+    .hero-note {
+      margin: 0;
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.36;
+    }
+
+    .see-btn {
+      width: fit-content;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 24px 0 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.12;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .category-tile {
+      position: relative;
+      min-height: 154px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--wash);
+      text-align: left;
+      border: 1px solid rgba(20, 36, 31, 0.08);
+      isolation: isolate;
+    }
+
+    .category-tile img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.01);
+      filter: saturate(1.02) contrast(1.02);
+    }
+
+    .category-tile::before {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 72%;
+      background: linear-gradient(180deg, rgba(8, 18, 15, 0) 0%, rgba(8, 18, 15, 0.44) 39%, rgba(8, 18, 15, 0.86) 100%);
+      z-index: 1;
+    }
+
+    .tile-copy {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2;
+      display: grid;
+      gap: 4px;
+      color: #fff;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.38);
+    }
+
+    .tile-copy strong {
+      font-size: 18px;
+      line-height: 1.04;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .tile-copy span {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+
+    .deal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .deal-card {
+      min-width: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--card);
+      text-align: left;
+      box-shadow: 0 10px 26px rgba(18, 36, 31, 0.06);
+    }
+
+    .deal-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      padding: 9px;
+      background: linear-gradient(180deg, #f3f6f3, #ffffff);
+      overflow: hidden;
+    }
+
+    .photo-tile {
+      position: absolute;
+      inset: 9px;
+      display: grid;
+      place-items: center;
+    }
+
+    .mini-price {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--green);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 940;
+      box-shadow: 0 8px 18px rgba(18, 36, 31, 0.14);
+    }
+
+    .deal-copy {
+      min-height: 112px;
+      padding: 10px;
+      display: grid;
+      gap: 7px;
+      align-content: start;
+    }
+
+    .deal-title {
+      margin: 0;
+      min-height: 38px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.32;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .deal-meta,
+    .store-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.22;
+    }
+
+    .deal-meta span,
+    .store-line span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .verified {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 5px;
+      padding: 5px 7px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 11px;
+      font-weight: 820;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .reported {
+      display: inline-flex;
+      width: fit-content;
+      padding: 5px 7px;
+      border-radius: 999px;
+      background: #eef2ef;
+      color: var(--soft);
+      font-size: 11px;
+      font-weight: 760;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .result-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .back-btn {
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: var(--radius);
+      background: var(--green-soft);
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    .result-top span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .empty {
+      margin: 20px 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      text-align: center;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.38;
+    }
+
+    .text-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .text-deal {
+      display: grid;
+      gap: 5px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .text-deal strong {
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.28;
+    }
+
+    .text-deal span {
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .detail {
+      display: grid;
+      gap: 15px;
+    }
+
+    .detail-photo {
+      width: 100%;
+      height: min(60vh, 410px);
+      min-height: 330px;
+      padding: 16px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #f3f6f3, #ffffff);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .detail h2 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.1;
+      font-weight: 880;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-price {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .big-price {
+      min-height: 94px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--green-dark);
+      color: #fff;
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .price-note {
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      padding: 13px;
+      border-radius: var(--radius);
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.34;
+    }
+
+    .price-note strong {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .help-card {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: #ffffff;
+      border: 1px solid var(--line);
+    }
+
+    .help-card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.14;
+      font-weight: 840;
+      letter-spacing: 0;
+    }
+
+    .help-card p {
+      margin: 0;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .scan-btn {
+      width: 100%;
+      min-height: 49px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    @media (min-width: 620px) {
+      body {
+        padding: 28px 0;
+      }
+
+      .phone {
+        min-height: 844px;
+        border: 1px solid rgba(20, 36, 31, 0.10);
+        border-radius: 30px;
+      }
+    }
+
+    @media (max-width: 370px) {
+      .top,
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .hero {
+        grid-template-columns: 41% 1fr;
+        gap: 11px;
+      }
+
+      .hero-photo {
+        min-height: 168px;
+      }
+
+      .hero-title {
+        font-size: 20px;
+      }
+
+      .price {
+        font-size: 32px;
+      }
+
+      .category-grid,
+      .deal-grid {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <header class="top">
+      <div class="brand-row">
+        <div class="brand">
+          <h1>Deal Hunter</h1>
+          <span>Find a deal or a store</span>
+        </div>
+        <div class="store-pill">Your stores</div>
+      </div>
+      <div class="search-wrap">
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search for soap, socks, kitchen..." aria-label="Search deals">
+        <button class="clear-search" id="clearSearch" aria-label="Clear search">&times;</button>
+      </div>
+      <div class="popular" aria-label="Popular searches">
+        <button class="chip" type="button" data-search="soap">Soap</button>
+        <button class="chip" type="button" data-search="socks">Socks</button>
+        <button class="chip" type="button" data-search="kitchen">Kitchen</button>
+        <button class="chip" type="button" data-search="baby">Baby</button>
+      </div>
+    </header>
+
+    <main id="app" aria-live="polite"></main>
+  </div>
+
+  <script src="../deal-hunter-staging/data.js"></script>
+  <script>
+    const DEALS = (window.STAGING_DEALS || []);
+    const app = document.getElementById('app');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const imageRoot = '../deal-hunter-staging/';
+
+    const featuredSku = '379530';
+    const categoryPlan = [
+      { name: 'Kids', terms: ['392016', '252863', 'smurf', 'elmo', 'toy', 'kids'] },
+      { name: 'Socks', terms: ['396424', '397121', '404079', 'sock'] },
+      { name: 'Baby', terms: ['379530', '379537', 'baby shark', 'baby'] },
+      { name: 'Cleaning', terms: ['367385', 'cleaner', 'cleaning', 'bathroom'] },
+      { name: 'Kitchen', terms: ['318526', '327643', '402782', 'kitchen', 'plate'] },
+      { name: 'Crafts', terms: ['188749', '280018', '281133', 'craft', 'beads'] },
+      { name: 'Beauty', terms: ['379537', 'body wash', 'lotion', 'shampoo', 'personal care'] },
+      { name: 'More deals', terms: ['household', 'pantry', 'health', 'drink', 'pet'] }
+    ];
+
+    const bestSkuOrder = ['379530', '396424', '392016', '367385', '412418', '188749', '397121', '318526'];
+    let selectedCategory = '';
+
+    function cleanText(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function titleText(value) {
+      const text = cleanText(value);
+      if (!text) return 'Untitled deal';
+      const fixed = text.toLowerCase()
+        .replace(/\bx-men\b/g, 'X-Men')
+        .replace(/\bsmurfs\b/g, 'Smurfs')
+        .replace(/\bbaby shark\b/g, 'Baby Shark')
+        .replace(/\bh-e-b\b/g, 'H-E-B')
+        .replace(/\bsku\b/g, 'SKU')
+        .replace(/\bpdq\b/g, 'PDQ')
+        .replace(/\b2ct\b/g, '2CT')
+        .replace(/\b360pcs\b/g, '360PCS');
+      return fixed.charAt(0).toUpperCase() + fixed.slice(1);
+    }
+
+    function shortTitle(deal) {
+      const title = titleText(deal.title)
+        .replace('Kids lic crew Smurfs', 'Kids Smurfs crew socks')
+        .replace('Xxl squish boba animal toy PDQ', 'Boba animal plush toy')
+        .replace('Baby Shark baby shampoo 1oz', 'Baby Shark baby shampoo')
+        .replace('Craftsq alpha stickers color astd', 'Craft stickers')
+        .replace('Craftsq lrg water brush pen 2CT', 'Water brush pens');
+      return title;
+    }
+
+    function priceText(deal) {
+      const price = cleanText(deal.price);
+      if (price === '$0.01') return '1¢';
+      return price || 'See price';
+    }
+
+    function wasText(deal) {
+      const was = cleanText(deal.was);
+      return was ? `was ${was}` : '';
+    }
+
+    function priceStory(deal) {
+      const was = cleanText(deal.was);
+      if (was && priceText(deal) === '1¢') return `Was ${was} → now 1¢`;
+      if (was) return `Was ${was} → now ${priceText(deal)}`;
+      if (priceText(deal) === '1¢') return 'Marked down to 1¢';
+      return `Reported at ${priceText(deal)}`;
+    }
+
+    function searchText(deal) {
+      return [
+        deal.title,
+        deal.category,
+        deal.retailer,
+        deal.price,
+        deal.was,
+        deal.sku,
+        categoryName(deal)
+      ].map(cleanText).join(' ').toLowerCase();
+    }
+
+    function hasTerm(deal, term) {
+      const lower = term.toLowerCase();
+      return cleanText(deal.sku) === term || searchText(deal).includes(lower);
+    }
+
+    function categoryName(deal) {
+      const text = `${cleanText(deal.category)} ${cleanText(deal.title)}`.toLowerCase();
+      if (text.includes('baby shark') || text.includes('baby')) return 'Baby';
+      if (text.includes('clean') || text.includes('bathroom') || text.includes('detergent')) return 'Cleaning';
+      if (text.includes('kitchen') || text.includes('plate') || text.includes('tray') || text.includes('bowl') || text.includes('container')) return 'Kitchen';
+      if (text.includes('craft') || text.includes('bead') || text.includes('sticker') || text.includes('brush pen')) return 'Crafts';
+      if (text.includes('sock') || text.includes('apparel') || text.includes('underwear') || text.includes('legging')) return 'Socks';
+      if (text.includes('toy') || text.includes('kid') || text.includes('elmo') || text.includes('smurf') || text.includes('boba')) return 'Kids';
+      if (text.includes('body wash') || text.includes('lotion') || text.includes('shampoo') || text.includes('personal care') || text.includes('beauty')) return 'Beauty';
+      return 'More deals';
+    }
+
+    function isVerified(deal) {
+      return cleanText(deal.sku) || cleanText(deal.dealType) === 'dt-penny-list';
+    }
+
+    function imageTag(deal, alt) {
+      return `<img src="${imageRoot}${deal.image}" alt="${alt}" loading="lazy" onerror="this.style.visibility='hidden'">`;
+    }
+
+    function photoDeals() {
+      return DEALS.filter(deal => deal.image);
+    }
+
+    function findPhotoBySku(sku) {
+      return photoDeals().find(deal => cleanText(deal.sku) === sku);
+    }
+
+    function findFirstByTerms(terms) {
+      for (const term of terms) {
+        const bySku = findPhotoBySku(term);
+        if (bySku) return bySku;
+        const byTerm = photoDeals().find(deal => hasTerm(deal, term));
+        if (byTerm) return byTerm;
+      }
+      return photoDeals()[0];
+    }
+
+    function categoryDeals(name) {
+      return photoDeals().filter(deal => categoryName(deal) === name);
+    }
+
+    function categories() {
+      return categoryPlan
+        .map(plan => {
+          const deals = categoryDeals(plan.name);
+          const hero = findFirstByTerms(plan.terms);
+          return { name: plan.name, deals, hero };
+        })
+        .filter(item => item.hero && item.deals.length);
+    }
+
+    function bestDeals() {
+      const used = new Set();
+      const picked = [];
+      bestSkuOrder.forEach(sku => {
+        const deal = findPhotoBySku(sku);
+        if (deal && !used.has(deal.id)) {
+          picked.push(deal);
+          used.add(deal.id);
+        }
+      });
+      photoDeals().forEach(deal => {
+        if (picked.length >= 8) return;
+        if (!used.has(deal.id) && categoryName(deal) !== 'Socks') {
+          picked.push(deal);
+          used.add(deal.id);
+        }
+      });
+      return picked.slice(0, 8);
+    }
+
+    function dealKind(deal) {
+      const type = cleanText(deal.dealType).toLowerCase();
+      if (type === 'glitch') return "Might not ring up — worth a look, don't count on it.";
+      if (type === 'coupon') return 'Use the store coupon if it is still available.';
+      if (type === 'bogo') return 'Check the shelf sign for the buy one, get one offer.';
+      if (type === 'clearance') return 'Look for clearance tags and scan the item in store.';
+      if (type === 'sale') return 'Check the sale tag before you buy.';
+      return 'Look for the item and scan it in store.';
+    }
+
+    function dealCard(deal) {
+      const title = shortTitle(deal);
+      return `
+        <button class="deal-card" type="button" data-deal-id="${deal.id}">
+          <div class="deal-photo">
+            <div class="photo-tile">${imageTag(deal, title)}</div>
+            <span class="mini-price">${priceText(deal)}</span>
+          </div>
+          <div class="deal-copy">
+            <p class="deal-title">${title}</p>
+            <div class="deal-meta">
+              <span>${cleanText(deal.retailer) || 'Store deal'}</span>
+              ${wasText(deal) ? `<span class="was">${wasText(deal).replace('was ', '')}</span>` : `<span>${categoryName(deal)}</span>`}
+            </div>
+            ${isVerified(deal) ? '<span class="verified">✓ Verified product</span>' : '<span class="reported">Shoppers reported this</span>'}
+          </div>
+        </button>
+      `;
+    }
+
+    function renderHome() {
+      selectedCategory = '';
+      const hero = findPhotoBySku(featuredSku) || bestDeals()[0];
+      const cats = categories();
+      const pennyCount = photoDeals().filter(deal => priceText(deal) === '1¢').length;
+      app.innerHTML = `
+        <p class="honest-line">${pennyCount} photo deals are 1¢ finds. Prices change — check the tag in store.</p>
+        <button class="hero" type="button" data-deal-id="${hero.id}">
+          <div class="hero-photo">${imageTag(hero, shortTitle(hero))}</div>
+          <div class="hero-copy">
+            <span class="eyebrow">Best deal today</span>
+            <h2 class="hero-title">${shortTitle(hero)}</h2>
+            <div class="price-row">
+              <span class="price">${priceText(hero)}</span>
+              ${wasText(hero) ? `<span class="was">${wasText(hero)}</span>` : ''}
+            </div>
+            <p class="hero-note">A recognizable find for the shelf. Use the photo first, then scan it in store.</p>
+            <span class="see-btn">See deal</span>
+          </div>
+        </button>
+        <div class="section-head">
+          <h2>Browse by category</h2>
+          <span>${cats.length} groups</span>
+        </div>
+        <div class="category-grid">
+          ${cats.map(cat => `
+            <button class="category-tile" type="button" data-category="${cat.name}">
+              ${imageTag(cat.hero, cat.name)}
+              <span class="tile-copy">
+                <strong>${cat.name}</strong>
+                <span>${cat.deals.length} deals</span>
+              </span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="section-head">
+          <h2>More 1¢ finds</h2>
+          <span>Real photos</span>
+        </div>
+        <div class="deal-grid">
+          ${bestDeals().filter(deal => deal.id !== hero.id).slice(0, 6).map(dealCard).join('')}
+        </div>
+      `;
+      bindDealButtons();
+      bindCategoryButtons();
+    }
+
+    function renderList(options = {}) {
+      const query = cleanText(options.query || searchInput.value).toLowerCase();
+      const category = options.category || selectedCategory;
+      selectedCategory = category || '';
+
+      const photoMatches = photoDeals().filter(deal => {
+        const queryOk = !query || searchText(deal).includes(query);
+        const categoryOk = !category || categoryName(deal) === category;
+        return queryOk && categoryOk;
+      });
+
+      const textMatches = DEALS.filter(deal => {
+        if (deal.image || !query) return false;
+        return searchText(deal).includes(query);
+      }).slice(0, 4);
+
+      const title = category || (query ? 'Search results' : 'More deals');
+      app.innerHTML = `
+        <div class="result-top">
+          <button class="back-btn" type="button" id="backHome">Back</button>
+          <span>${photoMatches.length} with photos</span>
+        </div>
+        <div class="section-head">
+          <h2>${title}</h2>
+          <span>${query ? 'Filtered' : 'All'}</span>
+        </div>
+        ${photoMatches.length ? `<div class="deal-grid">${photoMatches.map(dealCard).join('')}</div>` : `<div class="empty">No photo deals found. Try soap, socks, kitchen, baby, or Dollar Tree.</div>`}
+        ${textMatches.length ? `
+          <div class="section-head">
+            <h2>Also reported</h2>
+            <span>No photo yet</span>
+          </div>
+          <div class="text-list">
+            ${textMatches.map(deal => `
+              <div class="text-deal">
+                <strong>${shortTitle(deal)}</strong>
+                <span>${cleanText(deal.retailer) || 'Store deal'} · ${priceText(deal)}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+      document.getElementById('backHome').addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearch.classList.remove('show');
+        renderHome();
+      });
+      bindDealButtons();
+    }
+
+    function renderDetail(deal) {
+      const title = shortTitle(deal);
+      const sku = cleanText(deal.sku);
+      app.innerHTML = `
+        <div class="result-top">
+          <button class="back-btn" type="button" id="backList">Back</button>
+          <span>${categoryName(deal)}</span>
+        </div>
+        <article class="detail">
+          <div class="detail-photo">${imageTag(deal, title)}</div>
+          ${isVerified(deal) ? '<span class="verified">✓ Verified product</span>' : '<span class="reported">Shoppers reported this</span>'}
+          <h2>${title}</h2>
+          <div class="store-line">
+            <span>${cleanText(deal.retailer) || 'Store deal'}</span>
+            <span>${categoryName(deal)}</span>
+          </div>
+          <div class="detail-price">
+            <div class="big-price">${priceText(deal)}</div>
+            <div class="price-note">
+              <strong>${priceStory(deal)}</strong>
+              <span>Prices change — check the tag in store.</span>
+            </div>
+          </div>
+          <section class="help-card">
+            <h3>How to get it</h3>
+            <p>${dealKind(deal)}</p>
+          </section>
+          <section class="help-card">
+            <h3>How to find it in the store</h3>
+            <p>Use the photo first. Check nearby shelves, end caps, and top shelves. Scan the item before you buy.</p>
+            <button class="scan-btn" type="button">${sku ? `Scan in store (SKU ${sku})` : 'Find in store'}</button>
+          </section>
+        </article>
+      `;
+      document.getElementById('backList').addEventListener('click', () => {
+        const query = cleanText(searchInput.value);
+        if (query || selectedCategory) renderList({ query, category: selectedCategory });
+        else renderHome();
+      });
+    }
+
+    function bindDealButtons() {
+      app.querySelectorAll('[data-deal-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          const deal = DEALS.find(item => item.id === button.dataset.dealId);
+          if (deal) renderDetail(deal);
+        });
+      });
+    }
+
+    function bindCategoryButtons() {
+      app.querySelectorAll('[data-category]').forEach(button => {
+        button.addEventListener('click', () => {
+          searchInput.value = '';
+          clearSearch.classList.remove('show');
+          renderList({ category: button.dataset.category });
+        });
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = cleanText(searchInput.value);
+      clearSearch.classList.toggle('show', Boolean(query));
+      if (query) renderList({ query });
+      else renderHome();
+    });
+
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearch.classList.remove('show');
+      searchInput.focus();
+      renderHome();
+    });
+
+    document.querySelectorAll('[data-search]').forEach(button => {
+      button.addEventListener('click', () => {
+        searchInput.value = button.dataset.search;
+        clearSearch.classList.add('show');
+        renderList({ query: button.dataset.search });
+      });
+    });
+
+    renderHome();
+  </script>
+</body>
+</html>
